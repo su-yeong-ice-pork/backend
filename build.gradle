@@ -28,7 +28,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     // Lombok
-    implementation 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

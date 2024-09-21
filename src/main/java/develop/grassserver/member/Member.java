@@ -3,12 +3,18 @@ package develop.grassserver.member;
 import develop.grassserver.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+@Getter
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @SQLDelete(sql = "UPDATE member SET status = false WHERE id = ?")
 @SQLRestriction("status = true")
 public class Member extends BaseEntity {
