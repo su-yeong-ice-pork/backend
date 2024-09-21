@@ -44,32 +44,23 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
-
+  
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
-
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E66508ABE16649F2A4D44979F102E12A }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E97A9347F669458BA0D8273F82B5CEF6 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_77F20AE3D3FE4BD38D47A676472516FA }}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'chat-diary'
+          app-name: 'grass-server'
           slot-name: 'Production'
           package: '*.jar'
-
-      - name: Copy application.yml to proper location
-        run: |
-          cp application.yml /home/site/wwwroot/config/application.yml
-
-      - name: Set environment variable for config location
-        run: |
-          echo "SPRING_CONFIG_LOCATION=/home/site/wwwroot/config/application.yml" >> $GITHUB_ENV
