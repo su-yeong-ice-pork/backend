@@ -1,4 +1,4 @@
-package develop.grassserver.member;
+package develop.grassserver;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
