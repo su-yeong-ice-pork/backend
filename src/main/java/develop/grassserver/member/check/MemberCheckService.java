@@ -19,7 +19,6 @@ public class MemberCheckService {
             throw new DuplicateMemberException("멤버 ID가 중복됩니다.");
         }
         if (!MemberValidator.isCorrectLoginIdFormat(memberId)) {
-
             throw new MemberIdFormatException("멤버 ID 형식 오류입니다.");
         }
     }
