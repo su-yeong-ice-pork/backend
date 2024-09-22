@@ -8,8 +8,8 @@ on:
     branches:
       - main
   workflow_dispatch:
-
-build:
+jobs:
+  build:
     runs-on: ubuntu-latest
 
     steps:
