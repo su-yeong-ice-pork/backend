@@ -66,3 +66,11 @@ jobs:
           slot-name: 'Production'
           package: '*.jar'
           
+      - name: Copy application.yml to proper location
+        run: |
+          cp application-prod.yml /home/site/wwwroot/config/application.yml
+
+      - name: Set environment variable for config location
+        run: |
+          echo "SPRING_CONFIG_LOCATION=/home/site/wwwroot/config/application.yml" >> $GITHUB_ENV
+          
