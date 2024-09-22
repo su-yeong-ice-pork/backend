@@ -1,5 +1,6 @@
 package develop.grassserver.member.check;
 
+import develop.grassserver.mail.MailService;
 import develop.grassserver.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/members/check")
 public class MemberCheckController {
 
+    private final MailService mailService;
     private final MemberCheckService memberCheckService;
 
     @GetMapping("/name")
@@ -25,6 +27,7 @@ public class MemberCheckController {
     @GetMapping("/email")
     public ResponseEntity<ApiUtils.ApiResult<?>> checkEmail(@RequestParam String email) {
         memberCheckService.checkMemberEmail(email);
+        mailService.sendMail(email);
         return ResponseEntity.ok()
                 .body(ApiUtils.success(null));
     }

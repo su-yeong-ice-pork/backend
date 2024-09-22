@@ -11,5 +11,4 @@ public class GrassServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(GrassServerApplication.class, args);
     }
-
 }
