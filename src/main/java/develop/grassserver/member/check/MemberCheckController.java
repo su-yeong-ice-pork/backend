@@ -15,9 +15,9 @@ public class MemberCheckController {
 
     private final MemberCheckService memberCheckService;
 
-    @GetMapping("/id")
-    public ResponseEntity<ApiUtils.ApiResult<?>> checkId(@RequestParam String memberId) {
-        memberCheckService.checkMemberId(memberId);
+    @GetMapping("/name")
+    public ResponseEntity<ApiUtils.ApiResult<?>> checkName(@RequestParam String name) {
+        memberCheckService.checkMemberName(name);
         return ResponseEntity.ok()
                 .body(ApiUtils.success(null));
     }

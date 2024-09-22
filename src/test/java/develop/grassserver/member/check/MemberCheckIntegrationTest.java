@@ -4,7 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +15,10 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
-class MemberCheckIntegrationTest {
+public class MemberCheckIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
 
     @Test
     @DisplayName("성공 - 멤버 ID 중복 및 형식 체크")
@@ -49,6 +45,19 @@ class MemberCheckIntegrationTest {
 
         result.andExpect(
                         jsonPath("$.success").value("false"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("성공 - 멤버 이름 중복 및 길이 충족")
+    void test3() throws Exception {
+        String name = "aaa";
+        ResultActions result = mockMvc.perform(
+                get("/api/v1/members/check/name")
+                        .param("name", name));
+
+        result.andExpect(
+                        jsonPath("$.success").value("true"))
                 .andDo(print());
     }
 }

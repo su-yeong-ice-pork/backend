@@ -3,9 +3,9 @@ package develop.grassserver.member.exception;
 import develop.grassserver.utils.ApiUtils;
 import org.springframework.http.HttpStatus;
 
-public class MemberIdFormatException extends RuntimeException {
+public class MemberNameFormatException extends RuntimeException {
 
-    public MemberIdFormatException(String message) {
+    public MemberNameFormatException(String message) {
         super(message);
     }
 

@@ -12,9 +12,4 @@ public class MemberExceptionHandler {
     public ResponseEntity<ApiUtils.ApiResult<?>> duplicateMemberException(DuplicateMemberException exception) {
         return new ResponseEntity<>(exception.body(), exception.status());
     }
-
-    @ExceptionHandler(MemberIdFormatException.class)
-    public ResponseEntity<ApiUtils.ApiResult<?>> memberIdFormatException(MemberIdFormatException exception) {
-        return new ResponseEntity<>(exception.body(), exception.status());
-    }
 }
