@@ -21,4 +21,11 @@ public class MemberCheckController {
         return ResponseEntity.ok()
                 .body(ApiUtils.success(null));
     }
+
+    @GetMapping("/email")
+    public ResponseEntity<ApiUtils.ApiResult<?>> checkEmail(@RequestParam String email) {
+        memberCheckService.checkMemberEmail(email);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(null));
+    }
 }
