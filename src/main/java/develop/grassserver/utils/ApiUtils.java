@@ -1,6 +1,5 @@
 package develop.grassserver.utils;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 public final class ApiUtils {
@@ -16,11 +15,9 @@ public final class ApiUtils {
         return new ApiResult<>(false, null, new ApiError(status.value(), message));
     }
 
-    @Getter
     public record ApiResult<T>(boolean success, T response, ApiError error) {
     }
 
-    @Getter
     public record ApiError(int status, String message) {
     }
 }
