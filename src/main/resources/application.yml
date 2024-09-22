@@ -2,7 +2,7 @@ spring:
   datasource:
     username: grass
     password: 'mutsa123!'
-    url: grass-db.mysql.database.azure.com
+    url: jdbc:mysql://grass-db.mysql.database.azure.com:3306
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
