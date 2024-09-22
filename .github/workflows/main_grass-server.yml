@@ -68,7 +68,7 @@ jobs:
           
       - name: Copy application.yml to proper location
         run: |
-          cp /backend/src/main/resources/application-prod.yml /home/site/wwwroot/config/application.yml
+          cp application.yml /home/site/wwwroot/config/application.yml
 
       - name: Set environment variable for config location
         run: |
