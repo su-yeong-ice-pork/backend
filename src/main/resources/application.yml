@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    username: grass
+    password: 'mutsa123!'
+    url: grass-db.mysql.database.azure.com
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: TRUE
+
+  logging:
+    level:
+      org:
+        springframework:
+          jdbc: DEBUG
+        hibernate:
+          SQL: DEBUG
+          type:
+            descriptor:
+              sql: TRACE
+          orm:
+            jdbc:
+              bind: TRACE
+server:
+  port: 80
