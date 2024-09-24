@@ -4,6 +4,11 @@ spring:
     password: 'mutsa123!'
     url: jdbc:mysql://grass-db.mysql.database.azure.com:3306/grass
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: grass-redis.redis.cache.windows.net
+      password: BxNDdYYiwfyFhxbgcRJ9TzSN4oiWn1KHwAzCaPXPGkE=
+      port: 6380
   jpa:
     hibernate:
       ddl-auto: update
