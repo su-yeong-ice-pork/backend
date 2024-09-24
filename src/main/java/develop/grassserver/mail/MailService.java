@@ -1,6 +1,7 @@
 package develop.grassserver.mail;
 
 import develop.grassserver.mail.exeption.MailSendException;
+import develop.grassserver.member.auth.RedisService;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -15,12 +16,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MailService {
 
+    private final RedisService redisService;
     private final JavaMailSender javaMailSender;
 
     public void sendMail(String email) {
         String code = createAuthorizationCode();
         MimeMessage message = createMailMessage(email, code);
         javaMailSender.send(message);
+        redisService.saveAuthCode(email, code);
     }
 
     private String createAuthorizationCode() {
