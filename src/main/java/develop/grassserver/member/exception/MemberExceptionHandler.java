@@ -1,11 +1,9 @@
 package develop.grassserver.member.exception;
 
 import develop.grassserver.utils.ApiUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.RestClientException;
 
 @RestControllerAdvice
 public class MemberExceptionHandler {
@@ -21,8 +19,7 @@ public class MemberExceptionHandler {
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ApiUtils.ApiResult<Void>> handleForbiddenException(ForbiddenException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiUtils.error(HttpStatus.FORBIDDEN, ex.getMessage()));
+    public ResponseEntity<ApiUtils.ApiResult<?>> handleForbiddenException(ForbiddenException exception) {
+        return new ResponseEntity<>(exception.body(), exception.status());
     }
 }
