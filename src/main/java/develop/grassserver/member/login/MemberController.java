@@ -3,6 +3,7 @@ package develop.grassserver.member.login;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,13 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class MemberController {
     private final JwtUserService jwtUserService;
 
-    public MemberController(JwtUserService jwtUserService) {
-        this.jwtUserService = jwtUserService;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResult<String>> login(@Valid @RequestBody LoginRequest loginRequest) {
