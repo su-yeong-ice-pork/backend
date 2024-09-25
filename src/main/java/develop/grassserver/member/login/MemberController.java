@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/member")
 public class MemberController {
     private final JwtUserService jwtUserService;
-
 
     @PostMapping("/login")
     public ResponseEntity<ApiResult<String>> login(@Valid @RequestBody LoginRequest loginRequest) {
