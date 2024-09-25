@@ -11,11 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class JwtUserService {
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
 
-    @Transactional(readOnly = true)
     public String login(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new EntityNotFoundException("Member"));
@@ -25,7 +25,6 @@ public class JwtUserService {
         return jwtService.createToken(member.getId());
     }
 
-    @Transactional(readOnly = true)
     public String getToken(Long userId) {
         return jwtService.createToken(userId);
     }
