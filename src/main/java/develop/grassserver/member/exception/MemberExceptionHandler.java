@@ -17,4 +17,9 @@ public class MemberExceptionHandler {
     public ResponseEntity<ApiUtils.ApiResult<?>> memberNameFormatException(MemberNameFormatException exception) {
         return new ResponseEntity<>(exception.body(), exception.status());
     }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiUtils.ApiResult<?>> handleForbiddenException(ForbiddenException exception) {
+        return new ResponseEntity<>(exception.body(), exception.status());
+    }
 }
