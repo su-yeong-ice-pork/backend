@@ -25,10 +25,4 @@ public class MemberExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiUtils.error(HttpStatus.FORBIDDEN, ex.getMessage()));
     }
-
-    @ExceptionHandler(RestClientException.class)
-    public ResponseEntity<ApiUtils.ApiResult<Void>> handleRestClientException(RestClientException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiUtils.error(HttpStatus.INTERNAL_SERVER_ERROR, "소셜 로그인 토큰 발급에 실패했습니다."));
-    }
 }
