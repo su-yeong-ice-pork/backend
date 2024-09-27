@@ -31,4 +31,4 @@ spring:
             jdbc:
               bind: TRACE
 server:
-  port: 80
+  port: 8080

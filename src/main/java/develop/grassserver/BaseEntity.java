@@ -32,5 +32,5 @@ public abstract class BaseEntity {
 
     @ColumnDefault("true")
     @Column(nullable = false)
-    private boolean status;
+    private boolean status = true;
 }
