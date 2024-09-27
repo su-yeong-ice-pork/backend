@@ -1,7 +1,5 @@
-package develop.grassserver.member.login;
+package develop.grassserver.member;
 
-import develop.grassserver.member.Member;
-import develop.grassserver.member.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
