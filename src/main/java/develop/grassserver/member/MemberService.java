@@ -17,6 +17,7 @@ public class MemberService {
     public Member findUser(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Member id : " + id));
+    }
 
     @Transactional
     public MemberJoinSuccessResponse saveMember(MemberJoinRequest request) {

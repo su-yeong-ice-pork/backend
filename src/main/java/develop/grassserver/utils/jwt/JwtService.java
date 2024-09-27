@@ -4,7 +4,7 @@ package develop.grassserver.utils.jwt;
 import static develop.grassserver.utils.jwt.JwtUtil.*;
 
 import develop.grassserver.member.Member;
-import develop.grassserver.member.login.MemberService;
+import develop.grassserver.member.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.util.Date;
