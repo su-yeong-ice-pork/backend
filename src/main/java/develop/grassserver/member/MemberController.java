@@ -1,5 +1,10 @@
 package develop.grassserver.member;
 
+import develop.grassserver.member.login.JwtUserService;
+import develop.grassserver.member.login.LoginRequest;
+import develop.grassserver.utils.ApiUtils;
+import develop.grassserver.utils.ApiUtils.ApiResult;
+import jakarta.validation.Valid;
 import develop.grassserver.member.dto.MemberJoinRequest;
 import develop.grassserver.member.dto.MemberJoinSuccessResponse;
 import develop.grassserver.utils.ApiUtils;
@@ -14,6 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
 public class MemberController {
+
+    private final JwtUserService jwtUserService;
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResult<String>> login(@Valid @RequestBody LoginRequest loginRequest) {
+        String token = jwtUserService.login(loginRequest);
+        return ResponseEntity.ok()
+                .header("Authorization", token)
+                .body(ApiUtils.success("로그인 성공"));
 
     private final MemberService memberService;
 

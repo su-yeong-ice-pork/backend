@@ -1,5 +1,6 @@
 package develop.grassserver.member;
 
+import jakarta.persistence.EntityNotFoundException;
 import develop.grassserver.member.dto.MemberJoinRequest;
 import develop.grassserver.member.dto.MemberJoinSuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    public Member findUser(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Member id : " + id));
 
     @Transactional
     public MemberJoinSuccessResponse saveMember(MemberJoinRequest request) {
