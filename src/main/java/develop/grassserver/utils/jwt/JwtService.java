@@ -8,16 +8,21 @@ import static develop.grassserver.utils.jwt.JwtUtil.SECRET_KEY;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_BEGIN_INDEX;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_PREFIX;
 
+import develop.grassserver.member.auth.RedisService;
 import develop.grassserver.member.auth.TokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+    private final RedisService redisService;
+
     private String createToken(String email, Long expirationTime) {
         return Jwts.builder()
                 .subject(email)
@@ -71,5 +76,14 @@ public class JwtService {
             throw new SecurityException();
         }
         return token.substring(TOKEN_BEGIN_INDEX);
+    }
+
+    public void saveRefreshToken(String email, String refreshToken) {
+        redisService.saveRefreshToken(email, refreshToken);
+    }
+
+    public boolean validateRefreshToken(String email, String refreshToken) {
+        String savedRefreshToken = redisService.getRefreshToken(email);
+        return savedRefreshToken != null && savedRefreshToken.equals(refreshToken);
     }
 }
