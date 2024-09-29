@@ -27,4 +27,10 @@ public class MemberExceptionHandler {
     public ResponseEntity<ApiUtils.ApiResult<?>> handleForbiddenException(ForbiddenException exception) {
         return new ResponseEntity<>(exception.body(), exception.status());
     }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ApiUtils.ApiResult<?>> invalidPasswordException(InvalidPasswordException exception) {
+        return new ResponseEntity<>(exception.body(), exception.status());
+    }
+
 }
