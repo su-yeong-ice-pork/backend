@@ -1,9 +1,10 @@
 package develop.grassserver.member;
 
-import jakarta.persistence.EntityNotFoundException;
 import develop.grassserver.member.dto.MemberJoinRequest;
 import develop.grassserver.member.dto.MemberJoinSuccessResponse;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Member findMember(Long id) {
         return memberRepository.findById(id)
@@ -30,7 +32,7 @@ public class MemberService {
         return Member.builder()
                 .name(request.name())
                 .email(request.email())
-                .password(request.password())
+                .password(passwordEncoder.encode(request.password()))
                 .build();
     }
 }
