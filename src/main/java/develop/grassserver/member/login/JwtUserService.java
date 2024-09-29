@@ -28,7 +28,9 @@ public class JwtUserService {
         }
 
         TokenDTO token = jwtService.createAllToken(member.getEmail());
-        jwtService.saveRefreshToken(token.email(), token.refreshToken());
+        if (loginRequest.autoLogin()) {
+            jwtService.saveRefreshToken(token.email(), token.refreshToken());
+        }
         return token;
     }
 }
