@@ -1,12 +1,13 @@
 package develop.grassserver.member;
 
+import develop.grassserver.member.auth.TokenDTO;
+import develop.grassserver.member.dto.MemberJoinRequest;
+import develop.grassserver.member.dto.MemberJoinSuccessResponse;
 import develop.grassserver.member.login.JwtUserService;
 import develop.grassserver.member.login.LoginRequest;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
 import jakarta.validation.Valid;
-import develop.grassserver.member.dto.MemberJoinRequest;
-import develop.grassserver.member.dto.MemberJoinSuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,9 +25,9 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResult<String>> login(@Valid @RequestBody LoginRequest loginRequest) {
-        String token = jwtUserService.login(loginRequest);
+        TokenDTO token = jwtUserService.login(loginRequest);
         return ResponseEntity.ok()
-                .header("Authorization", token)
+                .header("Authorization", token.accessToken())
                 .body(ApiUtils.success("로그인 성공"));
     }
 

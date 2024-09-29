@@ -2,6 +2,7 @@ package develop.grassserver.member.login;
 
 import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberRepository;
+import develop.grassserver.member.auth.TokenDTO;
 import develop.grassserver.member.exception.InvalidPasswordException;
 import develop.grassserver.utils.jwt.JwtService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,16 +19,16 @@ public class JwtUserService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    public String login(LoginRequest loginRequest) {
+    public TokenDTO login(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new EntityNotFoundException("Member"));
+
         if (!passwordEncoder.matches(loginRequest.password(), member.getPassword())) {
             throw new InvalidPasswordException();
         }
-        return jwtService.createToken(member.getEmail());
-    }
 
-    public String getToken(String email) {
-        return jwtService.createToken(email);
+        TokenDTO token = jwtService.createAllToken(member.getEmail());
+        jwtService.saveRefreshToken(token.email(), token.refreshToken());
+        return token;
     }
 }

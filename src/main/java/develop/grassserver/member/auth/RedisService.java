@@ -45,6 +45,9 @@ public class RedisService {
     public void saveRefreshToken(String email, String refreshToken) {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         Duration duration = Duration.ofSeconds(JwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+        if (!Objects.isNull(getRefreshToken(email))) {
+            deleteRefreshToken(email);
+        }
         valueOperations.set(getRefreshCodeKey(email), refreshToken, duration);
     }
 
