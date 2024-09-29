@@ -22,10 +22,10 @@ public class JwtUserService {
         if (!member.isPasswordCorrect(loginRequest.password())) {
             throw new ForbiddenException("로그인 실패: 비밀번호 불일치");
         }
-        return jwtService.createToken(member.getId());
+        return jwtService.createToken(member.getEmail());
     }
 
-    public String getToken(Long userId) {
-        return jwtService.createToken(userId);
+    public String getToken(String email) {
+        return jwtService.createToken(email);
     }
 }
