@@ -30,7 +30,7 @@ public class JwtService {
 
     public Member getLoginUser(String token) {
         Long id = getIdFromToken(token);
-        return memberService.findUser(id);
+        return memberService.findMember(id);
     }
 
     private Long getIdFromToken(String token) {
