@@ -1,12 +1,14 @@
 package develop.grassserver.utils.jwt;
 
 
+import static develop.grassserver.utils.jwt.JwtUtil.ACCESS_TOKEN_EXPIRATION_TIME;
 import static develop.grassserver.utils.jwt.JwtUtil.ISSUER;
+import static develop.grassserver.utils.jwt.JwtUtil.REFRESH_TOKEN_EXPIRATION_TIME;
 import static develop.grassserver.utils.jwt.JwtUtil.SECRET_KEY;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_BEGIN_INDEX;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_PREFIX;
-import static develop.grassserver.utils.jwt.JwtUtil.expirationSeconds;
 
+import develop.grassserver.member.auth.TokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,20 +18,23 @@ import org.springframework.util.StringUtils;
 
 @Service
 public class JwtService {
-    public String createToken(String email) {
+    private String createToken(String email, Long expirationTime) {
         return Jwts.builder()
                 .subject(email)
                 .issuer(ISSUER)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expirationSeconds * 1000))
+                .expiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
                 .signWith(SECRET_KEY)
                 .compact();
     }
 
-//    public Member getLoginUser(String token) {
-//        Long id = getIdFromToken(token);
-//        return memberService.findUser(id);
-//    }
+    public TokenDTO createAllToken(String email) {
+        return TokenDTO.builder()
+                .email(email)
+                .refreshToken(createToken(email, REFRESH_TOKEN_EXPIRATION_TIME))
+                .accessToken(createToken(email, ACCESS_TOKEN_EXPIRATION_TIME))
+                .build();
+    }
 
     public String getEmailFromToken(String token) {
         Claims claims = Jwts.parser()
