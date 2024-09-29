@@ -11,7 +11,7 @@ public class InvalidPasswordException extends RuntimeException {
     }
 
     public HttpStatus status() {
-        return HttpStatus.BAD_REQUEST;
+        return HttpStatus.UNAUTHORIZED;
     }
 }
 
