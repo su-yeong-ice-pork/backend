@@ -6,6 +6,7 @@ import develop.grassserver.utils.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,7 +39,10 @@ public class SecurityConfig {
 
                 // 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll() // 로그인 및 회원가입 엔드포인트는 인증 없이 접근 허용
+                        .requestMatchers(HttpMethod.POST, "/api/v1/members/login")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/members")
+                        .permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
 
