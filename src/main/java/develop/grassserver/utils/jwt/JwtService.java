@@ -7,7 +7,6 @@ import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_BEGIN_INDEX;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_PREFIX;
 import static develop.grassserver.utils.jwt.JwtUtil.expirationSeconds;
 
-import develop.grassserver.member.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,12 +16,6 @@ import org.springframework.util.StringUtils;
 
 @Service
 public class JwtService {
-    private final MemberService memberService;
-
-    public JwtService(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
     public String createToken(String email) {
         return Jwts.builder()
                 .subject(email)
