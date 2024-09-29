@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,27 +28,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-            org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
-        // JWT Authentication Filter 생성
+            HttpSecurity http) throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService, userDetailsService);
 
         http
-                // CSRF 비활성화
-                .csrf(csrf -> csrf.disable())
-
-                // 세션을 사용하지 않도록 설정 (STATELESS)
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/v1/members/login")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/members")
                         .permitAll()
-                        .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
+                        .anyRequest().authenticated()
                 )
-
-                // JWT 필터를 UsernamePasswordAuthenticationFilter 전에 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
