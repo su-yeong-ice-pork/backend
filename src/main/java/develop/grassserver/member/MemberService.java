@@ -24,6 +24,7 @@ public class MemberService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
 
     @Transactional
     public MemberJoinSuccessResponse saveMember(MemberJoinRequest request) {
@@ -43,10 +44,11 @@ public class MemberService {
     }
 
     private Profile createMemberProfile() {
-        return Profile.builder()
+        Profile profile = Profile.builder()
                 .image(DEFAULT_PROFILE_IMAGE)
                 .message(DEFAULT_PROFILE_MESSAGE)
                 .build();
+        return profileRepository.save(profile);
     }
 
     public void authMember(MemberAuthRequest request) {
