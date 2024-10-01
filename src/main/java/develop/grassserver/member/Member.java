@@ -28,7 +28,4 @@ public class Member extends BaseEntity {
     @Column(length = 64, nullable = false)
     private String password;
 
-    public boolean isPasswordCorrect(String inputPassword) {
-        return this.password.equals(inputPassword);
-    }
 }
