@@ -23,8 +23,8 @@ public class MemberExceptionHandler {
         return new ResponseEntity<>(exception.body(), exception.status());
     }
 
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ApiUtils.ApiResult<?>> handleForbiddenException(ForbiddenException exception) {
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiUtils.ApiResult<?>> handleForbiddenException(UnauthorizedException exception) {
         return new ResponseEntity<>(exception.body(), exception.status());
     }
 

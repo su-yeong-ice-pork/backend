@@ -1,7 +1,11 @@
 package develop.grassserver.member;
 
+import develop.grassserver.mail.MailService;
+import develop.grassserver.member.dto.ChangePasswordRequest;
+import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
 import develop.grassserver.member.dto.MemberJoinSuccessResponse;
+import develop.grassserver.member.exception.UnauthorizedException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,13 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
-
-    public Member findUser(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Member id : " + id));
-    }
+    private final MemberRepository memberRepository;
 
     @Transactional
     public MemberJoinSuccessResponse saveMember(MemberJoinRequest request) {
@@ -34,5 +34,26 @@ public class MemberService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .build();
+    }
+
+    public void authMember(MemberAuthRequest request) {
+        Member member = checkMember(request.email(), request.name());
+        mailService.sendMail(member.getEmail());
+    }
+
+    @Transactional
+    public void changeMemberPassword(ChangePasswordRequest request) {
+        Member member = checkMember(request.email(), request.name());
+        String newPassword = passwordEncoder.encode(request.password());
+        member.updatePassword(newPassword);
+    }
+
+    private Member checkMember(String email, String name) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(EntityNotFoundException::new);
+        if (!member.isMyName(name)) {
+            throw new UnauthorizedException("멤버가 인증되지 않음");
+        }
+        return member;
     }
 }
