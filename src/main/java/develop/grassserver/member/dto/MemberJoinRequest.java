@@ -17,6 +17,9 @@ public record MemberJoinRequest(
 
         @Schema(description = "회원가입 이름", example = "김김진진우우")
         @NotBlank(message = "이름은 필수 항목입니다.")
-        String name
+        String name,
+
+        String college,
+        String department
 ) {
 }
