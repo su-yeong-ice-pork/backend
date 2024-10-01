@@ -2,7 +2,7 @@ package develop.grassserver.member.login;
 
 import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberRepository;
-import develop.grassserver.member.exception.ForbiddenException;
+import develop.grassserver.member.exception.InvalidPasswordException;
 import develop.grassserver.utils.jwt.JwtService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class JwtUserService {
         Member member = memberRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new EntityNotFoundException("Member"));
         if (!passwordEncoder.matches(loginRequest.password(), member.getPassword())) {
-            throw new ForbiddenException("로그인 실패: 비밀번호 불일치");
+            throw new InvalidPasswordException();
         }
         return jwtService.createToken(member.getEmail());
     }
