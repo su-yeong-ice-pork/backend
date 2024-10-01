@@ -46,6 +46,12 @@ public class MemberController {
                 .body(ApiUtils.success());
     }
 
+    @Operation(summary = "자동 로그인 API", description = "멤버 자동 로그인 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "자동 로그인 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "자동 로그인 실패, 재로그인 필요"),
+            @ApiResponse(responseCode = "404", description = "해당 멤버를 찾을 수 없음")
+    })
     @PostMapping("/auto-login")
     public ResponseEntity<ApiResult<String>> autoLogin(@RequestParam String code) {
         TokenDTO token = jwtUserService.autoLogin(code);
