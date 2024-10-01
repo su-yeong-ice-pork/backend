@@ -48,9 +48,7 @@ public class MemberController {
             @ApiResponse(responseCode = "409", description = "중복 회원 존재")
     })
     @PostMapping
-    public ResponseEntity<ApiResult<MemberJoinSuccessResponse>> signUp(
-            @RequestBody MemberJoinRequest request
-    ) {
+    public ResponseEntity<ApiResult<?>> signUp(@Valid @RequestBody MemberJoinRequest request) {
         MemberJoinSuccessResponse response = memberService.saveMember(request);
         return ResponseEntity.ok()
                 .body(ApiUtils.success(response));
