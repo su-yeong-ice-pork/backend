@@ -4,6 +4,8 @@ import develop.grassserver.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +33,9 @@ public class Member extends BaseEntity {
 
     @Embedded
     private Major major;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    private Profile profile;
 
     public boolean isMyName(String otherName) {
         return this.name.equals(otherName);
