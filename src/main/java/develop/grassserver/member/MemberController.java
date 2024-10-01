@@ -1,8 +1,6 @@
 package develop.grassserver.member;
 
 import develop.grassserver.member.auth.TokenDTO;
-import develop.grassserver.member.dto.MemberJoinRequest;
-import develop.grassserver.member.dto.MemberJoinSuccessResponse;
 import develop.grassserver.member.dto.ChangePasswordRequest;
 import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
@@ -45,7 +43,7 @@ public class MemberController {
         TokenDTO token = jwtUserService.login(loginRequest);
         return ResponseEntity.ok()
                 .header("Authorization", token.accessToken())
-                .body(ApiUtils.success("로그인 성공"));
+                .body(ApiUtils.success());
     }
 
     @PostMapping("/auto-login")
@@ -53,7 +51,7 @@ public class MemberController {
         TokenDTO token = jwtUserService.autoLogin(code);
         return ResponseEntity.ok()
                 .header("Authorization", token.accessToken())
-                .body(ApiUtils.success("로그인 성공"));
+                .body(ApiUtils.success());
     }
 
     @Operation(summary = "회원가입 API", description = "멤버 회원가입 시 사용되는 API")
