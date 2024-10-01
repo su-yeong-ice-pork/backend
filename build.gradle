@@ -57,6 +57,9 @@ dependencies {
 
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // AWS
+    implementation 'org.springframework.cloud:spring-cloud-aws-context:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
