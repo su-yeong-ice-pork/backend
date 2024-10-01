@@ -60,6 +60,13 @@ public class MemberController {
                 .body(ApiUtils.success());
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResult<String>> logout(@RequestParam String code) {
+        // 로그인한 사용자 검증 필요
+        return ResponseEntity.ok()
+                .body(ApiUtils.success());
+    }
+
     @Operation(summary = "회원가입 API", description = "멤버 회원가입 시 사용되는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "회원가입 성공. 응답 에러 코드는 무시하셈"),

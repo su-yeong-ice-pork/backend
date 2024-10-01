@@ -39,4 +39,8 @@ public class JwtUserService {
     public TokenDTO autoLogin(String code) {
         return jwtService.renewTokens(code);
     }
+
+    public void logout(String code) {
+        jwtService.deleteRefreshToken(code);
+    }
 }

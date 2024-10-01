@@ -78,4 +78,8 @@ public class JwtService {
         String email = getEmailFromToken(savedRefreshToken);
         return createAllToken(email);
     }
+
+    public void deleteRefreshToken(String code) {
+        redisService.deleteRefreshToken(code);
+    }
 }
