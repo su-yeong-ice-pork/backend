@@ -3,17 +3,17 @@ package develop.grassserver.member.exception;
 import develop.grassserver.utils.ApiUtils;
 import org.springframework.http.HttpStatus;
 
-public class ForbiddenException extends RuntimeException {
+public class UnauthorizedException extends RuntimeException {
 
-    public ForbiddenException(String message) {
+    public UnauthorizedException(String message) {
         super(message);
     }
 
     public ApiUtils.ApiResult<?> body() {
-        return ApiUtils.error(HttpStatus.FORBIDDEN, getMessage());
+        return ApiUtils.error(HttpStatus.UNAUTHORIZED, getMessage());
     }
 
     public HttpStatus status() {
-        return HttpStatus.FORBIDDEN;
+        return HttpStatus.UNAUTHORIZED;
     }
 }

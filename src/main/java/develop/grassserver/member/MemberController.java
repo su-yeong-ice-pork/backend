@@ -1,5 +1,6 @@
 package develop.grassserver.member;
 
+import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
 import develop.grassserver.member.dto.MemberJoinSuccessResponse;
 import develop.grassserver.member.login.JwtUserService;
@@ -51,6 +52,20 @@ public class MemberController {
     public ResponseEntity<ApiResult<?>> signUp(@Valid @RequestBody MemberJoinRequest request) {
         MemberJoinSuccessResponse response = memberService.saveMember(request);
         return ResponseEntity.ok()
-                .body(ApiUtils.success(response));
+                .body(ApiUtils.success("회원가입 성공"));
+    }
+
+    @Operation(summary = "멤버 인증 API", description = "멤버 인증 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "인증 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "인증 실패. 이름과 이메일이 불일치"),
+            @ApiResponse(responseCode = "404", description = "정보를 찾을 수 없음"),
+            @ApiResponse(responseCode = "500", description = "인증코드 메일 전송 실패")
+    })
+    @PostMapping("/auth")
+    public ResponseEntity<ApiResult<?>> auth(@Valid @RequestBody MemberAuthRequest request) {
+        memberService.authMember(request);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success("인증 성공"));
     }
 }
