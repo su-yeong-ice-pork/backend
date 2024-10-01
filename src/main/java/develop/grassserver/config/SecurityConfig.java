@@ -42,6 +42,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PERMIT_SWAGGER_URL_ARRAY)
                         .permitAll()
+                        .requestMatchers("/api/v1/members/check/**")
+                        .permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/members",
                                 "/api/v1/members/auth",
