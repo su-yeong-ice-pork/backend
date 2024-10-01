@@ -33,4 +33,10 @@ public class MemberExceptionHandler {
         return new ResponseEntity<>(exception.body(), exception.status());
     }
 
+    @ExceptionHandler(ReauthenticationRequiredException.class)
+    public ResponseEntity<ApiUtils.ApiResult<?>> reauthenticationRequiredException(
+            ReauthenticationRequiredException exception) {
+        return new ResponseEntity<>(exception.body(), exception.status());
+    }
+
 }
