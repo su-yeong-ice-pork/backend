@@ -11,6 +11,10 @@ public final class ApiUtils {
         return new ApiResult<>(true, response, null);
     }
 
+    public static ApiResult<String> success() {
+        return new ApiResult<>(true, "요청이 성공적으로 처리되었습니다.", null);
+    }
+
     public static <T> ApiResult<T> error(HttpStatus status, String message) {
         return new ApiResult<>(false, null, new ApiError(status.value(), message));
     }
