@@ -35,9 +35,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(HttpMethod.POST, "/api/v1/members/login")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/members")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/members/auto-login")
                         .permitAll()
                         .anyRequest().authenticated()
                 )

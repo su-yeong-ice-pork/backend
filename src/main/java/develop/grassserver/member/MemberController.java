@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,6 +27,14 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<ApiResult<String>> login(@Valid @RequestBody LoginRequest loginRequest) {
         TokenDTO token = jwtUserService.login(loginRequest);
+        return ResponseEntity.ok()
+                .header("Authorization", token.accessToken())
+                .body(ApiUtils.success("로그인 성공"));
+    }
+
+    @PostMapping("/auto-login")
+    public ResponseEntity<ApiResult<String>> autoLogin(@RequestParam String code) {
+        TokenDTO token = jwtUserService.autoLogin(code);
         return ResponseEntity.ok()
                 .header("Authorization", token.accessToken())
                 .body(ApiUtils.success("로그인 성공"));

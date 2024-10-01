@@ -11,6 +11,9 @@ public record LoginRequest(
         @NotBlank(message = "비밀번호는 필수 항목입니다.")
         String password,
 
-        boolean autoLogin
+        boolean autoLogin,
+
+        @NotBlank(message = "기기 식별자는 필수 항목입니다.")
+        String code
 ) {
 }
