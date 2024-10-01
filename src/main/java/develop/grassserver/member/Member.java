@@ -2,6 +2,7 @@ package develop.grassserver.member;
 
 import develop.grassserver.BaseEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,9 @@ public class Member extends BaseEntity {
 
     @Column(length = 64, nullable = false)
     private String password;
+
+    @Embedded
+    private Major major;
 
     public boolean isMyName(String otherName) {
         return this.name.equals(otherName);
