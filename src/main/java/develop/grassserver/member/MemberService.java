@@ -44,7 +44,8 @@ public class MemberService {
     @Transactional
     public void changeMemberPassword(ChangePasswordRequest request) {
         Member member = checkMember(request.email(), request.name());
-        member.updatePassword(request.password());
+        String newPassword = passwordEncoder.encode(request.password());
+        member.updatePassword(newPassword);
     }
 
     private Member checkMember(String email, String name) {
