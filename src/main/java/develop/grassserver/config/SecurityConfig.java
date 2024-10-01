@@ -26,6 +26,11 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
+    private static final String[] PERMIT_SWAGGER_URL_ARRAY = {
+            "/api-docs/**",
+            "/swagger-ui/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {
@@ -35,6 +40,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PERMIT_SWAGGER_URL_ARRAY)
+                        .permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/members",
                                 "/api/v1/members/auth",
