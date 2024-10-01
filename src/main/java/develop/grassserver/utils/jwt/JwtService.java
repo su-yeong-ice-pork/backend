@@ -1,20 +1,18 @@
 package develop.grassserver.utils.jwt;
 
 
+import static develop.grassserver.utils.jwt.JwtUtil.ACCESS_TOKEN_EXPIRATION_TIME;
 import static develop.grassserver.utils.jwt.JwtUtil.ISSUER;
+import static develop.grassserver.utils.jwt.JwtUtil.REFRESH_TOKEN_EXPIRATION_TIME;
 import static develop.grassserver.utils.jwt.JwtUtil.SECRET_KEY;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_BEGIN_INDEX;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_PREFIX;
-import static develop.grassserver.utils.jwt.JwtUtil.expirationSeconds;
 
 import develop.grassserver.member.auth.RedisService;
 import develop.grassserver.member.auth.TokenDTO;
 import develop.grassserver.member.exception.ReauthenticationRequiredException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
