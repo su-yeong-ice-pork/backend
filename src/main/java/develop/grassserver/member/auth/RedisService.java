@@ -42,25 +42,22 @@ public class RedisService {
         redisTemplate.delete(email);
     }
 
-    public void saveRefreshToken(String email, String refreshToken) {
+    public void saveRefreshToken(String code, String refreshToken) {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         Duration duration = Duration.ofSeconds(JwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
-        if (!Objects.isNull(getRefreshToken(email))) {
-            deleteRefreshToken(email);
-        }
-        valueOperations.set(getRefreshCodeKey(email), refreshToken, duration);
+        valueOperations.set(getRefreshCodeKey(code), refreshToken, duration);
     }
 
-    public String getRefreshToken(String email) {
+    public String getRefreshToken(String code) {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        return (String) valueOperations.get(getRefreshCodeKey(email));
+        return (String) valueOperations.get(getRefreshCodeKey(code));
     }
 
-    public void deleteRefreshToken(String email) {
-        redisTemplate.delete(getRefreshCodeKey(email));
+    public void deleteRefreshToken(String code) {
+        redisTemplate.delete(getRefreshCodeKey(code));
     }
 
-    private String getRefreshCodeKey(String email) {
-        return REFRESH_TOKEN_PREFIX + email;
+    private String getRefreshCodeKey(String code) {
+        return REFRESH_TOKEN_PREFIX + code;
     }
 }
