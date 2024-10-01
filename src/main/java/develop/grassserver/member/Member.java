@@ -31,4 +31,8 @@ public class Member extends BaseEntity {
     public boolean isMyName(String otherName) {
         return this.name.equals(otherName);
     }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }

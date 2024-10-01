@@ -1,6 +1,7 @@
 package develop.grassserver.member;
 
 import develop.grassserver.mail.MailService;
+import develop.grassserver.member.dto.ChangePasswordRequest;
 import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
 import develop.grassserver.member.dto.MemberJoinSuccessResponse;
@@ -20,11 +21,6 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
-    public Member findMember(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Member id : " + id));
-    }
-
     @Transactional
     public MemberJoinSuccessResponse saveMember(MemberJoinRequest request) {
         Member member = createJoinMember(request);
@@ -41,11 +37,22 @@ public class MemberService {
     }
 
     public void authMember(MemberAuthRequest request) {
-        Member member = memberRepository.findByEmail(request.email())
+        Member member = checkMember(request.email(), request.name());
+        mailService.sendMail(member.getEmail());
+    }
+
+    @Transactional
+    public void changeMemberPassword(ChangePasswordRequest request) {
+        Member member = checkMember(request.email(), request.name());
+        member.updatePassword(request.password());
+    }
+
+    private Member checkMember(String email, String name) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(EntityNotFoundException::new);
-        if (!member.isMyName(request.name())) {
+        if (!member.isMyName(name)) {
             throw new UnauthorizedException("멤버가 인증되지 않음");
         }
-        mailService.sendMail(member.getEmail());
+        return member;
     }
 }
