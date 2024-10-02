@@ -2,19 +2,13 @@ package develop.grassserver.member.security;
 
 import develop.grassserver.member.Member;
 import java.util.Collection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    private final Long id;
-    private final String email;
-    private final String password;
-
-    public CustomUserDetails(Member member) {
-        this.id = member.getId();
-        this.email = member.getEmail();
-        this.password = member.getPassword();
-    }
+    private final Member member;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -24,12 +18,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return member.getEmail();
     }
 
 }

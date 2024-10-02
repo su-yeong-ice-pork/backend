@@ -3,6 +3,7 @@ package develop.grassserver.member.auth;
 import develop.grassserver.member.auth.exception.ExpirationAuthCodeException;
 import develop.grassserver.member.auth.exception.IncorrectAuthCodeException;
 import develop.grassserver.member.check.dto.CheckAuthCodeRequest;
+import develop.grassserver.utils.jwt.JwtUtil;
 import java.time.Duration;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RedisService {
 
+    public static final String REFRESH_TOKEN_PREFIX = "refresh-token";
     private static final long AUTH_CODE_EXPIRATION_TIME = 60 * 5L;
-
     private final RedisTemplate<String, Object> redisTemplate;
 
     public void saveAuthCode(String email, String code) {
@@ -39,5 +40,24 @@ public class RedisService {
 
     private void deleteAuthCode(String email) {
         redisTemplate.delete(email);
+    }
+
+    public void saveRefreshToken(String code, String refreshToken) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        Duration duration = Duration.ofSeconds(JwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+        valueOperations.set(getRefreshCodeKey(code), refreshToken, duration);
+    }
+
+    public String getRefreshToken(String code) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        return (String) valueOperations.get(getRefreshCodeKey(code));
+    }
+
+    public void deleteRefreshToken(String code) {
+        redisTemplate.delete(getRefreshCodeKey(code));
+    }
+
+    private String getRefreshCodeKey(String code) {
+        return REFRESH_TOKEN_PREFIX + code;
     }
 }

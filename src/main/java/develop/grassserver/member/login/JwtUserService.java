@@ -1,7 +1,10 @@
 package develop.grassserver.member.login;
 
+import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_PREFIX;
+
 import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberRepository;
+import develop.grassserver.member.auth.TokenDTO;
 import develop.grassserver.member.exception.InvalidPasswordException;
 import develop.grassserver.utils.jwt.JwtService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,16 +21,26 @@ public class JwtUserService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    public String login(LoginRequest loginRequest) {
+    public TokenDTO login(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new EntityNotFoundException("Member"));
+
         if (!passwordEncoder.matches(loginRequest.password(), member.getPassword())) {
             throw new InvalidPasswordException();
         }
-        return jwtService.createToken(member.getEmail());
+
+        TokenDTO token = jwtService.createAllToken(member.getEmail());
+        if (loginRequest.autoLogin()) {
+            jwtService.saveRefreshToken(loginRequest.code(), TOKEN_PREFIX + token.refreshToken());
+        }
+        return token;
     }
 
-    public String getToken(String email) {
-        return jwtService.createToken(email);
+    public TokenDTO autoLogin(String code) {
+        return jwtService.renewTokens(code);
+    }
+
+    public void logout(String code) {
+        jwtService.deleteRefreshToken(code);
     }
 }

@@ -54,7 +54,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/members",
                                 "/api/v1/members/auth",
-                                "/api/v1/members/login")
+                                "/api/v1/members/login",
+                                "/api/v1/members/auto-login")
                         .permitAll()
                         .anyRequest().authenticated()
                 )

@@ -13,6 +13,11 @@ public record LoginRequest(
 
         @Schema(description = "사용자 비밀번호", example = "김김진진우우")
         @NotBlank(message = "비밀번호는 필수 항목입니다.")
-        String password
+        String password,
+
+        boolean autoLogin,
+
+        @NotBlank(message = "기기 식별자는 필수 항목입니다.")
+        String code
 ) {
 }

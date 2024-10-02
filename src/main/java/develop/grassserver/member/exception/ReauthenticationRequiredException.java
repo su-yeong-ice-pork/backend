@@ -3,8 +3,8 @@ package develop.grassserver.member.exception;
 import develop.grassserver.utils.ApiUtils;
 import org.springframework.http.HttpStatus;
 
-public class InvalidPasswordException extends RuntimeException {
-    private final String message = "로그인이 실패하였습니다.";
+public class ReauthenticationRequiredException extends RuntimeException {
+    private final String message = "토큰이 만료되었습니다. 재로그인을 해주세요.";
 
     public ApiUtils.ApiResult<?> body() {
         return ApiUtils.error(HttpStatus.UNAUTHORIZED, message);
