@@ -17,9 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemberService {
 
+    private static final String DEFAULT_PROFILE_IMAGE =
+            "https://grass-bucket.s3.us-east-2.amazonaws.com/%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF%E1%84%8B%E1%85%B5%E1%84%86%E1%85%B5%E1%84%8C%E1%85%B5.png";
+    private static final String DEFAULT_PROFILE_MESSAGE = "오늘 하루도 화이팅!";
+
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
 
     @Transactional
     public MemberJoinSuccessResponse saveMember(MemberJoinRequest request) {
@@ -32,8 +37,18 @@ public class MemberService {
         return Member.builder()
                 .name(request.name())
                 .email(request.email())
+                .major(new Major(request.college(), request.department()))
+                .profile(createMemberProfile())
                 .password(passwordEncoder.encode(request.password()))
                 .build();
+    }
+
+    private Profile createMemberProfile() {
+        Profile profile = Profile.builder()
+                .image(DEFAULT_PROFILE_IMAGE)
+                .message(DEFAULT_PROFILE_MESSAGE)
+                .build();
+        return profileRepository.save(profile);
     }
 
     public void authMember(MemberAuthRequest request) {
