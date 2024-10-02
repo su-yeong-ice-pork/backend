@@ -44,7 +44,8 @@ public class MemberCheckController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "이메일 중복 검사 성공. 응답 에러 코드는 무시하셈"),
             @ApiResponse(responseCode = "400", description = "멤버 이메일 형식 오류"),
-            @ApiResponse(responseCode = "409", description = "멤버 이메일 중복 오류")
+            @ApiResponse(responseCode = "409", description = "멤버 이메일 중복 오류"),
+            @ApiResponse(responseCode = "500", description = "인증코드 메일 전송 실패")
     })
     @GetMapping("/email")
     public ResponseEntity<ApiUtils.ApiResult<?>> checkEmail(@RequestParam String email) {

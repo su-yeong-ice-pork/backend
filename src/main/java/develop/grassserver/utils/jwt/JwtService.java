@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 
 @Service
 public class JwtService {
-    
+
     public String createToken(String email) {
         return Jwts.builder()
                 .subject(email)
