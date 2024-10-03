@@ -19,9 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class GrassController {
     private final GrassService grassService;
 
-    @GetMapping("study-record")
+    @GetMapping("study-time")
     public ResponseEntity<ApiResult<StudyTimeResponse>> getStudyRecord(@LoginMember Member member) {
         StudyTimeResponse studyRecord = grassService.getStudyRecord(member);
         return ResponseEntity.ok(ApiUtils.success(studyRecord));
     }
+
 }
