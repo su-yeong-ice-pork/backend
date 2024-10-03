@@ -4,9 +4,10 @@ import develop.grassserver.member.auth.TokenDTO;
 import develop.grassserver.member.dto.ChangePasswordRequest;
 import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
-import develop.grassserver.member.dto.MemberJoinSuccessResponse;
+import develop.grassserver.member.dto.MemberProfileResponse;
 import develop.grassserver.member.login.JwtUserService;
 import develop.grassserver.member.login.LoginRequest;
+import develop.grassserver.member.security.CustomUserDetails;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +16,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +35,15 @@ public class MemberController {
 
     private final MemberService memberService;
     private final JwtUserService jwtUserService;
+
+    @GetMapping
+    public ResponseEntity<ApiResult<MemberProfileResponse>> findMember(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        MemberProfileResponse response = memberService.findMemberProfile(userDetails.getMember());
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(response));
+    }
 
     @Operation(summary = "로그인 API", description = "멤버 로그인 시 사용되는 API")
     @ApiResponses(value = {
@@ -75,8 +88,8 @@ public class MemberController {
     })
     @PostMapping
     public ResponseEntity<ApiResult<?>> signUp(@Valid @RequestBody MemberJoinRequest request) {
-        MemberJoinSuccessResponse response = memberService.saveMember(request);
-        return ResponseEntity.ok()
+        memberService.saveMember(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success("회원가입 성공"));
     }
 

@@ -34,7 +34,7 @@ public class Member extends BaseEntity {
     @Embedded
     private Major major;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     private Profile profile;
 
     public boolean isMyName(String otherName) {

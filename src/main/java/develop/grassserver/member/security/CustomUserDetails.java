@@ -2,12 +2,15 @@ package develop.grassserver.member.security;
 
 import develop.grassserver.member.Member;
 import java.util.Collection;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
+
     private final Member member;
 
     @Override
@@ -25,5 +28,4 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return member.getEmail();
     }
-
 }
