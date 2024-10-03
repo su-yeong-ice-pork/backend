@@ -1,6 +1,7 @@
 package develop.grassserver.member;
 
 import develop.grassserver.BaseEntity;
+import develop.grassserver.member.profile.Profile;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
