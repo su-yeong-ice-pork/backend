@@ -35,4 +35,9 @@ public class Grass extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    public void updateStudyTime(Duration todayStudyTime) {
+        this.studyTime = todayStudyTime;
+        member.getStudyRecord().updateTotalStudyTime(todayStudyTime);
+    }
+
 }

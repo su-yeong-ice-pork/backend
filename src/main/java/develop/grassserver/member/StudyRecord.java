@@ -18,4 +18,8 @@ public class StudyRecord {
     private Duration totalStudyTime = Duration.ZERO;
 
     private String topStreak;
+
+    public void updateTotalStudyTime(Duration todayStudyTime) {
+        this.totalStudyTime = this.totalStudyTime.plus(todayStudyTime);
+    }
 }

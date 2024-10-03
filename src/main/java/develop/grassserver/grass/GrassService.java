@@ -1,9 +1,10 @@
 package develop.grassserver.grass;
 
+import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
 import develop.grassserver.grass.exception.MissingAttendanceException;
 import develop.grassserver.member.Member;
-import java.time.LocalTime;
+import develop.grassserver.utils.duration.DurationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,14 @@ public class GrassService {
 
     public StudyTimeResponse getStudyRecord(Member member) {
         Grass grass = findGrassByMemberId(member.getId());
-        LocalTime todayStudyTime = grass.getStudyTime();
-        LocalTime totalStudyTime = member.getStudyRecord().getTotalStudyTime();
+        String todayStudyTime = DurationUtils.formatDuration(grass.getStudyTime());
+        String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
         return new StudyTimeResponse(todayStudyTime, totalStudyTime);
+    }
+
+    public void updateStudyRecord(Member member, StudyTimeRequest request) {
+        Grass grass = findGrassByMemberId(member.getId());
+        grass.updateStudyTime(DurationUtils.parseDuration(request.todayStudyTime()));
+        grassRepository.save(grass);
     }
 }
