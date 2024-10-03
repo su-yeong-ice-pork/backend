@@ -1,6 +1,5 @@
 package develop.grassserver.config;
 
-import develop.grassserver.utils.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.models.Components;
@@ -28,7 +27,7 @@ public class SwaggerConfig {
                 .addSecuritySchemes(securityJwtName, new SecurityScheme()
                         .name(securityJwtName)
                         .type(SecurityScheme.Type.HTTP)
-                        .scheme(JwtUtil.TOKEN_PREFIX)
+                        .scheme("Bearer")
                         .bearerFormat(securityJwtName));
 
         return new OpenAPI()
