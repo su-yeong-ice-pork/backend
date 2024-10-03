@@ -23,13 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtService jwtService;
-    private final CustomUserDetailsService userDetailsService;
-
     private static final String[] PERMIT_SWAGGER_URL_ARRAY = {
             "/api-docs/**",
             "/swagger-ui/**"
     };
+    private final JwtService jwtService;
+    private final CustomUserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -43,11 +42,6 @@ public class SecurityConfig {
                         .requestMatchers(PERMIT_SWAGGER_URL_ARRAY)
                         .permitAll()
                         .requestMatchers("/api/v1/members/check/**")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/v1/members",
-                                "/api/v1/members/auth",
-                                "/api/v1/members/login")
                         .permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/members")
                         .permitAll()
