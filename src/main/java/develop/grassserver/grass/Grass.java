@@ -31,6 +31,9 @@ public class Grass extends BaseEntity {
     @ColumnDefault("1")
     private int currentStreak = 1;
 
+    @ColumnDefault("10")
+    private int grassScore = 10;
+
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;

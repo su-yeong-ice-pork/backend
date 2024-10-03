@@ -7,6 +7,7 @@ import develop.grassserver.member.dto.MemberJoinRequest;
 import develop.grassserver.member.dto.MemberProfileResponse;
 import develop.grassserver.member.login.JwtUserService;
 import develop.grassserver.member.login.LoginRequest;
+import develop.grassserver.member.login.RefreshTokenDTO;
 import develop.grassserver.member.security.CustomUserDetails;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
@@ -57,11 +58,11 @@ public class MemberController {
             @ApiResponse(responseCode = "404", description = "해당 멤버를 찾을 수 없음")
     })
     @PostMapping("/login")
-    public ResponseEntity<ApiResult<String>> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ApiResult<TokenDTO>> login(@Valid @RequestBody LoginRequest loginRequest) {
         TokenDTO token = jwtUserService.login(loginRequest);
         return ResponseEntity.ok()
                 .header("Authorization", token.accessToken())
-                .body(ApiUtils.success());
+                .body(ApiUtils.success(token));
     }
 
     @Operation(summary = "자동 로그인 API", description = "멤버 자동 로그인 시 사용되는 API")
@@ -71,8 +72,8 @@ public class MemberController {
             @ApiResponse(responseCode = "404", description = "해당 멤버를 찾을 수 없음")
     })
     @PostMapping("/auto-login")
-    public ResponseEntity<ApiResult<String>> autoLogin(@RequestParam String code) {
-        TokenDTO token = jwtUserService.autoLogin(code);
+    public ResponseEntity<ApiResult<String>> autoLogin(@Valid @RequestBody RefreshTokenDTO refreshTokenDTO) {
+        TokenDTO token = jwtUserService.autoLogin(refreshTokenDTO);
         return ResponseEntity.ok()
                 .header("Authorization", token.accessToken())
                 .body(ApiUtils.success());
