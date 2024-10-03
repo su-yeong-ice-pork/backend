@@ -57,10 +57,10 @@ cloud:
     s3:
       bucket: grass-bucket
     credentials:
-      accessKey: AKIAQFC263FTXPELLLME
-      secretKey: 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
+      access-key: AKIAQFC263FTXPELLLME
+      secret-key: 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
     region:
-      static: ap-northeast-2
+      static: us-east-2
       auto: false
     stack:
       auto: false

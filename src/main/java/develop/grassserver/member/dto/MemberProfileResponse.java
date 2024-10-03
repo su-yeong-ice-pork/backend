@@ -1,7 +1,7 @@
 package develop.grassserver.member.dto;
 
 import develop.grassserver.member.Member;
-import develop.grassserver.member.Profile;
+import develop.grassserver.member.profile.Profile;
 
 public record MemberProfileResponse(MemberProfile member) {
 
