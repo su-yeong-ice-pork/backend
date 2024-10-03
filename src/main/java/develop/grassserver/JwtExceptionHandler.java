@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import java.security.SignatureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,11 @@ public class JwtExceptionHandler {
 
     @ExceptionHandler(SecurityException.class)
     public ResponseEntity<ApiUtils.ApiResult<String>> handleSecurityException(SecurityException ex) {
+        return createJwtErrorResponse("토큰의 서명이 유효하지 않습니다.");
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ApiUtils.ApiResult<String>> handleSignatureException(SignatureException ex) {
         return createJwtErrorResponse("토큰의 서명이 유효하지 않습니다.");
     }
 
