@@ -1,11 +1,13 @@
 package develop.grassserver.grass;
 
+import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
 import develop.grassserver.member.Member;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
 import develop.grassserver.utils.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,10 @@ public class GrassController {
     }
 
     @PatchMapping("study-time")
-
+    public ResponseEntity<ApiResult<String>> updateStudyRecord(@LoginMember Member member,
+                                                               @Valid StudyTimeRequest request) {
+        grassService.updateStudyRecord(member, request);
+        return ResponseEntity.ok(ApiUtils.success());
+    }
 
 }
