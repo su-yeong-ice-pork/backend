@@ -77,4 +77,8 @@ public class MemberService {
         }
         return member;
     }
+    
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
+    }
 }
