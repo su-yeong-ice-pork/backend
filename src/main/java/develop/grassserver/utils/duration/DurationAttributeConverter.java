@@ -1,4 +1,4 @@
-package develop.grassserver.utils;
+package develop.grassserver.utils.duration;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
