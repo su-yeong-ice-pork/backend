@@ -10,7 +10,6 @@ import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_PREFIX;
 
 import develop.grassserver.member.auth.RedisService;
 import develop.grassserver.member.auth.TokenDTO;
-import develop.grassserver.member.exception.ReauthenticationRequiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,12 +69,8 @@ public class JwtService {
         redisService.saveRefreshToken(code, refreshToken);
     }
 
-    public TokenDTO renewTokens(String code) {
-        String savedRefreshToken = redisService.getRefreshToken(code);
-        if (savedRefreshToken == null) {
-            throw new ReauthenticationRequiredException();
-        }
-        String email = getEmailFromToken(savedRefreshToken);
+    public TokenDTO renewTokens(String refreshToken) {
+        String email = getEmailFromToken(refreshToken);
         return createAllToken(email);
     }
 
