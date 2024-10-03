@@ -1,4 +1,4 @@
-package develop.grassserver.member.exception;
+package develop.grassserver;
 
 import develop.grassserver.utils.ApiUtils;
 import io.jsonwebtoken.ExpiredJwtException;
