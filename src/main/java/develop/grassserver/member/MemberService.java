@@ -6,6 +6,8 @@ import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
 import develop.grassserver.member.dto.MemberProfileResponse;
 import develop.grassserver.member.exception.UnauthorizedException;
+import develop.grassserver.member.profile.Profile;
+import develop.grassserver.member.profile.ProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

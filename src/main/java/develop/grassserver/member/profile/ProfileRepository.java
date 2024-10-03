@@ -1,4 +1,4 @@
-package develop.grassserver.member;
+package develop.grassserver.member.profile;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
