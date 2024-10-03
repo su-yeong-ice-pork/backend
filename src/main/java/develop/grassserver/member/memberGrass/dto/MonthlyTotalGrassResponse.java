@@ -2,8 +2,9 @@ package develop.grassserver.member.memberGrass.dto;
 
 import java.util.List;
 
-public record YearlyTotalGrassResponse(
+public record MonthlyTotalGrassResponse(
         int year,
-        List<YearlyGrassResponse> grass
+        int month,
+        List<MonthlyGrassResponse> grass
 ) {
 }
