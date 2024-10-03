@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/grass")
 public class GrassController {
-    @GetMapping
-    public ResponseEntity<String> test(@LoginMember Member member) {
+    private final GrassService grassService;
+
+    @GetMapping("study-record")
+    public ResponseEntity<String> getStudyRecord(@LoginMember Member member) {
+
         return ResponseEntity.ok("Hello" + member.getName());
     }
 }
