@@ -25,7 +25,7 @@ public class JwtService {
     private final RedisService redisService;
 
     private String createToken(String email, Long expirationTime) {
-        return Jwts.builder()
+        return TOKEN_PREFIX + Jwts.builder()
                 .subject(email)
                 .issuer(ISSUER)
                 .issuedAt(new Date())

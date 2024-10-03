@@ -37,7 +37,7 @@ public class Member extends BaseEntity {
     @Embedded
     private StudyRecord studyRecord;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     private Profile profile;
 
     public boolean isMyName(String otherName) {

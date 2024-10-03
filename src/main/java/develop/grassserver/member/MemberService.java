@@ -4,7 +4,7 @@ import develop.grassserver.mail.MailService;
 import develop.grassserver.member.dto.ChangePasswordRequest;
 import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
-import develop.grassserver.member.dto.MemberJoinSuccessResponse;
+import develop.grassserver.member.dto.MemberProfileResponse;
 import develop.grassserver.member.exception.UnauthorizedException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +26,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
 
+    public MemberProfileResponse findMemberProfile(Member member) {
+        return MemberProfileResponse.from(member);
+    }
+
     @Transactional
-    public MemberJoinSuccessResponse saveMember(MemberJoinRequest request) {
+    public void saveMember(MemberJoinRequest request) {
         Member member = createJoinMember(request);
         memberRepository.save(member);
-        return MemberJoinSuccessResponse.from(member);
     }
 
     private Member createJoinMember(MemberJoinRequest request) {
@@ -47,6 +50,9 @@ public class MemberService {
         Profile profile = Profile.builder()
                 .image(DEFAULT_PROFILE_IMAGE)
                 .message(DEFAULT_PROFILE_MESSAGE)
+                .freeze(new Freeze())
+                .mainTitle("초심자")
+                .mainBanner("https://grass-bucket.s3.us-east-2.amazonaws.com/bannerImage1.png")
                 .build();
         return profileRepository.save(profile);
     }

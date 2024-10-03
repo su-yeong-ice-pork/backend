@@ -23,16 +23,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtService jwtService;
+    private final CustomUserDetailsService userDetailsService;
+
     private static final String[] PERMIT_SWAGGER_URL_ARRAY = {
             "/api-docs/**",
             "/swagger-ui/**"
     };
-    private final JwtService jwtService;
-    private final CustomUserDetailsService userDetailsService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService, userDetailsService);
 
         http
@@ -42,6 +42,8 @@ public class SecurityConfig {
                         .requestMatchers(PERMIT_SWAGGER_URL_ARRAY)
                         .permitAll()
                         .requestMatchers("/api/v1/members/check/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/members")
                         .permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/members")
                         .permitAll()
