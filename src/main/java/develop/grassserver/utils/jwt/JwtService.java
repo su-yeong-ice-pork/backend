@@ -25,7 +25,7 @@ public class JwtService {
     private final RedisService redisService;
 
     private String createToken(String email, Long expirationTime) {
-        return Jwts.builder()
+        return TOKEN_PREFIX + Jwts.builder()
                 .subject(email)
                 .issuer(ISSUER)
                 .issuedAt(new Date())
@@ -54,7 +54,7 @@ public class JwtService {
     public String extractToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(TOKEN_BEGIN_INDEX);
+            return bearerToken;
         }
         return null;
     }
