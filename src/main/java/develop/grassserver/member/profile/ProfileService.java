@@ -7,6 +7,8 @@ import develop.grassserver.member.MemberRepository;
 import develop.grassserver.member.profile.banner.Banner;
 import develop.grassserver.member.profile.banner.BannerRepository;
 import develop.grassserver.member.profile.exeption.ImageUploadFailedException;
+import develop.grassserver.member.profile.image.Image;
+import develop.grassserver.member.profile.image.ImageRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,6 +35,7 @@ public class ProfileService {
     private String bucket;
 
     private final AmazonS3 amazonS3Client;
+    private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
     private final BannerRepository bannerRepository;
 
@@ -54,6 +57,36 @@ public class ProfileService {
                 .build();
     }
 
+    private String uploadBanner(File file) {
+        String fileName = PROFILE_BANNER_SAVE_PATH_PREFIX + file.getName();
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
+        return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+
+    @Transactional
+    public void saveProfileImage(MultipartFile image, Long memberId) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        Image uploadImage = getUploadedProfileImage(image, findMember);
+        imageRepository.save(uploadImage);
+    }
+
+    private Image getUploadedProfileImage(MultipartFile image, Member member) {
+        File file = tryConvertFile(image);
+        String url = uploadProfileImage(file);
+        return Image.builder()
+                .url(url)
+                .member(member)
+                .build();
+    }
+
+    private String uploadProfileImage(File file) {
+        String fileName = PROFILE_IMAGE_SAVE_PATH_PREFIX + file.getName();
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
+        return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+
     private File tryConvertFile(MultipartFile image) {
         try {
             return convertFile(image).orElseThrow(IllegalArgumentException::new);
@@ -72,11 +105,5 @@ public class ProfileService {
             return Optional.of(file);
         }
         return Optional.empty();
-    }
-
-    private String uploadBanner(File file) {
-        String fileName = PROFILE_BANNER_SAVE_PATH_PREFIX + file.getName();
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
-        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 }

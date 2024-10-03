@@ -31,10 +31,25 @@ public class ProfileController {
     @PatchMapping("/profile-banner")
     public ResponseEntity<ApiResult<String>> uploadBanner(
             MultipartFile bannerImage,
-            @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable Long id
     ) {
         profileService.saveBannerImage(bannerImage, id);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success());
+    }
+
+    @Operation(summary = "프로필 이미지 수정 API", description = "프로필 이미지 수정 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 이미지 수정 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
+            @ApiResponse(responseCode = "500", description = "프로필 이미지 업로드 실패")
+    })
+    @PatchMapping("/profile-image")
+    public ResponseEntity<ApiResult<String>> uploadProfileImage(
+            MultipartFile profileImage,
+            @PathVariable Long id
+    ) {
+        profileService.saveProfileImage(profileImage, id);
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
     }
