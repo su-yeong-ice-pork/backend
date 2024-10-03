@@ -27,7 +27,9 @@ public class MemberService {
     private final ProfileRepository profileRepository;
 
     public MemberProfileResponse findMemberProfile(Member member) {
-        return MemberProfileResponse.from(member);
+        Member persistMember = memberRepository.findByIdWithProfile(member.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        return MemberProfileResponse.from(persistMember);
     }
 
     @Transactional
