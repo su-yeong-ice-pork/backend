@@ -36,6 +36,11 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtUserService jwtUserService;
 
+    @Operation(summary = "내정보 조회 API", description = "내정보 조회 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "내정보 조회 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
+    })
     @GetMapping
     public ResponseEntity<ApiResult<MemberProfileResponse>> findMember(
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -48,7 +53,7 @@ public class MemberController {
     @Operation(summary = "로그인 API", description = "멤버 로그인 시 사용되는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공. 응답 에러 코드는 무시하셈"),
-            @ApiResponse(responseCode = "403", description = "로그인 실패"),
+            @ApiResponse(responseCode = "401", description = "로그인 실패"),
             @ApiResponse(responseCode = "404", description = "해당 멤버를 찾을 수 없음")
     })
     @PostMapping("/login")
