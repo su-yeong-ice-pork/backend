@@ -1,6 +1,6 @@
-package develop.grassserver.member;
+package develop.grassserver.member.memberGrass;
 
-import develop.grassserver.member.dto.MemberStreakResponse;
+import develop.grassserver.member.memberGrass.dto.MemberStreakResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

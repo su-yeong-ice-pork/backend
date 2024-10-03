@@ -1,4 +1,4 @@
-package develop.grassserver.member.dto;
+package develop.grassserver.member.memberGrass.dto;
 
 public record MemberStreakResponse(
         int currentStreak,

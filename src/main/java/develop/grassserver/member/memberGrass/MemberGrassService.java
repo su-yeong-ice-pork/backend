@@ -1,8 +1,10 @@
-package develop.grassserver.member;
+package develop.grassserver.member.memberGrass;
 
 import develop.grassserver.grass.Grass;
 import develop.grassserver.grass.GrassService;
-import develop.grassserver.member.dto.MemberStreakResponse;
+import develop.grassserver.member.Member;
+import develop.grassserver.member.MemberService;
+import develop.grassserver.member.memberGrass.dto.MemberStreakResponse;
 import develop.grassserver.utils.duration.DurationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
