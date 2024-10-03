@@ -31,7 +31,7 @@ public class GrassController {
             @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요"),
             @ApiResponse(responseCode = "404", description = "출석 기록이 없음")
     })
-    @GetMapping("study-time")
+    @GetMapping("/study-time")
     public ResponseEntity<ApiResult<StudyTimeResponse>> getStudyRecord(@LoginMember Member member) {
         StudyTimeResponse studyRecord = grassService.getStudyRecord(member);
         return ResponseEntity.ok(ApiUtils.success(studyRecord));
@@ -43,7 +43,7 @@ public class GrassController {
             @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요"),
             @ApiResponse(responseCode = "404", description = "출석 기록이 없음")
     })
-    @PatchMapping("study-time")
+    @PatchMapping("/study-time")
     public ResponseEntity<ApiResult<String>> updateStudyRecord(@LoginMember Member member,
                                                                @Valid StudyTimeRequest request) {
         grassService.updateStudyRecord(member, request);
