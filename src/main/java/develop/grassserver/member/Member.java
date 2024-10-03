@@ -34,8 +34,12 @@ public class Member extends BaseEntity {
     @Embedded
     private Major major;
 
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     private Profile profile;
+
+    @Embedded
+    private StudyRecord studyRecord;
 
     public boolean isMyName(String otherName) {
         return this.name.equals(otherName);
