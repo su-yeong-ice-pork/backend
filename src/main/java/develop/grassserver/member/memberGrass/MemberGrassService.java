@@ -5,6 +5,8 @@ import develop.grassserver.grass.GrassService;
 import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberService;
 import develop.grassserver.member.memberGrass.dto.MemberStreakResponse;
+import develop.grassserver.member.memberGrass.dto.MonthlyGrassResponse;
+import develop.grassserver.member.memberGrass.dto.MonthlyTotalGrassResponse;
 import develop.grassserver.member.memberGrass.dto.YearlyGrassResponse;
 import develop.grassserver.member.memberGrass.dto.YearlyTotalGrassResponse;
 import develop.grassserver.utils.duration.DurationUtils;
@@ -37,6 +39,22 @@ public class MemberGrassService {
                                 grass.getCreatedAt().getMonthValue(),
                                 grass.getCreatedAt().getDayOfMonth(),
                                 DurationUtils.formatDuration(grass.getStudyTime())
+                        ))
+                        .toList()
+        );
+    }
+
+    public MonthlyTotalGrassResponse getMonthlyGrass(Long memberId, int year, int month) {
+        Member member = memberService.findMemberById(memberId);
+        return new MonthlyTotalGrassResponse(
+                year,
+                month,
+                grassService.findMonthlyGrassByMemberId(member, year, month).stream()
+                        .map(grass -> new MonthlyGrassResponse(
+                                grass.getId(),
+                                grass.getCreatedAt().getDayOfMonth(),
+                                DurationUtils.formatDuration(grass.getStudyTime()),
+                                grass.getGrassScore()
                         ))
                         .toList()
         );

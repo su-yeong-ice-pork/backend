@@ -1,6 +1,7 @@
 package develop.grassserver.member.memberGrass;
 
 import develop.grassserver.member.memberGrass.dto.MemberStreakResponse;
+import develop.grassserver.member.memberGrass.dto.MonthlyTotalGrassResponse;
 import develop.grassserver.member.memberGrass.dto.YearlyTotalGrassResponse;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
@@ -29,5 +30,12 @@ public class MemberGrassController {
     public ResponseEntity<ApiResult<YearlyTotalGrassResponse>> getYearlyTotalGrass(@PathVariable("id") Long memberId,
                                                                                    @RequestParam("year") int year) {
         return ResponseEntity.ok(ApiUtils.success(memberGrassService.getYearlyGrass(memberId, year)));
+    }
+
+    @GetMapping("/grass/monthly")
+    public ResponseEntity<ApiResult<MonthlyTotalGrassResponse>> getMonthlyTotalGrass(@PathVariable("id") Long memberId,
+                                                                                     @RequestParam("year") int year,
+                                                                                     @RequestParam("month") int month) {
+        return ResponseEntity.ok(ApiUtils.success(memberGrassService.getMonthlyGrass(memberId, year, month)));
     }
 }
