@@ -1,6 +1,9 @@
 package develop.grassserver.grass;
 
+import develop.grassserver.grass.dto.StudyTimeResponse;
 import develop.grassserver.member.Member;
+import develop.grassserver.utils.ApiUtils;
+import develop.grassserver.utils.ApiUtils.ApiResult;
 import develop.grassserver.utils.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +20,8 @@ public class GrassController {
     private final GrassService grassService;
 
     @GetMapping("study-record")
-    public ResponseEntity<String> getStudyRecord(@LoginMember Member member) {
-
-        return ResponseEntity.ok("Hello" + member.getName());
+    public ResponseEntity<ApiResult<StudyTimeResponse>> getStudyRecord(@LoginMember Member member) {
+        StudyTimeResponse studyRecord = grassService.getStudyRecord(member);
+        return ResponseEntity.ok(ApiUtils.success(studyRecord));
     }
 }
