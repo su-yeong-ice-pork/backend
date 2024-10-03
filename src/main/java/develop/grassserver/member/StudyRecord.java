@@ -17,7 +17,8 @@ public class StudyRecord {
     @ColumnDefault("0")
     private Duration totalStudyTime = Duration.ZERO;
 
-    private int topStreak;
+    @ColumnDefault("0")
+    private int topStreak = 0;
 
     public void updateTotalStudyTime(Duration todayStudyTime) {
         this.totalStudyTime = this.totalStudyTime.plus(todayStudyTime);

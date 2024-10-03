@@ -4,6 +4,7 @@ import develop.grassserver.grass.Grass;
 import develop.grassserver.grass.GrassService;
 import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberService;
+import develop.grassserver.member.StudyRecord;
 import develop.grassserver.member.memberGrass.dto.MemberStreakResponse;
 import develop.grassserver.member.memberGrass.dto.MonthlyGrassResponse;
 import develop.grassserver.member.memberGrass.dto.MonthlyTotalGrassResponse;
@@ -21,12 +22,15 @@ public class MemberGrassService {
 
     public MemberStreakResponse getMemberStreak(Long memberId) {
         Member member = memberService.findMemberById(memberId);
-        Grass grass = grassService.findTodayGrassByMemberId(memberId);
-        return new MemberStreakResponse(
-                grass.getCurrentStreak(),
-                member.getStudyRecord().getTopStreak(),
-                DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime())
-        );
+        Grass grass = grassService.findDayGrassByMemberId(memberId);
+
+        StudyRecord studyRecord = member.getStudyRecord();
+        int topStreak = studyRecord.getTopStreak();
+        String totalStudyTimeFormatted = DurationUtils.formatDuration(studyRecord.getTotalStudyTime());
+
+        int currentStreak = (grass != null) ? grass.getCurrentStreak() : 0;
+
+        return new MemberStreakResponse(currentStreak, topStreak, totalStudyTimeFormatted);
     }
 
     public YearlyTotalGrassResponse getYearlyGrass(Long memberId, int year) {
