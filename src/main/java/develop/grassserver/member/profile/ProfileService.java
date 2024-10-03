@@ -37,8 +37,8 @@ public class ProfileService {
     private final BannerRepository bannerRepository;
 
     @Transactional
-    public void saveBannerImage(MultipartFile image, Member member) {
-        Member findMember = memberRepository.findById(member.getId())
+    public void saveBannerImage(MultipartFile image, Long memberId) {
+        Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(EntityNotFoundException::new);
 
         Banner banner = getUploadedBanner(image, findMember);
