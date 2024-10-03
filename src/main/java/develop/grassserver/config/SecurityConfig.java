@@ -32,8 +32,7 @@ public class SecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService, userDetailsService);
 
         http
@@ -44,10 +43,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/api/v1/members/check/**")
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/v1/members",
-                                "/api/v1/members/auth",
-                                "/api/v1/members/login")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/members")
                         .permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/members")
                         .permitAll()
