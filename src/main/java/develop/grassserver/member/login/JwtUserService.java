@@ -1,7 +1,5 @@
 package develop.grassserver.member.login;
 
-import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_PREFIX;
-
 import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberRepository;
 import develop.grassserver.member.auth.TokenDTO;
@@ -30,9 +28,9 @@ public class JwtUserService {
         }
 
         TokenDTO token = jwtService.createAllToken(member.getEmail());
-        if (loginRequest.autoLogin()) {
-            jwtService.saveRefreshToken(loginRequest.code(), TOKEN_PREFIX + token.refreshToken());
-        }
+//        if (loginRequest.autoLogin()) {
+//            jwtService.saveRefreshToken(loginRequest.code(), TOKEN_PREFIX + token.refreshToken());
+//        }
         return token;
     }
 
