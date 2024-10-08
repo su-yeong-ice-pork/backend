@@ -1,6 +1,6 @@
 package develop.grassserver.grass;
 
-import develop.grassserver.grass.dto.AttandanceResponse;
+import develop.grassserver.grass.dto.AttendanceResponse;
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
 import develop.grassserver.member.Member;
@@ -58,8 +58,8 @@ public class GrassController {
             @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요")
     })
     @GetMapping("/attendance/today")
-    public ResponseEntity<ApiResult<AttandanceResponse>> getAttendance(@LoginMember Member member) {
-        AttandanceResponse response = grassService.getAttendance(member);
+    public ResponseEntity<ApiResult<AttendanceResponse>> getAttendance(@LoginMember Member member) {
+        AttendanceResponse response = grassService.getAttendance(member);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 
