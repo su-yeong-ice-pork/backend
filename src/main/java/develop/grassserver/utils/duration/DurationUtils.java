@@ -37,6 +37,6 @@ public class DurationUtils {
     }
 
     public static int formatHourDuration(Duration duration) {
-        return (int) duration.getSeconds();
+        return (int) duration.getSeconds() / 3600;
     }
 }
