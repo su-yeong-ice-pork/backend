@@ -1,5 +1,6 @@
 package develop.grassserver.grass;
 
+import develop.grassserver.grass.dto.AttandanceResponse;
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
 import develop.grassserver.member.Member;
@@ -49,6 +50,17 @@ public class GrassController {
                                                                @Valid @RequestBody StudyTimeRequest request) {
         grassService.updateStudyRecord(member, request);
         return ResponseEntity.ok(ApiUtils.success());
+    }
+
+    @Operation(summary = "출석 확인 API", description = "공부 시간 저장 전 출석 여부 확인 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "저장 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요")
+    })
+    @GetMapping("/attendance/today")
+    public ResponseEntity<ApiResult<AttandanceResponse>> getAttendance(@LoginMember Member member) {
+        AttandanceResponse response = grassService.getAttendance(member);
+        return ResponseEntity.ok(ApiUtils.success(response));
     }
 
 }
