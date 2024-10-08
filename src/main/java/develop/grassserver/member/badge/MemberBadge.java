@@ -8,11 +8,17 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberBadge extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -22,7 +28,7 @@ public class MemberBadge extends BaseEntity {
     @Column(nullable = false)
     private Badge badge;
 
-    @ColumnDefault("true")
+    @ColumnDefault("false")
     @Column(nullable = false)
-    private boolean isChecked = true;
+    private boolean isChecked = false;
 }
