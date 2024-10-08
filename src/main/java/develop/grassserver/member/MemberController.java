@@ -11,6 +11,7 @@ import develop.grassserver.member.login.RefreshTokenDTO;
 import develop.grassserver.member.security.CustomUserDetails;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
+import develop.grassserver.utils.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "멤버 CRUD APIs", description = "멤버 조회, 생성, 수정, 삭제를 담당하는 APIs")
@@ -80,7 +80,7 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResult<String>> logout(@RequestParam String code) {
+    public ResponseEntity<ApiResult<String>> logout(@LoginMember Member member) {
         // 로그인한 사용자 검증 필요
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
