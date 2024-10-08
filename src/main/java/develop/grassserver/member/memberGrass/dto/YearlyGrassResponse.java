@@ -4,6 +4,6 @@ public record YearlyGrassResponse(
         Long id,
         int month,
         int day,
-        String studyTime
+        int studyHour
 ) {
 }
