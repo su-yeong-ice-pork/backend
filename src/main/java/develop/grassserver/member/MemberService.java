@@ -1,6 +1,7 @@
 package develop.grassserver.member;
 
 import develop.grassserver.mail.MailService;
+import develop.grassserver.member.badge.BadgeService;
 import develop.grassserver.member.dto.ChangePasswordRequest;
 import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
@@ -24,6 +25,7 @@ public class MemberService {
     private static final String DEFAULT_PROFILE_MESSAGE = "오늘 하루도 화이팅!";
 
     private final MailService mailService;
+    private final BadgeService badgeService;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
@@ -38,6 +40,8 @@ public class MemberService {
     public void saveMember(MemberJoinRequest request) {
         Member member = createJoinMember(request);
         memberRepository.save(member);
+
+        badgeService.saveBetaMemberBadge(member);
     }
 
     private Member createJoinMember(MemberJoinRequest request) {

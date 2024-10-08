@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Badge {
 
+    EARLY_ADOPTER("badge0", "얼리어답터", "베타 오픈 기간에 가입한 사람들에게 주어지는 뱃지"),
     KING_OF_ATTENDANCE("badge1", "출석의 왕", "새도 연속 출석 20회 이상 출석한 사용자에게 주어지는 뱃지"),
     MAYBE_THREE_DAYS("badge2", "작심삼일", "일일 스터디 3회 참여한 사용자에게 주어지는 뱃지"),
     KING_OF_SAEDO("badge3", "새도의 신", "3등 이내의 순위에 5번 이상 오른 사용자에게 주어지는 뱃지"),
