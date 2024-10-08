@@ -2,7 +2,6 @@ package develop.grassserver.grass;
 
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
-import develop.grassserver.grass.exception.MissingAttendanceException;
 import develop.grassserver.member.Member;
 import develop.grassserver.utils.duration.DurationUtils;
 import java.time.LocalDate;
@@ -13,16 +12,16 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class GrassService {
     private final GrassRepository grassRepository;
 
-    public Grass findTodayGrassByMemberId(Long memberId) {
+    public Optional<Grass> findTodayGrassByMemberId(Long memberId) {
         LocalDate today = LocalDate.now();
-        return grassRepository.findByMemberIdAndDate(memberId, today.atStartOfDay(), today.atTime(LocalTime.MAX))
-                .orElseThrow(MissingAttendanceException::new);
+        return grassRepository.findByMemberIdAndDate(memberId, today.atStartOfDay(), today.atTime(LocalTime.MAX));
     }
 
     public Grass findDayGrassByMemberId(Long memberId) {
@@ -52,15 +51,24 @@ public class GrassService {
     }
 
     public StudyTimeResponse getStudyRecord(Member member) {
-        Grass grass = findTodayGrassByMemberId(member.getId());
-        String todayStudyTime = DurationUtils.formatDuration(grass.getStudyTime());
-        String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
-        return new StudyTimeResponse(todayStudyTime, totalStudyTime);
+        Optional<Grass> optionalGrass = findTodayGrassByMemberId(member.getId());
+        if (optionalGrass.isPresent()) {
+            Grass grass = optionalGrass.get();
+            String todayStudyTime = DurationUtils.formatDuration(grass.getStudyTime());
+            String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
+            return new StudyTimeResponse(todayStudyTime, totalStudyTime);
+        } else {
+            String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
+            return new StudyTimeResponse("00:00:00", totalStudyTime);
+        }
     }
 
+    @Transactional
     public void updateStudyRecord(Member member, StudyTimeRequest request) {
-        Grass grass = findTodayGrassByMemberId(member.getId());
-        grass.updateStudyTime(DurationUtils.parseDuration(request.todayStudyTime()));
-        grassRepository.save(grass);
+        Optional<Grass> optionalGrass = findTodayGrassByMemberId(member.getId());
+        if (optionalGrass.isPresent()) {
+            Grass grass = optionalGrass.get();
+            grass.updateStudyTime(DurationUtils.parseDuration(request.todayStudyTime()));
+        }
     }
 }
