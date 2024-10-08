@@ -10,10 +10,8 @@ import develop.grassserver.member.profile.exeption.ImageUploadFailedException;
 import develop.grassserver.member.profile.image.Image;
 import develop.grassserver.member.profile.image.ImageRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
+import java.io.InputStream;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,22 +42,41 @@ public class ProfileService {
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(EntityNotFoundException::new);
 
+        deleteExistingBanner(findMember);
+
         Banner banner = getUploadedBanner(image, findMember);
         bannerRepository.save(banner);
     }
 
+    private void deleteExistingBanner(Member member) {
+        Optional<Banner> optionalBanner = bannerRepository.findByMember(member);
+        if (optionalBanner.isPresent()) {
+            Banner banner = optionalBanner.get();
+            String fileName = extractFileNameFromUrl(banner.getUrl());
+            try {
+                amazonS3Client.deleteObject(bucket, PROFILE_BANNER_SAVE_PATH_PREFIX + fileName);
+            } catch (Exception e) {
+                log.error("Failed to delete banner file from S3: {}", e.getMessage());
+            }
+            bannerRepository.delete(banner);
+        }
+    }
+
     private Banner getUploadedBanner(MultipartFile image, Member member) {
-        File file = tryConvertFile(image);
-        String url = uploadBanner(file);
+        String url = uploadBanner(image, member);
         return Banner.builder()
                 .url(url)
                 .member(member)
                 .build();
     }
 
-    private String uploadBanner(File file) {
-        String fileName = PROFILE_BANNER_SAVE_PATH_PREFIX + file.getName();
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
+    private String uploadBanner(MultipartFile image, Member member) {
+        String fileName = PROFILE_BANNER_SAVE_PATH_PREFIX + "profileBanner-" + member.getId();
+        try (InputStream inputStream = image.getInputStream()) {
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, null));
+        } catch (IOException e) {
+            throw new ImageUploadFailedException();
+        }
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
@@ -68,42 +85,45 @@ public class ProfileService {
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(EntityNotFoundException::new);
 
+        deleteExistingProfileImage(findMember);
+
         Image uploadImage = getUploadedProfileImage(image, findMember);
         imageRepository.save(uploadImage);
     }
 
+    private void deleteExistingProfileImage(Member member) {
+        Optional<Image> optionalImage = imageRepository.findByMember(member);
+        if (optionalImage.isPresent()) {
+            Image image = optionalImage.get();
+            String fileName = extractFileNameFromUrl(image.getUrl());
+            try {
+                amazonS3Client.deleteObject(bucket, PROFILE_IMAGE_SAVE_PATH_PREFIX + fileName);
+            } catch (Exception e) {
+                log.error("Failed to delete profile image file from S3: {}", e.getMessage());
+            }
+            imageRepository.delete(image);
+        }
+    }
+
     private Image getUploadedProfileImage(MultipartFile image, Member member) {
-        File file = tryConvertFile(image);
-        String url = uploadProfileImage(file);
+        String url = uploadProfileImage(image, member);
         return Image.builder()
                 .url(url)
                 .member(member)
                 .build();
     }
 
-    private String uploadProfileImage(File file) {
-        String fileName = PROFILE_IMAGE_SAVE_PATH_PREFIX + file.getName();
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
+    private String uploadProfileImage(MultipartFile image, Member member) {
+        String fileName = PROFILE_IMAGE_SAVE_PATH_PREFIX + "profileImage-" + member.getId();
+        try (InputStream inputStream = image.getInputStream()) {
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, null));
+        } catch (IOException e) {
+            throw new ImageUploadFailedException();
+        }
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
-    private File tryConvertFile(MultipartFile image) {
-        try {
-            return convertFile(image).orElseThrow(IllegalArgumentException::new);
-        } catch (IOException e) {
-            log.error("Do not converted multipart file to image.");
-            throw new ImageUploadFailedException();
-        }
-    }
-
-    private Optional<File> convertFile(MultipartFile image) throws IOException {
-        File file = new File(Objects.requireNonNull(image.getOriginalFilename()));
-        if (file.createNewFile()) {
-            try (FileOutputStream outputStream = new FileOutputStream(file)) {
-                outputStream.write(image.getBytes());
-            }
-            return Optional.of(file);
-        }
-        return Optional.empty();
+    private String extractFileNameFromUrl(String url) {
+        return url.substring(url.lastIndexOf("/") + 1);
     }
 }
