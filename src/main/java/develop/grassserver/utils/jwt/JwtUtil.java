@@ -1,10 +1,10 @@
 package develop.grassserver.utils.jwt;
 
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 
 public final class JwtUtil {
-    public static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
+    public static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(System.getenv("JWT_SECRET").getBytes());
     public static final String ISSUER = "GrassServer";
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final int TOKEN_BEGIN_INDEX = 7;
