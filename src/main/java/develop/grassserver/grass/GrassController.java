@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,7 +46,7 @@ public class GrassController {
     })
     @PatchMapping("/study-time")
     public ResponseEntity<ApiResult<String>> updateStudyRecord(@LoginMember Member member,
-                                                               @Valid StudyTimeRequest request) {
+                                                               @Valid @RequestBody StudyTimeRequest request) {
         grassService.updateStudyRecord(member, request);
         return ResponseEntity.ok(ApiUtils.success());
     }
