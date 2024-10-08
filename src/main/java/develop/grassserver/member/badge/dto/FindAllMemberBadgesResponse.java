@@ -23,7 +23,7 @@ public record FindAllMemberBadgesResponse(int badgeCount, List<AcquireBadge> bad
 
     public record AcquireBadge(
             Long id,
-            String fileName,
+            int fileName,
             String name,
             String description
     ) {
