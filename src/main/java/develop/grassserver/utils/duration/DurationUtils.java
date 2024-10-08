@@ -35,4 +35,8 @@ public class DurationUtils {
         long seconds = totalSeconds % 60;
         return String.format("%d:%02d:%02d", hours, minutes, seconds);
     }
+
+    public static int formatHourDuration(Duration duration) {
+        return (int) duration.getSeconds();
+    }
 }

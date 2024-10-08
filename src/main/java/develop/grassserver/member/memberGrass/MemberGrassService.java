@@ -42,7 +42,7 @@ public class MemberGrassService {
                                 grass.getId(),
                                 grass.getCreatedAt().getMonthValue(),
                                 grass.getCreatedAt().getDayOfMonth(),
-                                DurationUtils.formatDuration(grass.getStudyTime())
+                                DurationUtils.formatHourDuration(grass.getStudyTime())
                         ))
                         .toList()
         );
@@ -57,7 +57,7 @@ public class MemberGrassService {
                         .map(grass -> new MonthlyGrassResponse(
                                 grass.getId(),
                                 grass.getCreatedAt().getDayOfMonth(),
-                                DurationUtils.formatDuration(grass.getStudyTime()),
+                                DurationUtils.formatHourDuration(grass.getStudyTime()),
                                 grass.getGrassScore()
                         ))
                         .toList()
