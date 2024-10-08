@@ -1,9 +1,7 @@
 package develop.grassserver.member;
 
 import develop.grassserver.mail.MailService;
-import develop.grassserver.member.badge.Badge;
-import develop.grassserver.member.badge.MemberBadge;
-import develop.grassserver.member.badge.MemberBadgeRepository;
+import develop.grassserver.member.badge.BadgeService;
 import develop.grassserver.member.dto.ChangePasswordRequest;
 import develop.grassserver.member.dto.MemberAuthRequest;
 import develop.grassserver.member.dto.MemberJoinRequest;
@@ -27,10 +25,10 @@ public class MemberService {
     private static final String DEFAULT_PROFILE_MESSAGE = "오늘 하루도 화이팅!";
 
     private final MailService mailService;
+    private final BadgeService badgeService;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
-    private final MemberBadgeRepository memberBadgeRepository;
 
     public MemberProfileResponse findMemberProfile(Member member) {
         Member persistMember = memberRepository.findByIdWithProfile(member.getId())
@@ -43,8 +41,7 @@ public class MemberService {
         Member member = createJoinMember(request);
         memberRepository.save(member);
 
-        MemberBadge betaJoinBadge = createBetaJoinBadge(member);
-        memberBadgeRepository.save(betaJoinBadge);
+        badgeService.saveBetaMemberBadge(member);
     }
 
     private Member createJoinMember(MemberJoinRequest request) {
@@ -66,13 +63,6 @@ public class MemberService {
                 .mainBanner("https://grass-bucket.s3.us-east-2.amazonaws.com/bannerImage1.png")
                 .build();
         return profileRepository.save(profile);
-    }
-
-    private MemberBadge createBetaJoinBadge(Member member) {
-        return MemberBadge.builder()
-                .badge(Badge.EARLY_ADOPTER)
-                .member(member)
-                .build();
     }
 
     public void authMember(MemberAuthRequest request) {
