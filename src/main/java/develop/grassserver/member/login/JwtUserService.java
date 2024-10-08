@@ -38,7 +38,11 @@ public class JwtUserService {
         return jwtService.renewTokens(refreshTokenDTO.refreshToken());
     }
 
-    public void logout(String code) {
-        jwtService.deleteRefreshToken(code);
-    }
+//    public void logout(String email) {
+//        jwtService.saveRefreshToken(loginRequest.code(), TOKEN_PREFIX + token.refreshToken());
+//    }
+//
+//    public void logout(String code) {
+//        jwtService.deleteRefreshToken(code);
+//    }
 }
