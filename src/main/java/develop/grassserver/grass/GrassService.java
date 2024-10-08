@@ -2,6 +2,7 @@ package develop.grassserver.grass;
 
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
+import develop.grassserver.grass.exception.MissingAttendanceException;
 import develop.grassserver.member.Member;
 import develop.grassserver.utils.duration.DurationUtils;
 import java.time.LocalDate;
@@ -69,6 +70,8 @@ public class GrassService {
         if (optionalGrass.isPresent()) {
             Grass grass = optionalGrass.get();
             grass.updateStudyTime(DurationUtils.parseDuration(request.todayStudyTime()));
+        } else {
+            throw new MissingAttendanceException();
         }
     }
 }
