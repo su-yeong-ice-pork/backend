@@ -26,11 +26,11 @@ public class MemberGrassService {
 
         StudyRecord studyRecord = member.getStudyRecord();
         int topStreak = studyRecord.getTopStreak();
-        String totalStudyTimeFormatted = DurationUtils.formatDuration(studyRecord.getTotalStudyTime());
+        int totalStudyTime = DurationUtils.formatHourDuration(studyRecord.getTotalStudyTime());
 
         int currentStreak = (grass != null) ? grass.getCurrentStreak() : 0;
 
-        return new MemberStreakResponse(currentStreak, topStreak, totalStudyTimeFormatted);
+        return new MemberStreakResponse(currentStreak, topStreak, totalStudyTime);
     }
 
     public YearlyTotalGrassResponse getYearlyGrass(Long memberId, int year) {
