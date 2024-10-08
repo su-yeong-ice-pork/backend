@@ -1,5 +1,6 @@
 package develop.grassserver.grass;
 
+import develop.grassserver.grass.dto.AttandanceResponse;
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
 import develop.grassserver.grass.exception.MissingAttendanceException;
@@ -73,5 +74,9 @@ public class GrassService {
         } else {
             throw new MissingAttendanceException();
         }
+    }
+
+    public AttandanceResponse getAttendance(Member member) {
+        return new AttandanceResponse(findTodayGrassByMemberId(member.getId()).isPresent());
     }
 }
