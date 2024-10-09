@@ -1,11 +1,15 @@
 package develop.grassserver.member.security;
 
 import develop.grassserver.utils.jwt.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +31,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = jwtService.extractToken(request);
 
         if (token != null) {
-            String userEmail = jwtService.getEmailFromToken(token);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+            try {
+                String userEmail = jwtService.getEmailFromToken(token);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException |
+                     SignatureException | SecurityException | IllegalArgumentException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new JwtException("유효하지 않은 토큰입니다.");
+            }
         }
 
         filterChain.doFilter(request, response);
