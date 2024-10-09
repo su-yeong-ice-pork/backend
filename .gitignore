@@ -38,4 +38,4 @@ out/
 ### VS Code ###
 .vscode/
 
-!**/src/main/java/develop/grassserver/utils/jwt/JwtUtil.java
+/src/main/java/develop/grassserver/utils/jwt/JwtUtil.java
