@@ -25,6 +25,12 @@ public class GrassService {
         return grassRepository.findByMemberIdAndDate(memberId, today.atStartOfDay(), today.atTime(LocalTime.MAX));
     }
 
+    private Optional<Grass> findYesterdayGrassByMemberId(Long memberId) {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        return grassRepository.findByMemberIdAndDate(memberId, yesterday.atStartOfDay(),
+                yesterday.atTime(LocalTime.MAX));
+    }
+
     private boolean isTodayGrassExist(Member member) {
         return findTodayGrassByMemberId(member.getId()).isPresent();
     }
@@ -33,8 +39,16 @@ public class GrassService {
         if (isTodayGrassExist(member)) {
             throw new AlreadyCheckedInException();
         }
+
+        int currentStreak = 1;
+        Optional<Grass> yesterdayGrass = findYesterdayGrassByMemberId(member.getId());
+        if (yesterdayGrass.isPresent()) {
+            currentStreak = yesterdayGrass.get().getCurrentStreak() + 1;
+        }
+
         Grass grass = Grass.builder()
                 .member(member)
+                .currentStreak(currentStreak)
                 .build();
         grassRepository.save(grass);
     }
@@ -43,7 +57,7 @@ public class GrassService {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
 
-        return grassRepository.findTopByMemberIdOrderByCreatedDateDesc(memberId)
+        return grassRepository.findTopByMemberIdOrderByCreatedAtDesc(memberId)
                 .filter(grass -> {
                     LocalDate grassCreatedDate = grass.getCreatedAt().toLocalDate();
                     return grassCreatedDate.equals(today) || grassCreatedDate.equals(yesterday);
