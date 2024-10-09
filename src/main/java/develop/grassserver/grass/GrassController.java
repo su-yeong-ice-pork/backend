@@ -33,7 +33,7 @@ public class GrassController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "저장 성공. 응답 에러 코드는 무시하셈"),
             @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요"),
-            @ApiResponse(responseCode = "404", description = "이미 출석을 완료함")
+            @ApiResponse(responseCode = "400", description = "이미 출석을 완료함")
     })
     @PostMapping
     public ResponseEntity<ApiResult<String>> createGrass(@LoginMember Member member) {
@@ -46,7 +46,7 @@ public class GrassController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공. 응답 에러 코드는 무시하셈"),
             @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요"),
-            @ApiResponse(responseCode = "404", description = "출석 기록이 없음")
+            @ApiResponse(responseCode = "400", description = "출석 기록이 없음")
     })
     @GetMapping("/study-time")
     public ResponseEntity<ApiResult<StudyTimeResponse>> getStudyRecord(@LoginMember Member member) {
@@ -58,7 +58,7 @@ public class GrassController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "저장 성공. 응답 에러 코드는 무시하셈"),
             @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요"),
-            @ApiResponse(responseCode = "404", description = "출석 기록이 없음")
+            @ApiResponse(responseCode = "400", description = "출석 기록이 없음")
     })
     @PatchMapping("/study-time")
     public ResponseEntity<ApiResult<String>> updateStudyRecord(@LoginMember Member member,
