@@ -3,6 +3,7 @@ package develop.grassserver.grass;
 import develop.grassserver.grass.dto.AttendanceResponse;
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
+import develop.grassserver.grass.exception.AlreadyCheckedInException;
 import develop.grassserver.grass.exception.MissingAttendanceException;
 import develop.grassserver.member.Member;
 import develop.grassserver.utils.duration.DurationUtils;
@@ -24,6 +25,20 @@ public class GrassService {
     private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
         LocalDate today = LocalDate.now();
         return grassRepository.findByMemberIdAndDate(memberId, today.atStartOfDay(), today.atTime(LocalTime.MAX));
+    }
+
+    private boolean isTodayGrassExist(Member member) {
+        return findTodayGrassByMemberId(member.getId()).isPresent();
+    }
+
+    public void createGrass(Member member) {
+        if (isTodayGrassExist(member)) {
+            throw new AlreadyCheckedInException();
+        }
+        Grass grass = Grass.builder()
+                .member(member)
+                .build();
+        grassRepository.save(grass);
     }
 
     public Grass findDayGrassByMemberId(Long memberId) {
@@ -77,6 +92,6 @@ public class GrassService {
     }
 
     public AttendanceResponse getAttendance(Member member) {
-        return new AttendanceResponse(findTodayGrassByMemberId(member.getId()).isPresent());
+        return new AttendanceResponse(isTodayGrassExist(member));
     }
 }
