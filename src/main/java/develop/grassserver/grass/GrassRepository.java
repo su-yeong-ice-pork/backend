@@ -16,6 +16,8 @@ public interface GrassRepository extends JpaRepository<Grass, Long> {
                                           @Param("startOfDay") LocalDateTime startOfDay,
                                           @Param("endOfDay") LocalDateTime endOfDay);
 
+    Optional<Grass> findTopByMemberIdOrderByCreatedAtDesc(Long memberId);
+
     @Query("SELECT g FROM Grass g WHERE g.member = :member AND FUNCTION('YEAR', g.createdAt) = :year")
     List<Grass> findByMemberAndYear(@Param("member") Member member, @Param("year") int year);
 

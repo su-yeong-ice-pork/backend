@@ -13,9 +13,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,11 +29,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class GrassController {
     private final GrassService grassService;
 
+    @Operation(summary = "출석 인증(잔디 생성) API", description = "인증 절차 후에 호출하는 잔디 생성 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "저장 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요"),
+            @ApiResponse(responseCode = "400", description = "이미 출석을 완료함")
+    })
+    @PostMapping
+    public ResponseEntity<ApiResult<String>> createGrass(@LoginMember Member member) {
+        grassService.createGrass(member);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiUtils.success());
+    }
+
     @Operation(summary = "공부시간 조회 API", description = "기록장 타이머 공부시간 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공. 응답 에러 코드는 무시하셈"),
             @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요"),
-            @ApiResponse(responseCode = "404", description = "출석 기록이 없음")
+            @ApiResponse(responseCode = "400", description = "출석 기록이 없음")
     })
     @GetMapping("/study-time")
     public ResponseEntity<ApiResult<StudyTimeResponse>> getStudyRecord(@LoginMember Member member) {
@@ -43,7 +58,7 @@ public class GrassController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "저장 성공. 응답 에러 코드는 무시하셈"),
             @ApiResponse(responseCode = "401", description = "인증 실패, 재로그인 필요"),
-            @ApiResponse(responseCode = "404", description = "출석 기록이 없음")
+            @ApiResponse(responseCode = "400", description = "출석 기록이 없음")
     })
     @PatchMapping("/study-time")
     public ResponseEntity<ApiResult<String>> updateStudyRecord(@LoginMember Member member,
@@ -62,5 +77,6 @@ public class GrassController {
         AttendanceResponse response = grassService.getAttendance(member);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
+
 
 }
