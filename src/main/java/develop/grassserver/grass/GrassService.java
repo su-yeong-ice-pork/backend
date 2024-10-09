@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GrassService {
     private final GrassRepository grassRepository;
 
-    public Optional<Grass> findTodayGrassByMemberId(Long memberId) {
+    private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
         LocalDate today = LocalDate.now();
         return grassRepository.findByMemberIdAndDate(memberId, today.atStartOfDay(), today.atTime(LocalTime.MAX));
     }
