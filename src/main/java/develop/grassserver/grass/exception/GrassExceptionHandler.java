@@ -16,6 +16,11 @@ public class GrassExceptionHandler {
         return new ResponseEntity<>(exception.body(), exception.status());
     }
 
+    @ExceptionHandler(AlreadyCheckedInException.class)
+    public ResponseEntity<ApiUtils.ApiResult<?>> alreadyCheckedInException(AlreadyCheckedInException exception) {
+        return new ResponseEntity<>(exception.body(), exception.status());
+    }
+
     @ExceptionHandler({DateTimeParseException.class, UnsupportedTemporalTypeException.class})
     public ResponseEntity<ApiUtils.ApiResult<?>> handleDateTimeParseException(Exception ex) {
         return new ResponseEntity<>(
