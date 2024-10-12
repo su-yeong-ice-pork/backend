@@ -1,6 +1,7 @@
 package develop.grassserver.config;
 
 import develop.grassserver.member.security.CustomUserDetailsService;
+import develop.grassserver.member.security.ExceptionHandlingFilter;
 import develop.grassserver.member.security.JwtAuthenticationFilter;
 import develop.grassserver.utils.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtService jwtService;
-    private final CustomUserDetailsService userDetailsService;
-
     private static final String[] PERMIT_SWAGGER_URL_ARRAY = {
             "/api-docs/**",
             "/swagger-ui/**"
     };
+    private final JwtService jwtService;
+    private final CustomUserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,6 +38,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new ExceptionHandlingFilter(), UsernamePasswordAuthenticationFilter.class)
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PERMIT_SWAGGER_URL_ARRAY)
                         .permitAll()

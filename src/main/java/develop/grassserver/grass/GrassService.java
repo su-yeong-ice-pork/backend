@@ -1,15 +1,16 @@
 package develop.grassserver.grass;
 
+import develop.grassserver.grass.dto.AttendanceResponse;
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
+import develop.grassserver.grass.exception.AlreadyCheckedInException;
+import develop.grassserver.grass.exception.MissingAttendanceException;
 import develop.grassserver.member.Member;
 import develop.grassserver.utils.duration.DurationUtils;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,28 +20,51 @@ import org.springframework.transaction.annotation.Transactional;
 public class GrassService {
     private final GrassRepository grassRepository;
 
-    public Optional<Grass> findTodayGrassByMemberId(Long memberId) {
+    private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
         LocalDate today = LocalDate.now();
         return grassRepository.findByMemberIdAndDate(memberId, today.atStartOfDay(), today.atTime(LocalTime.MAX));
     }
 
+    private Optional<Grass> findYesterdayGrassByMemberId(Long memberId) {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        return grassRepository.findByMemberIdAndDate(memberId, yesterday.atStartOfDay(),
+                yesterday.atTime(LocalTime.MAX));
+    }
+
+    private boolean isTodayGrassExist(Member member) {
+        return findTodayGrassByMemberId(member.getId()).isPresent();
+    }
+
+    public void createGrass(Member member) {
+        if (isTodayGrassExist(member)) {
+            throw new AlreadyCheckedInException();
+        }
+
+        int currentStreak = 1;
+        Optional<Grass> yesterdayGrass = findYesterdayGrassByMemberId(member.getId());
+        if (yesterdayGrass.isPresent()) {
+            currentStreak = yesterdayGrass.get().getCurrentStreak() + 1;
+        }
+
+        Grass grass = Grass.builder()
+                .member(member)
+                .currentStreak(currentStreak)
+                .build();
+        grassRepository.save(grass);
+    }
+
     public Grass findDayGrassByMemberId(Long memberId) {
         LocalDate today = LocalDate.now();
+        LocalDate yesterday = today.minusDays(1);
 
-        LocalDateTime startOfToday = today.atStartOfDay();
-        LocalDateTime endOfToday = today.atTime(LocalTime.MAX);
-        LocalDateTime startOfYesterday = startOfToday.minusDays(1);
-        LocalDateTime endOfYesterday = endOfToday.minusDays(1);
-
-        return Stream.of(
-                        grassRepository.findByMemberIdAndDate(memberId, startOfToday, endOfToday),
-                        grassRepository.findByMemberIdAndDate(memberId, startOfYesterday, endOfYesterday)
-                )
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst()
+        return grassRepository.findTopByMemberIdOrderByCreatedAtDesc(memberId)
+                .filter(grass -> {
+                    LocalDate grassCreatedDate = grass.getCreatedAt().toLocalDate();
+                    return grassCreatedDate.equals(today) || grassCreatedDate.equals(yesterday);
+                })
                 .orElse(null);
     }
+
 
     public List<Grass> findYearlyGrassByMemberId(Member member, int year) {
         return grassRepository.findByMemberAndYear(member, year);
@@ -69,6 +93,12 @@ public class GrassService {
         if (optionalGrass.isPresent()) {
             Grass grass = optionalGrass.get();
             grass.updateStudyTime(DurationUtils.parseDuration(request.todayStudyTime()));
+        } else {
+            throw new MissingAttendanceException();
         }
+    }
+
+    public AttendanceResponse getAttendance(Member member) {
+        return new AttendanceResponse(isTodayGrassExist(member));
     }
 }

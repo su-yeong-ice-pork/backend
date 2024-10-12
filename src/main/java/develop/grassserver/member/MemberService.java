@@ -51,6 +51,7 @@ public class MemberService {
                 .major(new Major(request.college(), request.department()))
                 .profile(createMemberProfile())
                 .password(passwordEncoder.encode(request.password()))
+                .studyRecord(StudyRecord.builder().build())
                 .build();
     }
 
@@ -85,7 +86,7 @@ public class MemberService {
         }
         return member;
     }
-    
+
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
     }

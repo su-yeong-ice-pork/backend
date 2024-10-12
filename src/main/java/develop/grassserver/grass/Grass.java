@@ -26,12 +26,15 @@ public class Grass extends BaseEntity {
 
     @Column(name = "study_time_seconds", nullable = false)
     @ColumnDefault("0")
+    @Builder.Default
     private Duration studyTime = Duration.ZERO;
 
     @ColumnDefault("1")
+    @Builder.Default
     private int currentStreak = 1;
 
     @ColumnDefault("10")
+    @Builder.Default
     private int grassScore = 10;
 
     @ManyToOne
