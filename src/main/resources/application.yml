@@ -1,4 +1,6 @@
 spring:
+  jackson:
+    time-zone: Asia/Seoul
   datasource:
     username: grass
     password: 'mutsa123!'
