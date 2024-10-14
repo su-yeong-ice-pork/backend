@@ -9,6 +9,7 @@ import develop.grassserver.member.profile.banner.BannerRepository;
 import develop.grassserver.member.profile.banner.DefaultBanner;
 import develop.grassserver.member.profile.dto.FindAllDefaultProfileImagesResponse;
 import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
+import develop.grassserver.member.profile.dto.UpdateProfileImageRequest;
 import develop.grassserver.member.profile.exeption.ImageUploadFailedException;
 import develop.grassserver.member.profile.image.DefaultImage;
 import develop.grassserver.member.profile.image.Image;
@@ -140,5 +141,12 @@ public class ProfileService {
 
     private String extractFileNameFromUrl(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
+    }
+
+    @Transactional
+    public void updateProfileImage(Long id, UpdateProfileImageRequest request) {
+        Member member = memberRepository.findByIdWithProfile(id)
+                .orElseThrow(EntityNotFoundException::new);
+        member.updateProfileImage(request.url());
     }
 }
