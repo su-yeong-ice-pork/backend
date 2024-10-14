@@ -6,12 +6,15 @@ import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberRepository;
 import develop.grassserver.member.profile.banner.Banner;
 import develop.grassserver.member.profile.banner.BannerRepository;
+import develop.grassserver.member.profile.dto.DefaultProfileImagesResponse;
 import develop.grassserver.member.profile.exeption.ImageUploadFailedException;
+import develop.grassserver.member.profile.image.DefaultImage;
 import develop.grassserver.member.profile.image.Image;
 import develop.grassserver.member.profile.image.ImageRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +39,11 @@ public class ProfileService {
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
     private final BannerRepository bannerRepository;
+
+    public DefaultProfileImagesResponse getDefaultProfileImages() {
+        List<DefaultImage> images = DefaultImage.getDefaultImages();
+        return DefaultProfileImagesResponse.from(images);
+    }
 
     @Transactional
     public void saveBannerImage(MultipartFile image, Long memberId) {

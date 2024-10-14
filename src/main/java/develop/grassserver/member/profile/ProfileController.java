@@ -1,6 +1,6 @@
 package develop.grassserver.member.profile;
 
-import develop.grassserver.member.security.CustomUserDetails;
+import develop.grassserver.member.profile.dto.DefaultProfileImagesResponse;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProfileController {
 
     private final ProfileService profileService;
+
+    @GetMapping("/profile-images")
+    public ResponseEntity<ApiResult<?>> getDefaultProfileImages() {
+        DefaultProfileImagesResponse response = profileService.getDefaultProfileImages();
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(response));
+    }
 
     @Operation(summary = "프로필 배너 수정 API", description = "프로필 배너 수정 시 사용되는 API")
     @ApiResponses(value = {
