@@ -35,4 +35,8 @@ public class Profile extends BaseEntity {
     public void updateImage(String url) {
         this.image = url;
     }
+
+    public void updateMainBanner(String url) {
+        this.mainBanner = url;
+    }
 }
