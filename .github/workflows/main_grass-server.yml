@@ -13,6 +13,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
+      contents: read
       id-token: write  
 
     steps:
