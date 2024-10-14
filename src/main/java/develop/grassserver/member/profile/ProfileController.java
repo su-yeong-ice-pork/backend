@@ -1,6 +1,7 @@
 package develop.grassserver.member.profile;
 
 import develop.grassserver.member.profile.dto.DefaultProfileImagesResponse;
+import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +24,15 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("/profile-images")
-    public ResponseEntity<ApiResult<?>> getDefaultProfileImages() {
+    public ResponseEntity<ApiResult<DefaultProfileImagesResponse>> getDefaultProfileImages() {
         DefaultProfileImagesResponse response = profileService.getDefaultProfileImages();
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(response));
+    }
+
+    @GetMapping("/banner-images")
+    public ResponseEntity<ApiResult<?>> getDefaultBannerImages() {
+        FindAllDefaultBannerImagesResponse response = profileService.getDefaultBannerImages();
         return ResponseEntity.ok()
                 .body(ApiUtils.success(response));
     }

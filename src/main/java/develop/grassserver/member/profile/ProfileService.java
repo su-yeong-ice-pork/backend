@@ -6,7 +6,9 @@ import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberRepository;
 import develop.grassserver.member.profile.banner.Banner;
 import develop.grassserver.member.profile.banner.BannerRepository;
+import develop.grassserver.member.profile.banner.DefaultBanner;
 import develop.grassserver.member.profile.dto.DefaultProfileImagesResponse;
+import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
 import develop.grassserver.member.profile.exeption.ImageUploadFailedException;
 import develop.grassserver.member.profile.image.DefaultImage;
 import develop.grassserver.member.profile.image.Image;
@@ -43,6 +45,11 @@ public class ProfileService {
     public DefaultProfileImagesResponse getDefaultProfileImages() {
         List<DefaultImage> images = DefaultImage.getDefaultImages();
         return DefaultProfileImagesResponse.from(images);
+    }
+
+    public FindAllDefaultBannerImagesResponse getDefaultBannerImages() {
+        List<DefaultBanner> banners = DefaultBanner.getDefaultImages();
+        return FindAllDefaultBannerImagesResponse.from(banners);
     }
 
     @Transactional
