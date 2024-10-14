@@ -2,10 +2,10 @@ spring:
   jackson:
     time-zone: Asia/Seoul
   datasource:
-    username: grass
-    password: 'mutsa123!'
-    url: jdbc:mysql://grass-db.mysql.database.azure.com:3306/grass
+    username: ${AWS_RDS_USER}
+    password: ${AWS_RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${AWS_RDS_URL}
   data:
     redis:
       host: ${AZURE_REDIS_HOST}
