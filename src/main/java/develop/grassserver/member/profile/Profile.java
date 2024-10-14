@@ -31,4 +31,8 @@ public class Profile extends BaseEntity {
 
     @Embedded
     private Freeze freeze;
+
+    public void updateImage(String url) {
+        this.image = url;
+    }
 }
