@@ -11,26 +11,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 저장소에서 코드 체크아웃
       - uses: actions/checkout@v4
 
+      # 2. Java 17 버전 설정
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
 
+      # 3. gradlew에 실행 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      # 4. Gradle 캐시 제거
       - name: Clear Gradle cache
         run: ./gradlew clean
 
+      # 5. Gradle로 JAR 파일 빌드
       - name: Build with Gradle
         run: ./gradlew build --no-build-cache
 
-      - name: List files in build/libs directory (for debugging)
+      # 6. 빌드된 JAR 파일이 있는 경로 출력 (디버깅용)
+      - name: List files in build/libs directory
         run: ls -al ${{ github.workspace }}/build/libs
 
+      # 7. JAR 파일 경로를 환경 변수로 저장
       - name: Save build path for later steps
         id: build_dir
         run: echo "JAR_PATH=$(find ${{ github.workspace }}/build/libs -name '*.jar')" >> $GITHUB_ENV
@@ -42,9 +49,10 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write  # This is required for requesting the JWT
+      id-token: write  # Azure 로그인에 필요한 권한
 
     steps:
+      # 8. Azure 로그인
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -52,18 +60,21 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BCA99810567249F98FC37CFA9B624D6B }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8CF1A769465B43AEB7F9CDD407F60A95 }}
 
-      - name: Debug JAR path (for debugging)
-        run: echo "Deploying JAR from path: ${{ env.JAR_PATH }}"
+      # # 9. 빌드된 JAR 파일 경로 확인 (디버깅용)
+      # - name: Debug JAR path
+      #   run: echo "Deploying JAR from path: $JAR_PATH"
 
+      # 10. Azure Web App에 JAR 파일 배포
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'grass-server'
           slot-name: 'Production'
-          package: ${{ env.JAR_PATH }}  # Use the saved JAR path from build step
+          package: $JAR_PATH  # 빌드 단계에서 저장한 JAR 경로를 사용
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
 
 
 # name: Build and deploy JAR app to Azure Web App - grass-server
