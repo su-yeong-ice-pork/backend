@@ -37,10 +37,13 @@ jobs:
       - name: List files in build/libs directory
         run: ls -al ${{ github.workspace }}/build/libs
 
-      # 7. JAR 파일 경로를 환경 변수로 저장
+      # 7. JAR 파일 경로를 환경 변수로 저장 (실제 경로 출력)
       - name: Save build path for later steps
         id: build_dir
-        run: echo "JAR_PATH=$(find ${{ github.workspace }}/build/libs -name '*.jar')" >> $GITHUB_ENV
+        run: |
+          JAR_PATH=$(find ${{ github.workspace }}/build/libs -name '*.jar')
+          echo "JAR_PATH=${JAR_PATH}" >> $GITHUB_ENV
+          echo "JAR file found: ${JAR_PATH}"
 
   deploy:
     runs-on: ubuntu-latest
@@ -60,8 +63,8 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BCA99810567249F98FC37CFA9B624D6B }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8CF1A769465B43AEB7F9CDD407F60A95 }}
 
-      # # 9. 빌드된 JAR 파일 경로 확인 (디버깅용)
-      # - name: Debug JAR path
+      # # 9. JAR 파일 경로를 확인 (디버깅용)
+      # - name: Verify JAR path
       #   run: echo "Deploying JAR from path: $JAR_PATH"
 
       # 10. Azure Web App에 JAR 파일 배포
@@ -71,11 +74,9 @@ jobs:
         with:
           app-name: 'grass-server'
           slot-name: 'Production'
-          package: $JAR_PATH  # 빌드 단계에서 저장한 JAR 경로를 사용
+          package: ${{ env.JAR_PATH }}  # 저장된 JAR 경로 사용
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
-
 
 # name: Build and deploy JAR app to Azure Web App - grass-server
 
