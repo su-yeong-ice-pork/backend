@@ -75,8 +75,6 @@ jobs:
           app-name: 'grass-server'
           slot-name: 'Production'
           package: ${{ env.JAR_PATH }}  # 저장된 JAR 경로 사용
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
 # name: Build and deploy JAR app to Azure Web App - grass-server
 
