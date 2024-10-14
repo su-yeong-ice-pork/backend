@@ -27,4 +27,8 @@ public class StudyRecord {
     public void updateTotalStudyTime(Duration todayStudyTime) {
         this.totalStudyTime = this.totalStudyTime.plus(todayStudyTime);
     }
+
+    public void updateTopStreak(int currentStreak) {
+        this.topStreak = currentStreak;
+    }
 }

@@ -31,17 +31,20 @@ public class GrassService {
                 yesterday.atTime(LocalTime.MAX));
     }
 
-    private boolean isTodayGrassExist(Member member) {
+    public boolean isTodayGrassExist(Member member) {
         return findTodayGrassByMemberId(member.getId()).isPresent();
     }
 
-    public void createGrass(Member member) {
+    @Transactional
+    public Grass createGrass(Member member) {
+
         if (isTodayGrassExist(member)) {
             throw new AlreadyCheckedInException();
         }
 
         int currentStreak = 1;
         Optional<Grass> yesterdayGrass = findYesterdayGrassByMemberId(member.getId());
+
         if (yesterdayGrass.isPresent()) {
             currentStreak = yesterdayGrass.get().getCurrentStreak() + 1;
         }
@@ -50,7 +53,7 @@ public class GrassService {
                 .member(member)
                 .currentStreak(currentStreak)
                 .build();
-        grassRepository.save(grass);
+        return grassRepository.save(grass);
     }
 
     public Grass findDayGrassByMemberId(Long memberId) {
@@ -64,7 +67,6 @@ public class GrassService {
                 })
                 .orElse(null);
     }
-
 
     public List<Grass> findYearlyGrassByMemberId(Member member, int year) {
         return grassRepository.findByMemberAndYear(member, year);

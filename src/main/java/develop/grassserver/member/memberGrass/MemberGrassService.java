@@ -13,12 +13,23 @@ import develop.grassserver.member.memberGrass.dto.YearlyTotalGrassResponse;
 import develop.grassserver.utils.duration.DurationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberGrassService {
     private final MemberService memberService;
     private final GrassService grassService;
+
+    @Transactional
+    public void createAttendance(Member member) {
+        Member memberById = memberService.findMemberById(member.getId());
+        Grass grass = grassService.createGrass(member);
+
+        if (grass.getCurrentStreak() > memberById.getStudyRecord().getTopStreak()) {
+            memberById.getStudyRecord().updateTopStreak(grass.getCurrentStreak());
+        }
+    }
 
     public MemberStreakResponse getMemberStreak(Long memberId) {
         Member member = memberService.findMemberById(memberId);
