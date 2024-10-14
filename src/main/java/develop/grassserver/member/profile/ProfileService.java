@@ -9,6 +9,8 @@ import develop.grassserver.member.profile.banner.BannerRepository;
 import develop.grassserver.member.profile.banner.DefaultBanner;
 import develop.grassserver.member.profile.dto.FindAllDefaultProfileImagesResponse;
 import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
+import develop.grassserver.member.profile.dto.UpdateBannerImageRequest;
+import develop.grassserver.member.profile.dto.UpdateProfileImageRequest;
 import develop.grassserver.member.profile.exeption.ImageUploadFailedException;
 import develop.grassserver.member.profile.image.DefaultImage;
 import develop.grassserver.member.profile.image.Image;
@@ -61,6 +63,8 @@ public class ProfileService {
 
         Banner banner = getUploadedBanner(image, findMember);
         bannerRepository.save(banner);
+
+        findMember.updateBannerImage(banner.getUrl());
     }
 
     private void deleteExistingBanner(Member member) {
@@ -104,6 +108,8 @@ public class ProfileService {
 
         Image uploadImage = getUploadedProfileImage(image, findMember);
         imageRepository.save(uploadImage);
+
+        findMember.updateProfileImage(uploadImage.getUrl());
     }
 
     private void deleteExistingProfileImage(Member member) {
@@ -140,5 +146,19 @@ public class ProfileService {
 
     private String extractFileNameFromUrl(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
+    }
+
+    @Transactional
+    public void updateProfileImage(Long id, UpdateProfileImageRequest request) {
+        Member member = memberRepository.findByIdWithProfile(id)
+                .orElseThrow(EntityNotFoundException::new);
+        member.updateProfileImage(request.url());
+    }
+
+    @Transactional
+    public void updateBannerImage(Long id, UpdateBannerImageRequest request) {
+        Member member = memberRepository.findByIdWithProfile(id)
+                .orElseThrow(EntityNotFoundException::new);
+        member.updateBannerImage(request.url());
     }
 }
