@@ -35,19 +35,27 @@ jobs:
         run: |
           # base64로 인코딩된 시크릿 값을 디코딩
           echo "Decoding environment variables"
-          export JWT_SECRET=$(echo "${{ secrets.JWT_SECRET }}" | base64 --decode)
-          export APP_TIMEZONE=$(echo "${{ secrets.APP_TIMEZONE }}" | base64 --decode)
-          export AWS_RDS_PASSWORD=$(echo "${{ secrets.AWS_RDS_PASSWORD }}" | base64 --decode)
-          export AWS_RDS_URL=$(echo "${{ secrets.AWS_RDS_URL }}" | base64 --decode)
-          export AWS_RDS_USER=$(echo "${{ secrets.AWS_RDS_USER }}" | base64 --decode)
-          export AZURE_REDIS_HOST=$(echo "${{ secrets.AZURE_REDIS_HOST }}" | base64 --decode)
-          export AZURE_REDIS_PASSWORD=$(echo "${{ secrets.AZURE_REDIS_PASSWORD }}" | base64 --decode)
-          export AZURE_REDIS_PORT=$(echo "${{ secrets.AZURE_REDIS_PORT }}" | base64 --decode)
-          export S3_ACCESS_KEY=$(echo "${{ secrets.S3_ACCESS_KEY }}" | base64 --decode)
-          export S3_BUCKET_NAME=$(echo "${{ secrets.S3_BUCKET_NAME }}" | base64 --decode)
-          export S3_REGION=$(echo "${{ secrets.S3_REGION }}" | base64 --decode)
-          export S3_SECRET_KEY=$(echo "${{ secrets.S3_SECRET_KEY }}" | base64 --decode)
-          export SERVER_PORT=$(echo "${{ secrets.SERVER_PORT }}" | base64 --decode)
+          
+          # JWT_SECRET 디코딩
+          echo "Decoding JWT_SECRET"
+          export JWT_SECRET=$(echo "${{ secrets.JWT_SECRET }}" | base64 --decode || { echo "Failed to decode JWT_SECRET"; exit 1; })
+          
+          # APP_TIMEZONE 디코딩
+          echo "Decoding APP_TIMEZONE"
+          export APP_TIMEZONE=$(echo "${{ secrets.APP_TIMEZONE }}" | base64 --decode || { echo "Failed to decode APP_TIMEZONE"; exit 1; })
+          
+          # 다른 환경 변수들도 동일하게 처리
+          export AWS_RDS_PASSWORD=$(echo "${{ secrets.AWS_RDS_PASSWORD }}" | base64 --decode || { echo "Failed to decode AWS_RDS_PASSWORD"; exit 1; })
+          export AWS_RDS_URL=$(echo "${{ secrets.AWS_RDS_URL }}" | base64 --decode || { echo "Failed to decode AWS_RDS_URL"; exit 1; })
+          export AWS_RDS_USER=$(echo "${{ secrets.AWS_RDS_USER }}" | base64 --decode || { echo "Failed to decode AWS_RDS_USER"; exit 1; })
+          export AZURE_REDIS_HOST=$(echo "${{ secrets.AZURE_REDIS_HOST }}" | base64 --decode || { echo "Failed to decode AZURE_REDIS_HOST"; exit 1; })
+          export AZURE_REDIS_PASSWORD=$(echo "${{ secrets.AZURE_REDIS_PASSWORD }}" | base64 --decode || { echo "Failed to decode AZURE_REDIS_PASSWORD"; exit 1; })
+          export AZURE_REDIS_PORT=$(echo "${{ secrets.AZURE_REDIS_PORT }}" | base64 --decode || { echo "Failed to decode AZURE_REDIS_PORT"; exit 1; })
+          export S3_ACCESS_KEY=$(echo "${{ secrets.S3_ACCESS_KEY }}" | base64 --decode || { echo "Failed to decode S3_ACCESS_KEY"; exit 1; })
+          export S3_BUCKET_NAME=$(echo "${{ secrets.S3_BUCKET_NAME }}" | base64 --decode || { echo "Failed to decode S3_BUCKET_NAME"; exit 1; })
+          export S3_REGION=$(echo "${{ secrets.S3_REGION }}" | base64 --decode || { echo "Failed to decode S3_REGION"; exit 1; })
+          export S3_SECRET_KEY=$(echo "${{ secrets.S3_SECRET_KEY }}" | base64 --decode || { echo "Failed to decode S3_SECRET_KEY"; exit 1; })
+          export SERVER_PORT=$(echo "${{ secrets.SERVER_PORT }}" | base64 --decode || { echo "Failed to decode SERVER_PORT"; exit 1; })
 
       - name: Build with Gradle
         run: ./gradlew build --no-build-cache -Duser.timezone=$APP_TIMEZONE
