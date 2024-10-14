@@ -2,15 +2,15 @@ spring:
   jackson:
     time-zone: Asia/Seoul
   datasource:
-    username: grass
-    password: 'mutsa123!'
-    url: jdbc:mysql://grass-db.mysql.database.azure.com:3306/grass
+    username: ${AWS_RDS_USER}
+    password: ${AWS_RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${AWS_RDS_URL}
   data:
     redis:
-      host: grass-redis.redis.cache.windows.net
-      password: BxNDdYYiwfyFhxbgcRJ9TzSN4oiWn1KHwAzCaPXPGkE=
-      port: 6380
+      host: ${AZURE_REDIS_HOST}
+      password: ${AZURE_REDIS_PASSWORD}
+      port: ${AZURE_REDIS_PORT}
   jpa:
     hibernate:
       ddl-auto: update
@@ -33,7 +33,7 @@ spring:
             jdbc:
               bind: TRACE
 server:
-  port: 8080
+  port: ${SERVER_PORT}
 
 springdoc:
   swagger-ui:
@@ -57,12 +57,15 @@ springdoc:
 cloud:
   aws:
     s3:
-      bucket: grass-bucket
+      bucket: ${S3_BUCKET_NAME}
     credentials:
-      access-key: AKIAQFC263FTW354EFNV
-      secret-key: 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
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
     region:
-      static: us-east-2
+      static: ${S3_REGION}
       auto: false
     stack:
       auto: false
+
+jwt:
+  secret-key: ${JWT_SECRET}

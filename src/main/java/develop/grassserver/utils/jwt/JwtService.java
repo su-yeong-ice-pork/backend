@@ -4,7 +4,6 @@ package develop.grassserver.utils.jwt;
 import static develop.grassserver.utils.jwt.JwtUtil.ACCESS_TOKEN_EXPIRATION_TIME;
 import static develop.grassserver.utils.jwt.JwtUtil.ISSUER;
 import static develop.grassserver.utils.jwt.JwtUtil.REFRESH_TOKEN_EXPIRATION_TIME;
-import static develop.grassserver.utils.jwt.JwtUtil.SECRET_KEY;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_BEGIN_INDEX;
 import static develop.grassserver.utils.jwt.JwtUtil.TOKEN_PREFIX;
 
@@ -12,15 +11,23 @@ import develop.grassserver.member.auth.RedisService;
 import develop.grassserver.member.auth.TokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
 public class JwtService {
+
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+
     private final RedisService redisService;
 
     private String createToken(String email, Long expirationTime) {
@@ -29,8 +36,12 @@ public class JwtService {
                 .issuer(ISSUER)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
-                .signWith(SECRET_KEY)
+                .signWith(getHashKey())
                 .compact();
+    }
+
+    private SecretKey getHashKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     public TokenDTO createAllToken(String email) {
@@ -43,7 +54,7 @@ public class JwtService {
 
     public String getEmailFromToken(String token) {
         Claims claims = Jwts.parser()
-                .verifyWith(SECRET_KEY)
+                .verifyWith(getHashKey())
                 .build()
                 .parseSignedClaims(removeBearerPrefix(token))
                 .getPayload();
