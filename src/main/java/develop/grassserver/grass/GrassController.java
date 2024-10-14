@@ -4,6 +4,7 @@ import develop.grassserver.grass.dto.AttendanceResponse;
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
 import develop.grassserver.member.Member;
+import develop.grassserver.member.memberGrass.MemberGrassService;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
 import develop.grassserver.utils.annotation.LoginMember;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/grass")
 public class GrassController {
     private final GrassService grassService;
+    private final MemberGrassService memberGrassService;
 
     @Operation(summary = "출석 인증(잔디 생성) API", description = "인증 절차 후에 호출하는 잔디 생성 API")
     @ApiResponses(value = {
@@ -36,8 +38,8 @@ public class GrassController {
             @ApiResponse(responseCode = "400", description = "이미 출석을 완료함")
     })
     @PostMapping
-    public ResponseEntity<ApiResult<String>> createGrass(@LoginMember Member member) {
-        grassService.createGrass(member);
+    public ResponseEntity<ApiResult<String>> createAttendance(@LoginMember Member member) {
+        memberGrassService.createAttendance(member);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success());
     }
