@@ -51,7 +51,8 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8CF1A769465B43AEB7F9CDD407F60A95 }}
 
       - name: Verify JAR path
-        run: echo "Deploying JAR from path: $JAR_PATH"
+        run:  |
+          echo "Deploying JAR from path: $JAR_PATH"
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
