@@ -10,7 +10,7 @@ spring:
     redis:
       host: ${AZURE_REDIS_HOST}
       password: ${AZURE_REDIS_PASSWORD}
-      port: ${AZURE_REDIS_PORT}
+      port: 6380
   jpa:
     hibernate:
       ddl-auto: update
@@ -33,7 +33,7 @@ spring:
             jdbc:
               bind: TRACE
 server:
-  port: ${SERVER_PORT}
+  port: 8080
 
 springdoc:
   swagger-ui:
