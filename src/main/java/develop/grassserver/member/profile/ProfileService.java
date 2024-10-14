@@ -6,12 +6,19 @@ import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberRepository;
 import develop.grassserver.member.profile.banner.Banner;
 import develop.grassserver.member.profile.banner.BannerRepository;
+import develop.grassserver.member.profile.banner.DefaultBanner;
+import develop.grassserver.member.profile.dto.FindAllDefaultProfileImagesResponse;
+import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
+import develop.grassserver.member.profile.dto.UpdateBannerImageRequest;
+import develop.grassserver.member.profile.dto.UpdateProfileImageRequest;
 import develop.grassserver.member.profile.exeption.ImageUploadFailedException;
+import develop.grassserver.member.profile.image.DefaultImage;
 import develop.grassserver.member.profile.image.Image;
 import develop.grassserver.member.profile.image.ImageRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +44,16 @@ public class ProfileService {
     private final MemberRepository memberRepository;
     private final BannerRepository bannerRepository;
 
+    public FindAllDefaultProfileImagesResponse getDefaultProfileImages() {
+        List<DefaultImage> images = DefaultImage.getDefaultImages();
+        return FindAllDefaultProfileImagesResponse.from(images);
+    }
+
+    public FindAllDefaultBannerImagesResponse getDefaultBannerImages() {
+        List<DefaultBanner> banners = DefaultBanner.getDefaultImages();
+        return FindAllDefaultBannerImagesResponse.from(banners);
+    }
+
     @Transactional
     public void saveBannerImage(MultipartFile image, Long memberId) {
         Member findMember = memberRepository.findById(memberId)
@@ -46,6 +63,8 @@ public class ProfileService {
 
         Banner banner = getUploadedBanner(image, findMember);
         bannerRepository.save(banner);
+
+        findMember.updateBannerImage(banner.getUrl());
     }
 
     private void deleteExistingBanner(Member member) {
@@ -89,6 +108,8 @@ public class ProfileService {
 
         Image uploadImage = getUploadedProfileImage(image, findMember);
         imageRepository.save(uploadImage);
+
+        findMember.updateProfileImage(uploadImage.getUrl());
     }
 
     private void deleteExistingProfileImage(Member member) {
@@ -125,5 +146,19 @@ public class ProfileService {
 
     private String extractFileNameFromUrl(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
+    }
+
+    @Transactional
+    public void updateProfileImage(Long id, UpdateProfileImageRequest request) {
+        Member member = memberRepository.findByIdWithProfile(id)
+                .orElseThrow(EntityNotFoundException::new);
+        member.updateProfileImage(request.url());
+    }
+
+    @Transactional
+    public void updateBannerImage(Long id, UpdateBannerImageRequest request) {
+        Member member = memberRepository.findByIdWithProfile(id)
+                .orElseThrow(EntityNotFoundException::new);
+        member.updateBannerImage(request.url());
     }
 }

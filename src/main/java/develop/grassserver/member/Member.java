@@ -49,4 +49,12 @@ public class Member extends BaseEntity {
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
+
+    public void updateProfileImage(String url) {
+        profile.updateImage(url);
+    }
+
+    public void updateBannerImage(String url) {
+        profile.updateMainBanner(url);
+    }
 }
