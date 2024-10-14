@@ -28,6 +28,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build --no-build-cache
 
+      - name: List files in build/libs directory (for debugging)
+        run: ls -al ${{ github.workspace }}/build/libs
+
       - name: Save build path for later steps
         id: build_dir
         run: echo "JAR_PATH=$(find ${{ github.workspace }}/build/libs -name '*.jar')" >> $GITHUB_ENV
@@ -49,13 +52,16 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BCA99810567249F98FC37CFA9B624D6B }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8CF1A769465B43AEB7F9CDD407F60A95 }}
 
+      - name: Debug JAR path (for debugging)
+        run: echo "Deploying JAR from path: ${{ env.JAR_PATH }}"
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'grass-server'
           slot-name: 'Production'
-          package: ${{ env.JAR_PATH }}  # Build 단계에서 생성된 JAR 파일 경로를 사용
+          package: ${{ env.JAR_PATH }}  # Use the saved JAR path from build step
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
