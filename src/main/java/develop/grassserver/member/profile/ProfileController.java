@@ -2,6 +2,7 @@ package develop.grassserver.member.profile;
 
 import develop.grassserver.member.profile.dto.FindAllDefaultProfileImagesResponse;
 import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
+import develop.grassserver.member.profile.dto.UpdateBannerImageRequest;
 import develop.grassserver.member.profile.dto.UpdateProfileImageRequest;
 import develop.grassserver.utils.ApiUtils;
 import develop.grassserver.utils.ApiUtils.ApiResult;
@@ -77,6 +78,16 @@ public class ProfileController {
             @RequestBody UpdateProfileImageRequest request
     ) {
         profileService.updateProfileImage(id, request);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success());
+    }
+
+    @PatchMapping("/default-banner")
+    public ResponseEntity<ApiResult<String>> updateBannerImage(
+            @PathVariable Long id,
+            @RequestBody UpdateBannerImageRequest request
+    ) {
+        profileService.updateBannerImage(id, request);
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
     }
