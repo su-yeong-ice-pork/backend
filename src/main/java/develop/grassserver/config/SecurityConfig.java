@@ -55,6 +55,10 @@ public class SecurityConfig {
                                 "/api/v1/members/login",
                                 "/api/v1/members/auto-login")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/members/{id}/profile-images",
+                                "/api/v1/members/{id}/banner-images")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
