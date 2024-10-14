@@ -7,7 +7,7 @@ import develop.grassserver.member.MemberRepository;
 import develop.grassserver.member.profile.banner.Banner;
 import develop.grassserver.member.profile.banner.BannerRepository;
 import develop.grassserver.member.profile.banner.DefaultBanner;
-import develop.grassserver.member.profile.dto.DefaultProfileImagesResponse;
+import develop.grassserver.member.profile.dto.FindAllDefaultProfileImagesResponse;
 import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
 import develop.grassserver.member.profile.exeption.ImageUploadFailedException;
 import develop.grassserver.member.profile.image.DefaultImage;
@@ -42,9 +42,9 @@ public class ProfileService {
     private final MemberRepository memberRepository;
     private final BannerRepository bannerRepository;
 
-    public DefaultProfileImagesResponse getDefaultProfileImages() {
+    public FindAllDefaultProfileImagesResponse getDefaultProfileImages() {
         List<DefaultImage> images = DefaultImage.getDefaultImages();
-        return DefaultProfileImagesResponse.from(images);
+        return FindAllDefaultProfileImagesResponse.from(images);
     }
 
     public FindAllDefaultBannerImagesResponse getDefaultBannerImages() {
