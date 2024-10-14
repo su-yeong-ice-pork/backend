@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy JAR app to Azure Web App - grass-server
 
 on:
@@ -8,33 +5,45 @@ on:
     branches:
       - main
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 저장소에서 코드 체크아웃
       - uses: actions/checkout@v4
 
+      # 2. Java 17 버전 설정
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
 
+      # 3. gradlew에 실행 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      # 4. Gradle 캐시 제거
       - name: Clear Gradle cache
         run: ./gradlew clean
 
+      # 5. Gradle로 JAR 파일 빌드
       - name: Build with Gradle
         run: ./gradlew build --no-build-cache
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-app
-          path: '${{ github.workspace }}/build/libs/*.jar'
+      # 6. 빌드된 JAR 파일이 있는 경로 출력 (디버깅용)
+      - name: List files in build/libs directory
+        run: ls -al ${{ github.workspace }}/build/libs
+
+      # 7. JAR 파일 경로를 환경 변수로 저장 (실제 경로 출력)
+      - name: Save build path for later steps
+        id: build_dir
+        run: |
+          JAR_PATH=$(find ${{ github.workspace }}/build/libs -name '*.jar')
+          echo "JAR_PATH=${JAR_PATH}" >> $GITHUB_ENV
+          echo "JAR file found: ${JAR_PATH}"
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,27 +52,95 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write  # Azure 로그인에 필요한 권한
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: java-app
-
+      # 8. Azure 로그인
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0911F8BB07264E46AF2DF020E85FA563 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8D1A0D697AA147768093515C97E25B1E }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_526BFC75F1C84C3A81AF7EDAD4CDF747 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_198AA26D7CA04140A103D131898ADC4F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BCA99810567249F98FC37CFA9B624D6B }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8CF1A769465B43AEB7F9CDD407F60A95 }}
 
+      # # 9. JAR 파일 경로를 확인 (디버깅용)
+      # - name: Verify JAR path
+      #   run: echo "Deploying JAR from path: $JAR_PATH"
+
+      # 10. Azure Web App에 JAR 파일 배포
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'grass-server'
           slot-name: 'Production'
-          package: '*.jar'
+          package: ${{ env.JAR_PATH }}  # 저장된 JAR 경로 사용
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+# name: Build and deploy JAR app to Azure Web App - grass-server
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Set up Java version
+#         uses: actions/setup-java@v4
+#         with:
+#           java-version: '17'
+#           distribution: 'microsoft'
+
+#       - name: Grant execute permission for gradlew
+#         run: chmod +x ./gradlew
+
+#       - name: Clear Gradle cache
+#         run: ./gradlew clean
+
+#       - name: Build with Gradle
+#         run: ./gradlew build --no-build-cache
+
+#       # - name: Upload artifact for deployment job
+#       #   uses: actions/upload-artifact@v4
+#       #   with:
+#       #     name: java-app
+#       #     path: '${{ github.workspace }}/build/libs/*.jar'
+
+#   deploy:
+#     runs-on: ubuntu-latest
+#     needs: build
+#     environment:
+#       name: 'Production'
+#       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+#     permissions:
+#       id-token: write #This is required for requesting the JWT
+
+#     steps:
+#       # - name: Download artifact from build job
+#       #   uses: actions/download-artifact@v4
+#       #   with:
+#       #     name: java-app
+
+#       - name: Login to Azure
+#         uses: azure/login@v2
+#         with:
+#           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_198AA26D7CA04140A103D131898ADC4F }}
+#           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BCA99810567249F98FC37CFA9B624D6B }}
+#           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8CF1A769465B43AEB7F9CDD407F60A95 }}
+
+#       - name: Deploy to Azure Web App
+#         id: deploy-to-webapp
+#         uses: azure/webapps-deploy@v3
+#         with:
+#           app-name: 'grass-server'
+#           slot-name: 'Production'
+#           package: '*.jar'
+#         env:
+#           JWT_SECRET: ${{ secrets.JWT_SECRET }}
