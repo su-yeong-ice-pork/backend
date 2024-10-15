@@ -2,14 +2,14 @@ spring:
   jackson:
     time-zone: Asia/Seoul
   datasource:
-    username: admin
-    password: ${AWS_RDS_PASSWORD}
+    username: grass
+    password: 'mutsa123!'
+    url: jdbc:mysql://grass-db.mysql.database.azure.com:3306/grass
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://database-1.c360gwm285v0.us-east-2.rds.amazonaws.com:3306/grass?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
   data:
     redis:
       host: grass-redis.redis.cache.windows.net
-      password: ${AZURE_REDIS_PASSWORD}
+      password: DP2EVSZz9RLjrprQ8ZjQ3FbWIZElrdB1rAzCaDhyxGk=
       port: 6380
   jpa:
     hibernate:
@@ -17,7 +17,6 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: TRUE
 
   logging:
@@ -60,8 +59,8 @@ cloud:
     s3:
       bucket: grass-bucket
     credentials:
-      access-key: ${S3_ACCESS_KEY}
-      secret-key: ${S3_SECRET_KEY}
+      access-key: AKIAQFC263FTXQZ7ZTEX
+      secret-key: DP2EVSZz9RLjrprQ8ZjQ3FbWIZElrdB1rAzCaDhyxGk=
     region:
       static: us-east-2
       auto: false
@@ -69,4 +68,4 @@ cloud:
       auto: false
 
 jwt:
-  secret-key: ${JWT_SECRET}
+  secret-key: mutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecret
