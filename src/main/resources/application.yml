@@ -2,7 +2,7 @@ spring:
   jackson:
     time-zone: Asia/Seoul
   datasource:
-    username: ${AWS_RDS_USER}
+    username: admin
     password: ${AWS_RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://database-1.c360gwm285v0.us-east-2.rds.amazonaws.com:3306?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -63,7 +63,7 @@ cloud:
       access-key: ${S3_ACCESS_KEY}
       secret-key: ${S3_SECRET_KEY}
     region:
-      static: ${S3_REGION}
+      static: us-east-2
       auto: false
     stack:
       auto: false
