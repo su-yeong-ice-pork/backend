@@ -33,7 +33,6 @@ dependencies {
 
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.hibernate:hibernate-core:5.4.32.Final'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
