@@ -45,29 +45,13 @@ jobs:
           echo "APP_TIMEZONE successfully decoded"
 
           # 다른 환경 변수들도 동일하게 처리
-          export AWS_RDS_PASSWORD=$(echo "${{ secrets.AWS_RDS_PASSWORD }}" | base64 --decode || { echo "Failed to decode AWS_RDS_PASSWORD"; exit 1; })
-          echo "AWS_RDS_PASSWORD successfully decoded"
-
-          export AWS_RDS_URL=$(echo "${{ secrets.AWS_RDS_URL }}" | base64 --decode || { echo "Failed to decode AWS_RDS_URL"; exit 1; })
-          echo "AWS_RDS_URL successfully decoded"
-
-          export AWS_RDS_USER=$(echo "${{ secrets.AWS_RDS_USER }}" | base64 --decode || { echo "Failed to decode AWS_RDS_USER"; exit 1; })
-          echo "AWS_RDS_USER successfully decoded"
-
-          export AZURE_REDIS_HOST=$(echo "${{ secrets.AZURE_REDIS_HOST }}" | base64 --decode || { echo "Failed to decode AZURE_REDIS_HOST"; exit 1; })
-          echo "AZURE_REDIS_HOST successfully decoded"
+          export AWS_RDS_PASSWORD=$(echo "${{ secrets.AWS_RDS_PASSWORD }}"
 
           export AZURE_REDIS_PASSWORD=$(echo "${{ secrets.AZURE_REDIS_PASSWORD }}" | base64 --decode || { echo "Failed to decode AZURE_REDIS_PASSWORD"; exit 1; })
           echo "AZURE_REDIS_PASSWORD successfully decoded"
 
           export S3_ACCESS_KEY=$(echo "${{ secrets.S3_ACCESS_KEY }}" | base64 --decode || { echo "Failed to decode S3_ACCESS_KEY"; exit 1; })
           echo "S3_ACCESS_KEY successfully decoded"
-
-          export S3_BUCKET_NAME=$(echo "${{ secrets.S3_BUCKET_NAME }}" | base64 --decode || { echo "Failed to decode S3_BUCKET_NAME"; exit 1; })
-          echo "S3_BUCKET_NAME successfully decoded"
-
-          export S3_REGION=$(echo "${{ secrets.S3_REGION }}" | base64 --decode || { echo "Failed to decode S3_REGION"; exit 1; })
-          echo "S3_REGION successfully decoded"
 
           export S3_SECRET_KEY=$(echo "${{ secrets.S3_SECRET_KEY }}" | base64 --decode || { echo "Failed to decode S3_SECRET_KEY"; exit 1; })
           echo "S3_SECRET_KEY successfully decoded"
@@ -78,16 +62,9 @@ jobs:
           echo "JWT_SECRET: $JWT_SECRET"
           echo "APP_TIMEZONE: $APP_TIMEZONE"
           echo "AWS_RDS_PASSWORD: $AWS_RDS_PASSWORD"
-          echo "AWS_RDS_URL: $AWS_RDS_URL"
-          echo "AWS_RDS_USER: $AWS_RDS_USER"
-          echo "AZURE_REDIS_HOST: $AZURE_REDIS_HOST"
           echo "AZURE_REDIS_PASSWORD: $AZURE_REDIS_PASSWORD"
-          echo "AZURE_REDIS_PORT: $AZURE_REDIS_PORT"
           echo "S3_ACCESS_KEY: $S3_ACCESS_KEY"
-          echo "S3_BUCKET_NAME: $S3_BUCKET_NAME"
-          echo "S3_REGION: $S3_REGION"
           echo "S3_SECRET_KEY: $S3_SECRET_KEY"
-          echo "SERVER_PORT: $SERVER_PORT"
 
       - name: Build with Gradle
         run: ./gradlew build --no-build-cache -Duser.timezone=$APP_TIMEZONE
