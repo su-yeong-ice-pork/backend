@@ -12,6 +12,7 @@ import develop.grassserver.member.memberGrass.dto.MonthlyTotalGrassResponse;
 import develop.grassserver.member.memberGrass.dto.YearlyGrassResponse;
 import develop.grassserver.member.memberGrass.dto.YearlyTotalGrassResponse;
 import develop.grassserver.utils.duration.DurationUtils;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,9 @@ public class MemberGrassService {
         StudyRecord studyRecord = member.getStudyRecord();
         int totalStudyTime = DurationUtils.formatHourDuration(studyRecord.getTotalStudyTime());
 
-        return new MemberTotalStreakResponse(grassCount, totalStudyTime);
+        LocalDate startDate = member.getCreatedAt().toLocalDate();
+
+        return new MemberTotalStreakResponse(startDate, grassCount, totalStudyTime);
     }
 
     public YearlyTotalGrassResponse getYearlyGrass(Long memberId, int year) {
