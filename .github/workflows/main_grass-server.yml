@@ -31,26 +31,9 @@ jobs:
       - name: Clear Gradle cache
         run: ./gradlew clean
 
-      - name: Set environment variables
-        run: |
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
-          echo "APP_TIMEZONE=${{ secrets.APP_TIMEZONE }}" >> $GITHUB_ENV
-          echo "AWS_RDS_PASSWORD=${{ secrets.AWS_RDS_PASSWORD }}" >> $GITHUB_ENV
-          echo "AWS_RDS_URL=${{ secrets.AWS_RDS_URL }}" >> $GITHUB_ENV
-          echo "AWS_RDS_USER=${{ secrets.AWS_RDS_USER }}" >> $GITHUB_ENV
-          echo "AZURE_REDIS_HOST=${{ secrets.AZURE_REDIS_HOST }}" >> $GITHUB_ENV
-          echo "AZURE_REDIS_PASSWORD=${{ secrets.AZURE_REDIS_PASSWORD }}" >> $GITHUB_ENV
-          echo "AZURE_REDIS_PORT=${{ secrets.AZURE_REDIS_PORT }}" >> $GITHUB_ENV
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
-          echo "S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}" >> $GITHUB_ENV
-          echo "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" >> $GITHUB_ENV
-          echo "S3_REGION=${{ secrets.S3_REGION }}" >> $GITHUB_ENV
-          echo "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" >> $GITHUB_ENV
-          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> $GITHUB_ENV
-          echo "APP_TIMEZONE=${{ secrets.APP_TIMEZONE }}" >> $GITHUB_ENV
-
       - name: Build with Gradle
-        run: ./gradlew build --no-build-cache -Duser.timezone=$APP_TIMEZONE
+        run: ./gradlew build --no-build-cache
+
       - name: List files in build/libs directory
         run: ls -al ${{ github.workspace }}/build/libs
 
@@ -79,4 +62,5 @@ jobs:
           app-name: 'grass-server'
           slot-name: 'Production'
           package: ${{ env.JAR_PATH }}  
-          
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
