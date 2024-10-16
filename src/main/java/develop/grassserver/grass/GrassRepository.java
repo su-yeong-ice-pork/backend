@@ -27,4 +27,7 @@ public interface GrassRepository extends JpaRepository<Grass, Long> {
 
     @Query("SELECT COUNT(g) FROM Grass g WHERE g.status = true")
     long countActiveGrass();
+
+    @Query("SELECT MIN(g.createdAt) FROM Grass g WHERE g.status = true")
+    LocalDateTime findOldestGrassCreationTime();
 }
