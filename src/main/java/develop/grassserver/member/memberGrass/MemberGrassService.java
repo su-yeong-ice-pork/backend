@@ -6,6 +6,7 @@ import develop.grassserver.member.Member;
 import develop.grassserver.member.MemberService;
 import develop.grassserver.member.StudyRecord;
 import develop.grassserver.member.memberGrass.dto.MemberStreakResponse;
+import develop.grassserver.member.memberGrass.dto.MemberTotalStreakResponse;
 import develop.grassserver.member.memberGrass.dto.MonthlyGrassResponse;
 import develop.grassserver.member.memberGrass.dto.MonthlyTotalGrassResponse;
 import develop.grassserver.member.memberGrass.dto.YearlyGrassResponse;
@@ -42,6 +43,16 @@ public class MemberGrassService {
         int currentStreak = (grass != null) ? grass.getCurrentStreak() : 0;
 
         return new MemberStreakResponse(currentStreak, topStreak, totalStudyTime);
+    }
+
+    public MemberTotalStreakResponse getMemberTotalStreak(Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+        Long grassCount = grassService.getTotalGrassCount(memberId);
+
+        StudyRecord studyRecord = member.getStudyRecord();
+        int totalStudyTime = DurationUtils.formatHourDuration(studyRecord.getTotalStudyTime());
+
+        return new MemberTotalStreakResponse(grassCount, totalStudyTime);
     }
 
     public YearlyTotalGrassResponse getYearlyGrass(Long memberId, int year) {
