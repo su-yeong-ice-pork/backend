@@ -1,7 +1,9 @@
 package develop.grassserver.member.memberGrass.dto;
 
+import java.time.LocalDate;
+
 public record MemberTotalStreakResponse(
-        String createdDate,
+        LocalDate createdDate,
         long totalStreak,
         int totalStudyTime
 ) {
