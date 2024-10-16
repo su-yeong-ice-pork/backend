@@ -72,7 +72,7 @@ public class ProfileController {
                 .body(ApiUtils.success());
     }
 
-    @PatchMapping("/default-image")
+    @PatchMapping("/default-profile")
     public ResponseEntity<ApiResult<String>> updateProfileImage(
             @PathVariable Long id,
             @RequestBody UpdateProfileImageRequest request
