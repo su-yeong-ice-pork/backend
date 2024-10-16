@@ -72,6 +72,10 @@ public class GrassService {
         return grassRepository.countActiveGrass();
     }
 
+    public LocalDate getOldestGrassCreationTime() {
+        return grassRepository.findOldestGrassCreationTime().toLocalDate();
+    }
+
     public List<Grass> findYearlyGrassByMemberId(Member member, int year) {
         return grassRepository.findByMemberAndYear(member, year);
     }
