@@ -24,4 +24,7 @@ public interface GrassRepository extends JpaRepository<Grass, Long> {
     @Query("SELECT g FROM Grass g WHERE g.member = :member AND FUNCTION('YEAR', g.createdAt) = :year AND FUNCTION('MONTH', g.createdAt) = :month")
     List<Grass> findByMemberAndYearAndMonth(@Param("member") Member member, @Param("year") int year,
                                             @Param("month") int month);
+
+    @Query("SELECT COUNT(g) FROM Grass g WHERE g.status = true")
+    long countActiveGrass();
 }

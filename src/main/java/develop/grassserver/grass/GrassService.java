@@ -68,6 +68,10 @@ public class GrassService {
                 .orElse(null);
     }
 
+    public Long getTotalGrassCount(Long memberId) {
+        return grassRepository.countActiveGrass();
+    }
+
     public List<Grass> findYearlyGrassByMemberId(Member member, int year) {
         return grassRepository.findByMemberAndYear(member, year);
     }
