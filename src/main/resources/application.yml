@@ -59,8 +59,8 @@ cloud:
     s3:
       bucket: grass-bucket
     credentials:
-      access-key: AKIAQFC263FTXQZ7ZTEX
-      secret-key: DP2EVSZz9RLjrprQ8ZjQ3FbWIZElrdB1rAzCaDhyxGk=
+      access-key: AKIAQFC263FTSDJYZE5I
+      secret-key: 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
     region:
       static: us-east-2
       auto: false
