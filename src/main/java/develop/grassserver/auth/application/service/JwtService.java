@@ -24,10 +24,9 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class JwtService {
 
+    private final RedisService redisService;
     @Value("${jwt.secret-key}")
     private String secretKey;
-
-    private final RedisService redisService;
 
     private String createToken(String email, Long expirationTime) {
         return TOKEN_PREFIX + Jwts.builder()
@@ -75,8 +74,8 @@ public class JwtService {
         return token.substring(TOKEN_BEGIN_INDEX);
     }
 
-    public void saveRefreshToken(String code, String refreshToken) {
-        redisService.saveRefreshToken(code, refreshToken);
+    public void saveRefreshToken(String email, String refreshToken) {
+        redisService.saveRefreshToken(email, refreshToken);
     }
 
     public TokenDTO renewTokens(String refreshToken) {
@@ -84,7 +83,7 @@ public class JwtService {
         return createAllToken(email);
     }
 
-    public void deleteRefreshToken(String code) {
-        redisService.deleteRefreshToken(code);
+    public void deleteRefreshToken(String email) {
+        redisService.deleteRefreshToken(email);
     }
 }
