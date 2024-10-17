@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 
 public class UnauthorizedException extends RuntimeException {
 
-    public UnauthorizedException(String message) {
-        super(message);
+    private static final String MESSAGE = "인증되지 않은 멤버입니다.";
+
+    public UnauthorizedException() {
+        super(MESSAGE);
     }
 
     public ApiUtils.ApiResult<?> body() {
