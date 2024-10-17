@@ -35,7 +35,7 @@ public class JwtService {
                 .refreshToken(createToken(email, REFRESH_TOKEN_EXPIRATION_TIME))
                 .accessToken(createToken(email, ACCESS_TOKEN_EXPIRATION_TIME))
                 .build();
-        saveRefreshToken(email, TOKEN_PREFIX + token.refreshToken());
+        redisService.saveRefreshToken(email, TOKEN_PREFIX + token.refreshToken());
         return token;
     }
 
@@ -54,17 +54,6 @@ public class JwtService {
             return bearerToken;
         }
         return null;
-    }
-
-    private String removeBearerPrefix(String token) {
-        if (!token.startsWith(TOKEN_PREFIX)) {
-            throw new SecurityException();
-        }
-        return token.substring(TOKEN_BEGIN_INDEX);
-    }
-
-    public void saveRefreshToken(String email, String refreshToken) {
-        redisService.saveRefreshToken(email, refreshToken);
     }
 
     public TokenDTO renewTokens(String refreshToken) {
@@ -91,6 +80,13 @@ public class JwtService {
 
     private SecretKey getHashKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String removeBearerPrefix(String token) {
+        if (!token.startsWith(TOKEN_PREFIX)) {
+            throw new SecurityException();
+        }
+        return token.substring(TOKEN_BEGIN_INDEX);
     }
 
     private Boolean isValidRefreshToken(String email, String refreshToken) {
