@@ -22,6 +22,12 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
+    private TokenDTO createToken(String email) {
+        TokenDTO token = jwtService.createAllToken(email);
+        jwtService.saveRefreshToken(email, TOKEN_PREFIX + token.refreshToken());
+        return token;
+    }
+
     public TokenDTO login(LoginRequest loginRequest) {
         Member member = memberRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new EntityNotFoundException("Member"));
@@ -29,10 +35,8 @@ public class AuthService {
         if (!passwordEncoder.matches(loginRequest.password(), member.getPassword())) {
             throw new InvalidPasswordException();
         }
-
-        TokenDTO token = jwtService.createAllToken(member.getEmail());
-        jwtService.saveRefreshToken(member.getEmail(), TOKEN_PREFIX + token.refreshToken());
-        return token;
+        
+        return createToken(member.getEmail());
     }
 
     public TokenDTO autoLogin(RefreshTokenDTO refreshTokenDTO) {
