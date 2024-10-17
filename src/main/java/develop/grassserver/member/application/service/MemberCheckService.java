@@ -49,7 +49,7 @@ public class MemberCheckService {
         redisService.checkAuthCode(request);
     }
 
-    public void authMember(MemberAuthRequest request) {
+    public void checkSameMember(MemberAuthRequest request) {
         Member member = memberRepository.findByEmail(request.email())
                         .orElseThrow(EntityNotFoundException::new);
 
