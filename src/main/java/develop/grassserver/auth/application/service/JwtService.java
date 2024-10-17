@@ -29,28 +29,6 @@ public class JwtService {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    private String createToken(String email, Long expirationTime) {
-        return TOKEN_PREFIX + Jwts.builder()
-                .subject(email)
-                .issuer(ISSUER)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
-                .signWith(getHashKey())
-                .compact();
-    }
-
-    private SecretKey getHashKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-    }
-    
-    private Boolean isValidRefreshToken(String email, String refreshToken) {
-        String token = redisService.getRefreshToken(email);
-        if (token == null) {
-            return false;
-        }
-        return token.equals(refreshToken);
-    }
-
     public TokenDTO createAllToken(String email) {
         TokenDTO token = TokenDTO.builder()
                 .email(email)
@@ -99,5 +77,27 @@ public class JwtService {
 
     public void deleteRefreshToken(String email) {
         redisService.deleteRefreshToken(email);
+    }
+
+    private String createToken(String email, Long expirationTime) {
+        return TOKEN_PREFIX + Jwts.builder()
+                .subject(email)
+                .issuer(ISSUER)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
+                .signWith(getHashKey())
+                .compact();
+    }
+
+    private SecretKey getHashKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private Boolean isValidRefreshToken(String email, String refreshToken) {
+        String token = redisService.getRefreshToken(email);
+        if (token == null) {
+            return false;
+        }
+        return token.equals(refreshToken);
     }
 }
