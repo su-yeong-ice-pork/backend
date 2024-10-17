@@ -1,9 +1,11 @@
 package develop.grassserver.auth.application.service;
 
-import develop.grassserver.member.Member;
-import develop.grassserver.member.infrastructure.repository.MemberRepository;
+import develop.grassserver.auth.presentation.dto.LoginRequest;
+import develop.grassserver.auth.presentation.dto.RefreshTokenDTO;
 import develop.grassserver.auth.presentation.dto.TokenDTO;
-import develop.grassserver.member.exception.InvalidPasswordException;
+import develop.grassserver.member.application.exception.InvalidPasswordException;
+import develop.grassserver.member.domain.entity.Member;
+import develop.grassserver.member.infrastructure.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

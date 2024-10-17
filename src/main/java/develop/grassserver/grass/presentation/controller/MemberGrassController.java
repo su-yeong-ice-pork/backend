@@ -1,10 +1,11 @@
 package develop.grassserver.grass.presentation.controller;
 
+import develop.grassserver.common.utils.ApiUtils;
+import develop.grassserver.common.utils.ApiUtils.ApiResult;
+import develop.grassserver.grass.application.service.MemberGrassService;
 import develop.grassserver.grass.presentation.dto.MemberStreakResponse;
 import develop.grassserver.grass.presentation.dto.MonthlyTotalGrassResponse;
 import develop.grassserver.grass.presentation.dto.YearlyTotalGrassResponse;
-import develop.grassserver.common.utils.ApiUtils;
-import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members/{id}")
 public class MemberGrassController {
+
     private final MemberGrassService memberGrassService;
 
     @Operation(summary = "사용자 스트릭 조회 API", description = "사용자 최장 스트릭, 현재 스트릭, 총 공부시간 조회 API")

@@ -1,6 +1,6 @@
-package develop.grassserver.member.security;
+package develop.grassserver.common.security;
 
-import develop.grassserver.member.Member;
+import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.infrastructure.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

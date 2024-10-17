@@ -1,7 +1,7 @@
 package develop.grassserver.grass.infrastructure.repositiory;
 
 import develop.grassserver.grass.domain.entity.Grass;
-import develop.grassserver.member.Member;
+import develop.grassserver.member.domain.entity.Member;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

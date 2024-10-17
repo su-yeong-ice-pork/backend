@@ -1,5 +1,7 @@
 package develop.grassserver.auth.presentation.exception;
 
+import develop.grassserver.auth.application.exception.ExpirationAuthCodeException;
+import develop.grassserver.auth.application.exception.IncorrectAuthCodeException;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import org.springframework.http.HttpStatus;

@@ -2,8 +2,9 @@ package develop.grassserver.member.presentation.controller;
 
 import develop.grassserver.auth.application.service.MailService;
 import develop.grassserver.auth.application.service.RedisService;
-import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import develop.grassserver.common.utils.ApiUtils;
+import develop.grassserver.member.application.service.MemberCheckService;
+import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

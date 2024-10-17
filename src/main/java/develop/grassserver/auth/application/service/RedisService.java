@@ -2,8 +2,9 @@ package develop.grassserver.auth.application.service;
 
 import develop.grassserver.auth.application.exception.ExpirationAuthCodeException;
 import develop.grassserver.auth.application.exception.IncorrectAuthCodeException;
-import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
+import develop.grassserver.auth.application.valid.AuthValidator;
 import develop.grassserver.common.utils.jwt.JwtUtil;
+import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import java.time.Duration;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;

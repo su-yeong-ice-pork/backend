@@ -7,7 +7,7 @@ import lombok.Getter;
 @Embeddable
 public class Freeze {
 
-    protected Freeze() {
+    public Freeze() {
         this.freezeCount = 0;
     }
 

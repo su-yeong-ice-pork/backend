@@ -1,6 +1,7 @@
 package develop.grassserver.profile.presentation.exception;
 
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
+import develop.grassserver.profile.application.exception.ImageUploadFailedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
