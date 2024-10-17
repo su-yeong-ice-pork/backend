@@ -1,0 +1,71 @@
+spring:
+  jackson:
+    time-zone: Asia/Seoul
+  datasource:
+    username: grass
+    password: 'mutsa123!'
+    url: jdbc:mysql://grass-db.mysql.database.azure.com:3306/grass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: grass-redis.redis.cache.windows.net
+      password: DP2EVSZz9RLjrprQ8ZjQ3FbWIZElrdB1rAzCaDhyxGk=
+      port: 6380
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: TRUE
+
+  logging:
+    level:
+      org:
+        springframework:
+          jdbc: DEBUG
+        hibernate:
+          SQL: DEBUG
+          type:
+            descriptor:
+              sql: TRACE
+          orm:
+            jdbc:
+              bind: TRACE
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+    defaultModelsExpandDepth: 2
+    defaultModelExpandDepth: 2
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: true
+  paths-to-match:
+    - /api/v1/**
+
+cloud:
+  aws:
+    s3:
+      bucket: grass-bucket
+    credentials:
+      access-key: AKIAQFC263FTSDJYZE5I
+      secret-key: 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
+    region:
+      static: us-east-2
+      auto: false
+    stack:
+      auto: false
+
+jwt:
+  secret-key: mutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecretmutsasecret
