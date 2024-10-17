@@ -7,6 +7,7 @@ import static develop.grassserver.common.utils.jwt.JwtUtil.REFRESH_TOKEN_EXPIRAT
 import static develop.grassserver.common.utils.jwt.JwtUtil.TOKEN_BEGIN_INDEX;
 import static develop.grassserver.common.utils.jwt.JwtUtil.TOKEN_PREFIX;
 
+import develop.grassserver.auth.application.exception.ReauthenticationRequiredException;
 import develop.grassserver.auth.presentation.dto.TokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -40,6 +41,14 @@ public class JwtService {
 
     private SecretKey getHashKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+    
+    private Boolean isValidRefreshToken(String email, String refreshToken) {
+        String token = redisService.getRefreshToken(email);
+        if (token == null) {
+            return false;
+        }
+        return token.equals(refreshToken);
     }
 
     public TokenDTO createAllToken(String email) {
@@ -80,17 +89,11 @@ public class JwtService {
         redisService.saveRefreshToken(email, refreshToken);
     }
 
-    public Boolean isValidRefreshToken(String refreshToken) {
-        String email = getEmailFromToken(refreshToken);
-        String token = redisService.getRefreshToken(email);
-        if (token == null) {
-            return false;
-        }
-        return token.equals(refreshToken);
-    }
-
     public TokenDTO renewTokens(String refreshToken) {
         String email = getEmailFromToken(refreshToken);
+        if (!isValidRefreshToken(email, refreshToken)) {
+            throw new ReauthenticationRequiredException();
+        }
         return createAllToken(email);
     }
 

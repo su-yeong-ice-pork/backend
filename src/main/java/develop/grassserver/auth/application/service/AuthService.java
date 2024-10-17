@@ -1,6 +1,5 @@
 package develop.grassserver.auth.application.service;
 
-import develop.grassserver.auth.application.exception.ReauthenticationRequiredException;
 import develop.grassserver.auth.presentation.dto.LoginRequest;
 import develop.grassserver.auth.presentation.dto.RefreshTokenDTO;
 import develop.grassserver.auth.presentation.dto.TokenDTO;
@@ -33,9 +32,6 @@ public class AuthService {
     }
 
     public TokenDTO autoLogin(RefreshTokenDTO refreshTokenDTO) {
-        if (!jwtService.isValidRefreshToken(refreshTokenDTO.refreshToken())) {
-            throw new ReauthenticationRequiredException();
-        }
         return jwtService.renewTokens(refreshTokenDTO.refreshToken());
     }
 }
