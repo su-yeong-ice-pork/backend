@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
+
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -34,7 +35,7 @@ public class AuthService {
     public TokenDTO autoLogin(RefreshTokenDTO refreshTokenDTO) {
         return jwtService.renewTokens(refreshTokenDTO.refreshToken());
     }
-    
+
     public void logout(String email) {
         jwtService.deleteRefreshToken(email);
     }
