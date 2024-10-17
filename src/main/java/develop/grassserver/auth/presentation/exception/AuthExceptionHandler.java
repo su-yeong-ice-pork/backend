@@ -2,6 +2,7 @@ package develop.grassserver.auth.presentation.exception;
 
 import develop.grassserver.auth.application.exception.ExpirationAuthCodeException;
 import develop.grassserver.auth.application.exception.IncorrectAuthCodeException;
+import develop.grassserver.auth.application.exception.ReauthenticationRequiredException;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,12 @@ public class AuthExceptionHandler {
     public ResponseEntity<ApiResult<?>> usernameNotFoundException(UsernameNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiUtils.error(HttpStatus.BAD_REQUEST, exception.getMessage()));
+    }
+
+    @ExceptionHandler(ReauthenticationRequiredException.class)
+    public ResponseEntity<ApiUtils.ApiResult<?>> reauthenticationRequiredException(
+            ReauthenticationRequiredException exception) {
+        return new ResponseEntity<>(exception.body(), exception.status());
     }
 
 }
