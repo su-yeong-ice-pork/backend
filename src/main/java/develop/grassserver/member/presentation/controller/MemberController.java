@@ -53,10 +53,10 @@ public class MemberController {
             @ApiResponse(responseCode = "409", description = "중복 회원 존재")
     })
     @PostMapping
-    public ResponseEntity<ApiResult<?>> signUp(@Valid @RequestBody MemberJoinRequest request) {
+    public ResponseEntity<ApiResult<String>> signUp(@Valid @RequestBody MemberJoinRequest request) {
         memberService.saveMember(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiUtils.success("회원가입 성공"));
+                .body(ApiUtils.success());
     }
 
     @Operation(summary = "비밀번호 재설정 API", description = "비밀번호 재설정 사용되는 API")
