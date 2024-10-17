@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "멤버 가입 시 유효성 검사 APIs", description = "멤버 가입 시 유효성 검사를 하는 APIs")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/members/check")
+@RequestMapping("/api/v1/members")
 public class MemberCheckController {
 
     private final MailService mailService;
@@ -34,8 +35,8 @@ public class MemberCheckController {
             @ApiResponse(responseCode = "400", description = "멤버 이름 형식 오류"),
             @ApiResponse(responseCode = "409", description = "멤버 이름 중복 오류")
     })
-    @GetMapping("/name")
-    public ResponseEntity<ApiUtils.ApiResult<?>> checkName(@RequestParam String name) {
+    @GetMapping("/check/name")
+    public ResponseEntity<ApiUtils.ApiResult<String>> checkName(@RequestParam String name) {
         memberCheckService.checkMemberName(name);
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
@@ -48,8 +49,8 @@ public class MemberCheckController {
             @ApiResponse(responseCode = "409", description = "멤버 이메일 중복 오류"),
             @ApiResponse(responseCode = "500", description = "인증코드 메일 전송 실패")
     })
-    @GetMapping("/email")
-    public ResponseEntity<ApiUtils.ApiResult<?>> checkEmail(@RequestParam String email) {
+    @GetMapping("/check/email")
+    public ResponseEntity<ApiUtils.ApiResult<String>> checkEmail(@RequestParam String email) {
         memberCheckService.checkMemberEmail(email);
         mailService.sendMail(email);
         return ResponseEntity.ok()
@@ -62,8 +63,8 @@ public class MemberCheckController {
             @ApiResponse(responseCode = "400", description = "인증코드 불일치 오류"),
             @ApiResponse(responseCode = "404", description = "인증코드 만료 오류")
     })
-    @PostMapping("/code")
-    public ResponseEntity<ApiUtils.ApiResult<?>> checkCode(@RequestBody CheckAuthCodeRequest request) {
+    @PostMapping("/check/code")
+    public ResponseEntity<ApiUtils.ApiResult<String>> checkCode(@Valid @RequestBody CheckAuthCodeRequest request) {
         redisService.checkAuthCode(request);
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
