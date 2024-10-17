@@ -75,8 +75,8 @@ public class MemberCheckController {
             @ApiResponse(responseCode = "500", description = "인증코드 메일 전송 실패")
     })
     @PostMapping("/auth")
-    public ResponseEntity<ApiResult<String>> auth(@Valid @RequestBody MemberAuthRequest request) {
-        memberCheckService.authMember(request);
+    public ResponseEntity<ApiResult<String>> checkSameMember(@Valid @RequestBody MemberAuthRequest request) {
+        memberCheckService.checkSameMember(request);
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
     }
