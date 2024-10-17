@@ -1,5 +1,7 @@
 package develop.grassserver.auth.application.service;
 
+import static develop.grassserver.common.utils.jwt.JwtUtil.TOKEN_PREFIX;
+
 import develop.grassserver.auth.presentation.dto.LoginRequest;
 import develop.grassserver.auth.presentation.dto.RefreshTokenDTO;
 import develop.grassserver.auth.presentation.dto.TokenDTO;
@@ -29,21 +31,11 @@ public class AuthService {
         }
 
         TokenDTO token = jwtService.createAllToken(member.getEmail());
-//        if (loginRequest.autoLogin()) {
-//            jwtService.saveRefreshToken(loginRequest.code(), TOKEN_PREFIX + token.refreshToken());
-//        }
+        jwtService.saveRefreshToken(member.getEmail(), TOKEN_PREFIX + token.refreshToken());
         return token;
     }
 
     public TokenDTO autoLogin(RefreshTokenDTO refreshTokenDTO) {
         return jwtService.renewTokens(refreshTokenDTO.refreshToken());
     }
-
-//    public void logout(String email) {
-//        jwtService.saveRefreshToken(loginRequest.code(), TOKEN_PREFIX + token.refreshToken());
-//    }
-//
-//    public void logout(String code) {
-//        jwtService.deleteRefreshToken(code);
-//    }
 }
