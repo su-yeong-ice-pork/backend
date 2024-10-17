@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RedisService {
 
-    public static final String REFRESH_TOKEN_PREFIX = "refresh-token";
+    private static final String REFRESH_TOKEN_PREFIX = "refresh-token";
     private static final long AUTH_CODE_EXPIRATION_TIME = 60 * 5L;
     private final RedisTemplate<String, Object> redisTemplate;
 
