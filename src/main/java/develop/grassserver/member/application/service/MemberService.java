@@ -1,8 +1,8 @@
 package develop.grassserver.member.application.service;
 
+import develop.grassserver.auth.application.exception.UnauthorizedException;
 import develop.grassserver.auth.application.service.MailService;
 import develop.grassserver.badge.application.service.BadgeService;
-import develop.grassserver.member.application.exception.UnauthorizedException;
 import develop.grassserver.member.domain.entity.Major;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.domain.entity.StudyRecord;

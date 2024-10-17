@@ -1,12 +1,12 @@
 package develop.grassserver.member.presentation.exception;
 
+import develop.grassserver.auth.application.exception.ReauthenticationRequiredException;
+import develop.grassserver.auth.application.exception.UnauthorizedException;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.member.application.exception.DuplicateMemberException;
 import develop.grassserver.member.application.exception.InvalidPasswordException;
 import develop.grassserver.member.application.exception.MemberEmailFormatException;
 import develop.grassserver.member.application.exception.MemberNameFormatException;
-import develop.grassserver.member.application.exception.ReauthenticationRequiredException;
-import develop.grassserver.member.application.exception.UnauthorizedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
