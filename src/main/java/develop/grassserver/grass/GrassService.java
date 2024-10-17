@@ -1,5 +1,7 @@
 package develop.grassserver.grass;
 
+import static develop.grassserver.utils.GrassScoreUtil.calculateStudyScore;
+
 import develop.grassserver.grass.dto.AttendanceResponse;
 import develop.grassserver.grass.dto.StudyTimeRequest;
 import develop.grassserver.grass.dto.StudyTimeResponse;
@@ -7,6 +9,7 @@ import develop.grassserver.grass.exception.AlreadyCheckedInException;
 import develop.grassserver.grass.exception.MissingAttendanceException;
 import develop.grassserver.member.Member;
 import develop.grassserver.utils.duration.DurationUtils;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -98,7 +101,9 @@ public class GrassService {
         Optional<Grass> optionalGrass = findTodayGrassByMemberId(member.getId());
         if (optionalGrass.isPresent()) {
             Grass grass = optionalGrass.get();
-            grass.updateStudyTime(DurationUtils.parseDuration(request.todayStudyTime()));
+            Duration todayStudyTime = DurationUtils.parseDuration(request.todayStudyTime());
+            grass.updateStudyTime(todayStudyTime);
+            grass.updateGrassScore(calculateStudyScore(todayStudyTime));
         } else {
             throw new MissingAttendanceException();
         }
