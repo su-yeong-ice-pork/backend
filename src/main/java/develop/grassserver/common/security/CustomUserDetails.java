@@ -1,6 +1,6 @@
-package develop.grassserver.member.security;
+package develop.grassserver.common.security;
 
-import develop.grassserver.member.Member;
+import develop.grassserver.member.domain.entity.Member;
 import java.util.Collection;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

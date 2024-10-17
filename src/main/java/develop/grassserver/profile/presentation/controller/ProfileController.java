@@ -1,11 +1,12 @@
 package develop.grassserver.profile.presentation.controller;
 
-import develop.grassserver.member.profile.dto.FindAllDefaultProfileImagesResponse;
-import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
-import develop.grassserver.member.profile.dto.UpdateBannerImageRequest;
-import develop.grassserver.member.profile.dto.UpdateProfileImageRequest;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
+import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
+import develop.grassserver.member.profile.dto.FindAllDefaultProfileImagesResponse;
+import develop.grassserver.member.profile.dto.UpdateBannerImageRequest;
+import develop.grassserver.member.profile.dto.UpdateProfileImageRequest;
+import develop.grassserver.profile.application.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

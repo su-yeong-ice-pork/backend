@@ -1,9 +1,9 @@
 package develop.grassserver.common.config;
 
+import develop.grassserver.auth.application.service.JwtService;
 import develop.grassserver.common.security.CustomUserDetailsService;
 import develop.grassserver.common.security.ExceptionHandlingFilter;
 import develop.grassserver.common.security.JwtAuthenticationFilter;
-import develop.grassserver.auth.application.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +28,7 @@ public class SecurityConfig {
             "/api-docs/**",
             "/swagger-ui/**"
     };
+
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 

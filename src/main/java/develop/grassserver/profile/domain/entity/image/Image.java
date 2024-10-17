@@ -1,7 +1,7 @@
 package develop.grassserver.profile.domain.entity.image;
 
 import develop.grassserver.common.BaseEntity;
-import develop.grassserver.member.Member;
+import develop.grassserver.member.domain.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

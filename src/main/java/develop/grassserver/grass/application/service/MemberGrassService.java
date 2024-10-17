@@ -1,15 +1,15 @@
 package develop.grassserver.grass.application.service;
 
+import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.domain.entity.Grass;
-import develop.grassserver.member.Member;
-import develop.grassserver.member.MemberService;
-import develop.grassserver.member.StudyRecord;
 import develop.grassserver.grass.presentation.dto.MemberStreakResponse;
 import develop.grassserver.grass.presentation.dto.MonthlyGrassResponse;
 import develop.grassserver.grass.presentation.dto.MonthlyTotalGrassResponse;
 import develop.grassserver.grass.presentation.dto.YearlyGrassResponse;
 import develop.grassserver.grass.presentation.dto.YearlyTotalGrassResponse;
-import develop.grassserver.common.utils.duration.DurationUtils;
+import develop.grassserver.member.application.service.MemberService;
+import develop.grassserver.member.domain.entity.Member;
+import develop.grassserver.member.domain.entity.StudyRecord;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MemberGrassService {
+
     private final MemberService memberService;
     private final GrassService grassService;
 

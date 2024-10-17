@@ -1,4 +1,4 @@
-package develop.grassserver.member.security;
+package develop.grassserver.common.security;
 
 import develop.grassserver.auth.application.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 

@@ -1,9 +1,10 @@
 package develop.grassserver.badge.presentation.controller;
 
-import develop.grassserver.member.badge.dto.FindAllMemberBadgesResponse;
-import develop.grassserver.member.security.CustomUserDetails;
+import develop.grassserver.badge.application.service.BadgeService;
+import develop.grassserver.common.security.CustomUserDetails;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
+import develop.grassserver.member.badge.dto.FindAllMemberBadgesResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
