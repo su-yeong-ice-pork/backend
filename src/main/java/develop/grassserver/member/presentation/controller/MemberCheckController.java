@@ -38,7 +38,7 @@ public class MemberCheckController {
     public ResponseEntity<ApiUtils.ApiResult<?>> checkName(@RequestParam String name) {
         memberCheckService.checkMemberName(name);
         return ResponseEntity.ok()
-                .body(ApiUtils.success(null));
+                .body(ApiUtils.success());
     }
 
     @Operation(summary = "이메일 중복 검사 API", description = "멤버 이메일 중복 검사 시 사용되는 API")
@@ -53,7 +53,7 @@ public class MemberCheckController {
         memberCheckService.checkMemberEmail(email);
         mailService.sendMail(email);
         return ResponseEntity.ok()
-                .body(ApiUtils.success(null));
+                .body(ApiUtils.success());
     }
 
     @Operation(summary = "인증코드 일치 검사 API", description = "인증코드 일치 검사 시 사용되는 API")
@@ -66,6 +66,6 @@ public class MemberCheckController {
     public ResponseEntity<ApiUtils.ApiResult<?>> checkCode(@RequestBody CheckAuthCodeRequest request) {
         redisService.checkAuthCode(request);
         return ResponseEntity.ok()
-                .body(ApiUtils.success(null));
+                .body(ApiUtils.success());
     }
 }
