@@ -34,4 +34,8 @@ public class AuthService {
     public TokenDTO autoLogin(RefreshTokenDTO refreshTokenDTO) {
         return jwtService.renewTokens(refreshTokenDTO.refreshToken());
     }
+    
+    public void logout(String email) {
+        jwtService.deleteRefreshToken(email);
+    }
 }
