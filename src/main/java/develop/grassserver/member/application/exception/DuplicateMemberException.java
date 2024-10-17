@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 
 public class DuplicateMemberException extends RuntimeException {
 
-    public DuplicateMemberException(String message) {
-        super(message);
+    private static final String MESSAGE = "멤버가 중복됩니다.";
+
+    public DuplicateMemberException() {
+        super(MESSAGE);
     }
 
     public ApiUtils.ApiResult<?> body() {
