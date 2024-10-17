@@ -16,7 +16,7 @@ public final class MemberValidator {
 
     public static boolean isCorrectNameFormat(String name) {
         if (name.length() > MAX_NAME_LENGTH) {
-            log.error("이름은 8글자 이하이어야 합니다.");
+            log.error("이름은 " + MAX_NAME_LENGTH + "글자 이하이어야 합니다.");
             return false;
         }
         if (!NAME.matcher(name).matches()) {
