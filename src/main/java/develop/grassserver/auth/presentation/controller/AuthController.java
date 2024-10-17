@@ -56,9 +56,14 @@ public class AuthController {
                 .body(ApiUtils.success());
     }
 
+    @Operation(summary = "로그아웃 API", description = "멤버 자동 로그인 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "404", description = "해당 멤버를 찾을 수 없음")
+    })
     @PostMapping("/logout")
     public ResponseEntity<ApiResult<String>> logout(@LoginMember Member member) {
-        // 로그인한 사용자 검증 필요
+        authService.logout(member.getEmail());
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
     }
