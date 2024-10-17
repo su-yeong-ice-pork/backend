@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 
 public class MemberEmailFormatException extends RuntimeException {
 
-    public MemberEmailFormatException(String message) {
-        super(message);
+    private static final String MESSAGE = "멤버 이메일 형식 오류입니다.";
+
+    public MemberEmailFormatException() {
+        super(MESSAGE);
     }
 
     public ApiUtils.ApiResult<?> body() {

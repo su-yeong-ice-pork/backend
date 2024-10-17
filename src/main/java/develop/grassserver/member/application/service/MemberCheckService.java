@@ -18,18 +18,18 @@ public class MemberCheckService {
 
     public void checkMemberName(String name) {
         if (memberRepository.existsByName(name))
-            throw new DuplicateMemberException("멤버 이름이 중복됩니다.");
+            throw new DuplicateMemberException();
         if (!MemberValidator.isCorrectNameFormat(name)) {
-            throw new MemberNameFormatException("멤버 이름 형식 오류입니다.");
+            throw new MemberNameFormatException();
         }
     }
 
     public void checkMemberEmail(String email) {
         if (memberRepository.existsByEmail(email)) {
-            throw new DuplicateMemberException("멤버 이메일이 중복됩니다.");
+            throw new DuplicateMemberException();
         }
         if (!MemberValidator.isCorrectEmailFormat(email)) {
-            throw new MemberEmailFormatException("멤버 이메일 형식 오류입니다.");
+            throw new MemberEmailFormatException();
         }
     }
 }

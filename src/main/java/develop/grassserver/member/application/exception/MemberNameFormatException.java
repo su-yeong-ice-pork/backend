@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 
 public class MemberNameFormatException extends RuntimeException {
 
-    public MemberNameFormatException(String message) {
-        super(message);
+    private static final String MESSAGE = "멤버 이름 형식 오류입니다.";
+
+    public MemberNameFormatException() {
+        super(MESSAGE);
     }
 
     public ApiUtils.ApiResult<?> body() {
