@@ -7,9 +7,6 @@ assignees: ''
 
 ---
 
-## 🛠️ Description 
-
-## ✅ TODO
-- [ ]
+## 📄 Description 
 
 ## 💻 etc.
