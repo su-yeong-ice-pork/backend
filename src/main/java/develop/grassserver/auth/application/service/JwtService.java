@@ -43,11 +43,13 @@ public class JwtService {
     }
 
     public TokenDTO createAllToken(String email) {
-        return TokenDTO.builder()
+        TokenDTO token = TokenDTO.builder()
                 .email(email)
                 .refreshToken(createToken(email, REFRESH_TOKEN_EXPIRATION_TIME))
                 .accessToken(createToken(email, ACCESS_TOKEN_EXPIRATION_TIME))
                 .build();
+        saveRefreshToken(email, TOKEN_PREFIX + token.refreshToken());
+        return token;
     }
 
     public String getEmailFromToken(String token) {
@@ -76,6 +78,15 @@ public class JwtService {
 
     public void saveRefreshToken(String email, String refreshToken) {
         redisService.saveRefreshToken(email, refreshToken);
+    }
+
+    public Boolean isValidRefreshToken(String refreshToken) {
+        String email = getEmailFromToken(refreshToken);
+        String token = redisService.getRefreshToken(email);
+        if (token == null) {
+            return false;
+        }
+        return token.equals(refreshToken);
     }
 
     public TokenDTO renewTokens(String refreshToken) {
