@@ -1,6 +1,6 @@
 package develop.grassserver.member.presentation.controller;
 
-import develop.grassserver.auth.application.service.JwtUserService;
+import develop.grassserver.auth.application.service.AuthService;
 import develop.grassserver.auth.presentation.dto.LoginRequest;
 import develop.grassserver.auth.presentation.dto.RefreshTokenDTO;
 import develop.grassserver.auth.presentation.dto.TokenDTO;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
-    private final JwtUserService jwtUserService;
+    private final AuthService authService;
 
     @Operation(summary = "내정보 조회 API", description = "내정보 조회 시 사용되는 API")
     @ApiResponses(value = {
@@ -61,7 +61,7 @@ public class MemberController {
     })
     @PostMapping("/login")
     public ResponseEntity<ApiResult<TokenDTO>> login(@Valid @RequestBody LoginRequest loginRequest) {
-        TokenDTO token = jwtUserService.login(loginRequest);
+        TokenDTO token = authService.login(loginRequest);
         return ResponseEntity.ok()
                 .header("Authorization", token.accessToken())
                 .body(ApiUtils.success(token));
@@ -75,7 +75,7 @@ public class MemberController {
     })
     @PostMapping("/auto-login")
     public ResponseEntity<ApiResult<String>> autoLogin(@Valid @RequestBody RefreshTokenDTO refreshTokenDTO) {
-        TokenDTO token = jwtUserService.autoLogin(refreshTokenDTO);
+        TokenDTO token = authService.autoLogin(refreshTokenDTO);
         return ResponseEntity.ok()
                 .header("Authorization", token.accessToken())
                 .body(ApiUtils.success());
