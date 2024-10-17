@@ -5,7 +5,6 @@ import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.presentation.dto.ChangePasswordRequest;
-import develop.grassserver.member.presentation.dto.MemberAuthRequest;
 import develop.grassserver.member.presentation.dto.MemberJoinRequest;
 import develop.grassserver.member.presentation.dto.MemberProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,20 +57,6 @@ public class MemberController {
         memberService.saveMember(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success("회원가입 성공"));
-    }
-
-    @Operation(summary = "멤버 인증 API", description = "멤버 인증 시 사용되는 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "인증 성공. 응답 에러 코드는 무시하셈"),
-            @ApiResponse(responseCode = "401", description = "인증 실패. 이름과 이메일이 불일치"),
-            @ApiResponse(responseCode = "404", description = "정보를 찾을 수 없음"),
-            @ApiResponse(responseCode = "500", description = "인증코드 메일 전송 실패")
-    })
-    @PostMapping("/auth")
-    public ResponseEntity<ApiResult<String>> auth(@Valid @RequestBody MemberAuthRequest request) {
-        memberService.authMember(request);
-        return ResponseEntity.ok()
-                .body(ApiUtils.success("인증 성공"));
     }
 
     @Operation(summary = "비밀번호 재설정 API", description = "비밀번호 재설정 사용되는 API")
