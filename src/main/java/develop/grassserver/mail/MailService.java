@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Slf4j
 @Service
@@ -18,6 +20,7 @@ public class MailService {
 
     private final RedisService redisService;
     private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
 
     public void sendMail(String email) {
         String code = createAuthorizationCode();
@@ -34,9 +37,15 @@ public class MailService {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             message.addRecipients(Message.RecipientType.TO, email);
-            message.setSubject("Grass 인증 번호입니다.");
-            message.setText("이메일 인증코드: " + code);
+            message.setSubject("[잔디] 인증코드 발송 메일입니다.");
             message.setFrom("grass-authorization@naver.com");
+
+            Context context = new Context();
+            context.setVariable("code", code);
+
+            String htmlContent = templateEngine.process("mail", context);
+
+            message.setContent(htmlContent, "text/html; charset=utf-8");
             return message;
         } catch (MessagingException e) {
             log.error("메일 전송에 실패하였습니다.");
