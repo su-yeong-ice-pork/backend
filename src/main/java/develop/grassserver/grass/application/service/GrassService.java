@@ -1,5 +1,7 @@
 package develop.grassserver.grass.application.service;
 
+import static develop.grassserver.common.utils.GrassScoreUtil.calculateStudyScore;
+
 import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.application.exception.AlreadyCheckedInException;
 import develop.grassserver.grass.application.exception.MissingAttendanceException;
@@ -9,7 +11,7 @@ import develop.grassserver.grass.presentation.dto.AttendanceResponse;
 import develop.grassserver.grass.presentation.dto.StudyTimeRequest;
 import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
 import develop.grassserver.member.domain.entity.Member;
-
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
