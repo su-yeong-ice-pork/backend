@@ -1,4 +1,4 @@
-package develop.grassserver.grass.presentation;
+package develop.grassserver.grass.presentation.controller;
 
 import develop.grassserver.common.annotation.LoginMember;
 import develop.grassserver.common.utils.ApiUtils;
