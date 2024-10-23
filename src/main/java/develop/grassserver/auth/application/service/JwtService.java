@@ -35,7 +35,7 @@ public class JwtService {
                 .refreshToken(createToken(email, REFRESH_TOKEN_EXPIRATION_TIME))
                 .accessToken(createToken(email, ACCESS_TOKEN_EXPIRATION_TIME))
                 .build();
-        redisService.saveRefreshToken(email, TOKEN_PREFIX + token.refreshToken());
+        redisService.saveRefreshToken(email, token.refreshToken());
         return token;
     }
 
