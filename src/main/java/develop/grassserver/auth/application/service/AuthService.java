@@ -1,8 +1,8 @@
 package develop.grassserver.auth.application.service;
 
+import develop.grassserver.auth.application.dto.TokenDTO;
 import develop.grassserver.auth.presentation.dto.LoginRequest;
 import develop.grassserver.auth.presentation.dto.RefreshTokenDTO;
-import develop.grassserver.auth.presentation.dto.TokenDTO;
 import develop.grassserver.member.application.exception.InvalidPasswordException;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.infrastructure.repository.MemberRepository;

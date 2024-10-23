@@ -7,8 +7,8 @@ import static develop.grassserver.common.utils.jwt.JwtUtil.REFRESH_TOKEN_EXPIRAT
 import static develop.grassserver.common.utils.jwt.JwtUtil.TOKEN_BEGIN_INDEX;
 import static develop.grassserver.common.utils.jwt.JwtUtil.TOKEN_PREFIX;
 
+import develop.grassserver.auth.application.dto.TokenDTO;
 import develop.grassserver.auth.application.exception.ReauthenticationRequiredException;
-import develop.grassserver.auth.presentation.dto.TokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -31,7 +31,6 @@ public class JwtService {
 
     public TokenDTO createAllToken(String email) {
         TokenDTO token = TokenDTO.builder()
-                .email(email)
                 .refreshToken(createToken(email, REFRESH_TOKEN_EXPIRATION_TIME))
                 .accessToken(createToken(email, ACCESS_TOKEN_EXPIRATION_TIME))
                 .build();

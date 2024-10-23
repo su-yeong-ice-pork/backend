@@ -1,9 +1,10 @@
 package develop.grassserver.auth.presentation.controller;
 
+import develop.grassserver.auth.application.dto.TokenDTO;
 import develop.grassserver.auth.application.service.AuthService;
 import develop.grassserver.auth.presentation.dto.LoginRequest;
 import develop.grassserver.auth.presentation.dto.RefreshTokenDTO;
-import develop.grassserver.auth.presentation.dto.TokenDTO;
+import develop.grassserver.auth.presentation.dto.TokenResponse;
 import develop.grassserver.common.annotation.LoginMember;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
@@ -35,8 +36,14 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "해당 멤버를 찾을 수 없음")
     })
     @PostMapping("/login")
-    public ResponseEntity<ApiResult<TokenDTO>> login(@Valid @RequestBody LoginRequest loginRequest) {
-        TokenDTO token = authService.login(loginRequest);
+    public ResponseEntity<ApiResult<TokenResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
+        TokenDTO tokenDTO = authService.login(loginRequest);
+        TokenResponse token = TokenResponse.builder()
+                .accessToken(tokenDTO.accessToken())
+                .refreshToken(tokenDTO.refreshToken())
+                .email(loginRequest.email())
+                .build();
+
         return ResponseEntity.ok()
                 .header("Authorization", token.accessToken())
                 .body(ApiUtils.success(token));
