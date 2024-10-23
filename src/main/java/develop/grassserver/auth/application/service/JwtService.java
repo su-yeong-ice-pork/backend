@@ -38,7 +38,7 @@ public class JwtService {
         redisService.saveRefreshToken(email, TOKEN_PREFIX + token.refreshToken());
         return token;
     }
-    
+
     private String createToken(String email, Long expirationTime) {
         return TOKEN_PREFIX + Jwts.builder()
                 .subject(email)
@@ -88,7 +88,7 @@ public class JwtService {
 
     private Boolean isValidRefreshToken(String email, String refreshToken) {
         String token = redisService.getRefreshToken(email);
-        if (token == null) {
+        if (token.isEmpty()) {
             return false;
         }
         return token.equals(refreshToken);
