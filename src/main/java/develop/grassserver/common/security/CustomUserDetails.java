@@ -15,7 +15,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 권한이 필요하다면 반환
         return null;
     }
 
