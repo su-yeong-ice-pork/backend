@@ -1,5 +1,13 @@
 package develop.grassserver.common.security;
 
+import static develop.grassserver.common.security.JwtErrorMessages.EXPIRED_TOKEN;
+import static develop.grassserver.common.security.JwtErrorMessages.ILLEGAL_ARGUMENT;
+import static develop.grassserver.common.security.JwtErrorMessages.INVALID_SIGNATURE;
+import static develop.grassserver.common.security.JwtErrorMessages.INVALID_TOKEN;
+import static develop.grassserver.common.security.JwtErrorMessages.MALFORMED_TOKEN;
+import static develop.grassserver.common.security.JwtErrorMessages.SERVER_ERROR;
+import static develop.grassserver.common.security.JwtErrorMessages.UNSUPPORTED_TOKEN;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import develop.grassserver.common.utils.ApiUtils;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -41,22 +49,21 @@ public class ExceptionHandlingFilter extends OncePerRequestFilter {
             throws IOException {
         ApiUtils.ApiResult<?> apiResult;
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-
         if (ex instanceof ExpiredJwtException) {
-            apiResult = ApiUtils.error(status, "토큰이 만료되었습니다.");
+            apiResult = ApiUtils.error(status, EXPIRED_TOKEN.getMessage());
         } else if (ex instanceof UnsupportedJwtException) {
-            apiResult = ApiUtils.error(status, "지원하지 않는 토큰 형식입니다.");
+            apiResult = ApiUtils.error(status, UNSUPPORTED_TOKEN.getMessage());
         } else if (ex instanceof MalformedJwtException) {
-            apiResult = ApiUtils.error(status, "토큰의 형식이 올바르지 않습니다.");
+            apiResult = ApiUtils.error(status, MALFORMED_TOKEN.getMessage());
         } else if (ex instanceof SignatureException || ex instanceof SecurityException) {
-            apiResult = ApiUtils.error(status, "토큰의 서명이 유효하지 않습니다.");
+            apiResult = ApiUtils.error(status, INVALID_SIGNATURE.getMessage());
         } else if (ex instanceof IllegalArgumentException) {
-            apiResult = ApiUtils.error(status, "토큰이 제공되지 않았습니다.");
+            apiResult = ApiUtils.error(status, ILLEGAL_ARGUMENT.getMessage());
         } else if (ex instanceof JwtException) {
-            apiResult = ApiUtils.error(status, "유효하지 않은 토큰입니다.");
+            apiResult = ApiUtils.error(status, INVALID_TOKEN.getMessage());
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
-            apiResult = ApiUtils.error(status, "서버 오류가 발생했습니다.");
+            apiResult = ApiUtils.error(status, SERVER_ERROR.getMessage());
         }
 
         log.error("Security Exception 발생: [{}] {}", request.getRequestURI(), ex.getMessage());
