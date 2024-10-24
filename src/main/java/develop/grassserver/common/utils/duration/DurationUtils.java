@@ -36,7 +36,7 @@ public class DurationUtils {
         return String.format("%d:%02d:%02d", hours, minutes, seconds);
     }
 
-    public static int formatHourDuration(Duration duration) {
-        return (int) duration.getSeconds() / 3600;
+    public static long formatHourDuration(Duration duration) {
+        return (long) duration.getSeconds() / 3600;
     }
 }

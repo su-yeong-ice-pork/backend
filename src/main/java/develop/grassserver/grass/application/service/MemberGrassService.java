@@ -39,7 +39,7 @@ public class MemberGrassService {
 
         StudyRecord studyRecord = member.getStudyRecord();
         int topStreak = studyRecord.getTopStreak();
-        int totalStudyTime = DurationUtils.formatHourDuration(studyRecord.getTotalStudyTime());
+        long totalStudyTime = DurationUtils.formatHourDuration(studyRecord.getTotalStudyTime());
 
         int currentStreak = (grass != null) ? grass.getCurrentStreak() : 0;
 
@@ -51,7 +51,7 @@ public class MemberGrassService {
         Long grassCount = grassService.getTotalGrassCount(memberId);
 
         StudyRecord studyRecord = member.getStudyRecord();
-        int totalStudyTime = DurationUtils.formatHourDuration(studyRecord.getTotalStudyTime());
+        long totalStudyTime = DurationUtils.formatHourDuration(studyRecord.getTotalStudyTime());
 
         LocalDate startDate = member.getCreatedAt().toLocalDate();
 
