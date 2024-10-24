@@ -1,7 +1,5 @@
 package develop.grassserver.common.config;
 
-import develop.grassserver.auth.application.service.JwtService;
-import develop.grassserver.common.security.CustomUserDetailsService;
 import develop.grassserver.common.security.ExceptionHandlingFilter;
 import develop.grassserver.common.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -29,17 +27,16 @@ public class SecurityConfig {
             "/swagger-ui/**"
     };
 
-    private final JwtService jwtService;
-    private final CustomUserDetailsService userDetailsService;
+    private final ExceptionHandlingFilter exceptionHandlingFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService, userDetailsService);
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new ExceptionHandlingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlingFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PERMIT_SWAGGER_URL_ARRAY)
