@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = jwtService.extractToken(request);
 
-        if (token != null) {
+        if (StringUtils.hasText(token)) {
             try {
                 String userEmail = jwtService.getEmailFromToken(token);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
