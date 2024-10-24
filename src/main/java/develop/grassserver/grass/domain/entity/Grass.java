@@ -42,8 +42,9 @@ public class Grass extends BaseEntity {
     private Member member;
 
     public void updateStudyTime(Duration todayStudyTime) {
+        Duration plusTime = todayStudyTime.minus(studyTime);
+        member.getStudyRecord().updateTotalStudyTime(plusTime);
         this.studyTime = todayStudyTime;
-        member.getStudyRecord().updateTotalStudyTime(todayStudyTime);
     }
 
     public void updateGrassScore(int grassScore) {
