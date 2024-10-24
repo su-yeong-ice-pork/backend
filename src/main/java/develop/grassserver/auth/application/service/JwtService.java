@@ -87,7 +87,7 @@ public class JwtService {
 
     private Boolean isValidRefreshToken(String email, String refreshToken) {
         String token = redisService.getRefreshToken(email);
-        if (token.isEmpty()) {
+        if (StringUtils.hasText(token)) {
             return false;
         }
         return token.equals(refreshToken);
