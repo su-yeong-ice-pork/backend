@@ -7,7 +7,6 @@ import develop.grassserver.auth.application.dto.TokenDTO;
 import develop.grassserver.auth.application.exception.ReauthenticationRequiredException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -17,8 +16,6 @@ public class JwtService {
 
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
-    @Value("${jwt.secret-key}")
-    private String secretKey;
 
     public TokenDTO createAllToken(String email) {
         TokenDTO token = TokenDTO.builder()
