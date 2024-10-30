@@ -20,6 +20,7 @@ public class JwtTokenProvider {
 
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final int TOKEN_BEGIN_INDEX = 7;
+
     @Value("${jwt.secret-key}")
     private String secretKey;
 
