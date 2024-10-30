@@ -40,7 +40,7 @@ public class MemberController {
     public ResponseEntity<ApiResult<MemberProfileResponse>> findMember(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        MemberProfileResponse response = memberService.findMemberProfile(userDetails.getMember());
+        MemberProfileResponse response = memberService.findMemberProfile(userDetails.member());
         return ResponseEntity.ok()
                 .body(ApiUtils.success(response));
     }
