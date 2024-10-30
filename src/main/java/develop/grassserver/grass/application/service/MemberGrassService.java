@@ -12,6 +12,7 @@ import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.domain.entity.StudyRecord;
 import java.time.LocalDate;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,8 +42,10 @@ public class MemberGrassService {
         int topStreak = studyRecord.getTopStreak();
         long totalStudyTime = DurationUtils.formatHourDuration(studyRecord.getTotalStudyTime());
 
-        int currentStreak = (grass != null) ? grass.getCurrentStreak() : 0;
-
+        int currentStreak = Optional.ofNullable(grass)
+                .map(Grass::getCurrentStreak)
+                .orElse(0);
+        
         return new MemberStreakResponse(currentStreak, topStreak, totalStudyTime);
     }
 
