@@ -17,14 +17,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
+
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final int TOKEN_BEGIN_INDEX = 7;
     @Value("${jwt.secret-key}")
     private String secretKey;
-
-    private SecretKey getHashKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-    }
 
     public String createAccessToken(String email) {
         return createToken(email, ACCESS_TOKEN_EXPIRATION_TIME);
@@ -53,11 +50,14 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
+    private SecretKey getHashKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
     private String removeBearerPrefix(String token) {
         if (!token.startsWith(TOKEN_PREFIX)) {
             throw new SecurityException();
         }
         return token.substring(TOKEN_BEGIN_INDEX);
     }
-
 }
