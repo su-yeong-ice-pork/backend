@@ -1,5 +1,6 @@
 name: Build and deploy JAR app to Azure Web App - grass-server
 
+
 on:
   push:
     branches:
