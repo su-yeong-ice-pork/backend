@@ -1,9 +1,10 @@
 package develop.grassserver.member.presentation.controller;
 
-import develop.grassserver.common.security.CustomUserDetails;
+import develop.grassserver.common.annotation.LoginMember;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.member.application.service.MemberService;
+import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.presentation.dto.ChangePasswordRequest;
 import develop.grassserver.member.presentation.dto.MemberJoinRequest;
 import develop.grassserver.member.presentation.dto.MemberProfileResponse;
@@ -15,7 +16,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,9 +38,8 @@ public class MemberController {
     })
     @GetMapping
     public ResponseEntity<ApiResult<MemberProfileResponse>> findMember(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        MemberProfileResponse response = memberService.findMemberProfile(userDetails.member());
+            @LoginMember Member member) {
+        MemberProfileResponse response = memberService.findMemberProfile(member);
         return ResponseEntity.ok()
                 .body(ApiUtils.success(response));
     }

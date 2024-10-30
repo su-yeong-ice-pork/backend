@@ -3,7 +3,7 @@ package develop.grassserver.grass.presentation.dto;
 public record MonthlyGrassResponse(
         Long id,
         int day,
-        int studyHour,
+        long studyHour,
         int grassScore
 ) {
 }

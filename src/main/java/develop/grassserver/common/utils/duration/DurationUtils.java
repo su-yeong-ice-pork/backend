@@ -8,6 +8,9 @@ import java.time.temporal.TemporalAccessor;
 
 public class DurationUtils {
 
+    public static final int SECONDS_IN_MINUTE = 60;
+    public static final int SECONDS_IN_HOUR = 3600;
+
     private static final DateTimeFormatter DURATION_FORMATTER = new DateTimeFormatterBuilder()
             .appendPattern("[H][HH]")
             .appendLiteral(':')
@@ -30,13 +33,13 @@ public class DurationUtils {
 
     public static String formatDuration(Duration duration) {
         long totalSeconds = duration.getSeconds();
-        long hours = totalSeconds / 3600;
-        long minutes = (totalSeconds % 3600) / 60;
-        long seconds = totalSeconds % 60;
+        long hours = totalSeconds / SECONDS_IN_HOUR;
+        long minutes = (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
+        long seconds = totalSeconds % SECONDS_IN_MINUTE;
         return String.format("%d:%02d:%02d", hours, minutes, seconds);
     }
 
-    public static int formatHourDuration(Duration duration) {
-        return (int) duration.getSeconds() / 3600;
+    public static long formatHourDuration(Duration duration) {
+        return (long) duration.getSeconds() / 3600;
     }
 }

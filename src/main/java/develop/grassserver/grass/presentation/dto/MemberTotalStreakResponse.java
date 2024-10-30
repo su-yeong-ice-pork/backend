@@ -7,6 +7,6 @@ public record MemberTotalStreakResponse(
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy년 MM월 dd일")
         LocalDate createdDate,
         long totalStreak,
-        int totalStudyTime
+        long totalStudyTime
 ) {
 }
