@@ -1,4 +1,4 @@
-package develop.grassserver.member.profile.dto;
+package develop.grassserver.profile.presentation.dto;
 
 import develop.grassserver.profile.domain.entity.banner.DefaultBanner;
 import java.util.List;

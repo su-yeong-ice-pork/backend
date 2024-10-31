@@ -1,15 +1,19 @@
 package develop.grassserver.profile.presentation.controller;
 
+import develop.grassserver.common.annotation.LoginMember;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
-import develop.grassserver.member.profile.dto.FindAllDefaultBannerImagesResponse;
-import develop.grassserver.member.profile.dto.FindAllDefaultProfileImagesResponse;
-import develop.grassserver.member.profile.dto.UpdateBannerImageRequest;
-import develop.grassserver.member.profile.dto.UpdateProfileImageRequest;
+import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.profile.application.service.ProfileService;
+import develop.grassserver.profile.presentation.dto.FindAllDefaultBannerImagesResponse;
+import develop.grassserver.profile.presentation.dto.FindAllDefaultProfileImagesResponse;
+import develop.grassserver.profile.presentation.dto.UpdateBannerImageRequest;
+import develop.grassserver.profile.presentation.dto.UpdateProfileImageRequest;
+import develop.grassserver.profile.presentation.dto.UpdateProfileMessageRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,5 +95,14 @@ public class ProfileController {
         profileService.updateBannerImage(id, request);
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
+    }
+
+    @PatchMapping("/profile-message")
+    public ResponseEntity<ApiResult<String>> updateProfileMessage(
+            @PathVariable Long id,
+            @LoginMember Member member,
+            @Valid @RequestBody UpdateProfileMessageRequest request
+    ) {
+        
     }
 }
