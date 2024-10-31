@@ -64,10 +64,12 @@ public class GrassController {
             @ApiResponse(responseCode = "400", description = "출석 기록이 없음")
     })
     @PatchMapping("/study-time")
-    public ResponseEntity<ApiResult<String>> updateStudyRecord(@LoginMember Member member,
-                                                               @Valid @RequestBody StudyTimeRequest request) {
-        grassService.updateStudyRecord(member, request);
-        return ResponseEntity.ok(ApiUtils.success());
+    public ResponseEntity<ApiResult<StudyTimeResponse>> updateStudyRecord(
+            @LoginMember Member member,
+            @Valid @RequestBody StudyTimeRequest request
+    ) {
+        StudyTimeResponse response = grassService.updateStudyRecord(member, request);
+        return ResponseEntity.ok(ApiUtils.success(response));
     }
 
     @Operation(summary = "출석 확인 API", description = "공부 시간 저장 전 출석 여부 확인 API")
