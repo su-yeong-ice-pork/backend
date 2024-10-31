@@ -15,6 +15,7 @@ import develop.grassserver.profile.presentation.dto.FindAllDefaultBannerImagesRe
 import develop.grassserver.profile.presentation.dto.FindAllDefaultProfileImagesResponse;
 import develop.grassserver.profile.presentation.dto.UpdateBannerImageRequest;
 import develop.grassserver.profile.presentation.dto.UpdateProfileImageRequest;
+import develop.grassserver.profile.presentation.dto.UpdateProfileMessageRequest;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -160,5 +161,12 @@ public class ProfileService {
         Member member = memberRepository.findByIdWithProfile(id)
                 .orElseThrow(EntityNotFoundException::new);
         member.updateBannerImage(request.url());
+    }
+
+    @Transactional
+    public void updateProfileMessage(Long id, UpdateProfileMessageRequest request) {
+        Member member = memberRepository.findByIdWithProfile(id)
+                .orElseThrow(EntityNotFoundException::new);
+        member.updateProfileMessage(request.message());
     }
 }
