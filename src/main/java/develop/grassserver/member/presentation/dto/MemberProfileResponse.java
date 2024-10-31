@@ -11,6 +11,7 @@ public record MemberProfileResponse(MemberProfile member) {
                 new MemberProfile(
                         member.getId(),
                         member.getName(),
+                        profile.getMessage(),
                         profile.getImage(),
                         profile.getMainTitle(),
                         profile.getMainBanner(),
@@ -22,6 +23,7 @@ public record MemberProfileResponse(MemberProfile member) {
     public record MemberProfile(
             Long id,
             String name,
+            String message,
             String profileImage,
             String mainTitle,
             String mainBanner,
