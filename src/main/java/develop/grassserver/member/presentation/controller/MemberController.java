@@ -38,7 +38,8 @@ public class MemberController {
     })
     @GetMapping
     public ResponseEntity<ApiResult<MemberProfileResponse>> findMember(
-            @LoginMember Member member) {
+            @LoginMember Member member
+    ) {
         MemberProfileResponse response = memberService.findMemberProfile(member);
         return ResponseEntity.ok()
                 .body(ApiUtils.success(response));
