@@ -57,4 +57,8 @@ public class Member extends BaseEntity {
     public void updateBannerImage(String url) {
         profile.updateMainBanner(url);
     }
+
+    public void updateProfileMessage(String message) {
+        profile.updateMessage(message);
+    }
 }
