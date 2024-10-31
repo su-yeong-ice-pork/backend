@@ -8,8 +8,8 @@ import develop.grassserver.grass.application.exception.MissingAttendanceExceptio
 import develop.grassserver.grass.domain.entity.Grass;
 import develop.grassserver.grass.infrastructure.repositiory.GrassRepository;
 import develop.grassserver.grass.presentation.dto.AttendanceResponse;
-import develop.grassserver.grass.presentation.dto.StudyTimeRequest;
 import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
+import develop.grassserver.grass.presentation.dto.StudyTimeRequest;
 import develop.grassserver.member.domain.entity.Member;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -99,7 +99,7 @@ public class GrassService {
     }
 
     @Transactional
-    public void updateStudyRecord(Member member, StudyTimeRequest request) {
+    public StudyTimeResponse updateStudyRecord(Member member, StudyTimeRequest request) {
         Optional<Grass> optionalGrass = findTodayGrassByMemberId(member.getId());
         if (optionalGrass.isPresent()) {
             Grass grass = optionalGrass.get();
@@ -109,6 +109,7 @@ public class GrassService {
         } else {
             throw new MissingAttendanceException();
         }
+        return getStudyRecord(member);
     }
 
     public AttendanceResponse getAttendance(Member member) {
