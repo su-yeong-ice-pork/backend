@@ -16,8 +16,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,6 +71,22 @@ public class MemberController {
     public ResponseEntity<ApiResult<String>> updatePassword(@Valid @RequestBody ChangePasswordRequest request) {
         memberService.changeMemberPassword(request);
         return ResponseEntity.ok()
-                .body(ApiUtils.success("비밀번호 재설정 성공"));
+                .body(ApiUtils.success());
+    }
+
+    @Operation(summary = "회원 탈퇴 API", description = "회원 탈퇴 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "404", description = "정보를 찾을 수 없음"),
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResult<String>> deleteMember(
+            @PathVariable Long id,
+            @LoginMember Member member
+    ) {
+        memberService.deleteMember(id, member);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiUtils.success());
     }
 }
