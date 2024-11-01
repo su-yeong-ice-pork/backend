@@ -5,6 +5,7 @@ import develop.grassserver.member.application.exception.UnauthorizedException;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.infrastructure.repository.MemberRepository;
 import develop.grassserver.member.presentation.dto.ChangePasswordRequest;
+import develop.grassserver.member.presentation.dto.DeleteMemberRequest;
 import develop.grassserver.member.presentation.dto.MemberJoinRequest;
 import develop.grassserver.member.presentation.dto.MemberProfileResponse;
 import develop.grassserver.profile.domain.entity.Profile;
@@ -60,14 +61,15 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(Long id, Member member) {
-        Member findMember = memberRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
-        Member authorizeMember = memberRepository.findById(member.getId())
+    public void deleteMember(DeleteMemberRequest request, Member member) {
+        Member findMember = memberRepository.findById(member.getId())
                 .orElseThrow(EntityNotFoundException::new);
 
-        if (findMember.equals(authorizeMember)) {
-            memberRepository.delete(findMember);
+        String memberPassword = findMember.getPassword();
+        if (!passwordEncoder.matches(request.password(), memberPassword)) {
+            throw new UnauthorizedException();
         }
+
+        memberRepository.delete(findMember);
     }
 }
