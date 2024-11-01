@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -19,6 +20,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @SQLDelete(sql = "UPDATE member SET status = false WHERE id = ?")
 @SQLRestriction("status = true")
 public class Member extends BaseEntity {

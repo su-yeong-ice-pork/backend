@@ -58,4 +58,16 @@ public class MemberService {
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
     }
+
+    @Transactional
+    public void deleteMember(Long id, Member member) {
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+        Member authorizeMember = memberRepository.findById(member.getId())
+                .orElseThrow(EntityNotFoundException::new);
+
+        if (findMember.equals(authorizeMember)) {
+            memberRepository.delete(findMember);
+        }
+    }
 }
