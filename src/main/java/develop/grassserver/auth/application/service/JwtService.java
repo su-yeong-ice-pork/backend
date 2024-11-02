@@ -22,7 +22,7 @@ public class JwtService {
                 .refreshToken(jwtTokenProvider.createRefreshToken(email))
                 .accessToken(jwtTokenProvider.createAccessToken(email))
                 .build();
-        redisService.saveRefreshToken(email, token.refreshToken());
+        // redisService.saveRefreshToken(email, token.refreshToken());
         return token;
     }
 
