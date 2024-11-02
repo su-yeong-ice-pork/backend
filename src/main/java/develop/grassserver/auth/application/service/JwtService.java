@@ -22,6 +22,15 @@ public class JwtService {
                 .refreshToken(jwtTokenProvider.createRefreshToken(email))
                 .accessToken(jwtTokenProvider.createAccessToken(email))
                 .build();
+        redisService.saveRefreshToken(email, token.refreshToken());
+        return token;
+    }
+
+    public TokenDTO createAccessToken(String email, String refresh) {
+        TokenDTO token = TokenDTO.builder()
+                .refreshToken(refresh)
+                .accessToken(jwtTokenProvider.createAccessToken(email))
+                .build();
         // redisService.saveRefreshToken(email, token.refreshToken());
         return token;
     }
@@ -39,7 +48,7 @@ public class JwtService {
         if (!isValidRefreshToken(email, refreshToken)) {
             throw new ReauthenticationRequiredException();
         }
-        return createAllToken(email);
+        return createAccessToken(email, refreshToken);
     }
 
     private Boolean isValidRefreshToken(String email, String refreshToken) {
