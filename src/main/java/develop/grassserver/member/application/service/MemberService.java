@@ -48,7 +48,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(EntityNotFoundException::new);
 
-        if (member.isMyName(request.name())) {
+        if (!member.isMyName(request.name())) {
             throw new UnauthorizedException();
         }
 
