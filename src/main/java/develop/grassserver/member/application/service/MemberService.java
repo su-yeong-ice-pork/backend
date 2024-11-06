@@ -52,7 +52,7 @@ public class MemberService {
             throw new UnauthorizedException();
         }
 
-        String newPassword = passwordEncoder.encode(member.getPassword());
+        String newPassword = passwordEncoder.encode(request.password());
         member.updatePassword(newPassword);
     }
 
