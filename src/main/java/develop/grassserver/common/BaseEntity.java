@@ -33,4 +33,8 @@ public abstract class BaseEntity {
     @ColumnDefault("true")
     @Column(nullable = false)
     private boolean status = true;
+
+    public void delete() {
+        this.status = false;
+    }
 }
