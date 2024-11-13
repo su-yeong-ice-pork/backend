@@ -1,5 +1,6 @@
 package develop.grassserver.member.application.service;
 
+import develop.grassserver.auth.application.service.JwtService;
 import develop.grassserver.badge.application.service.BadgeService;
 import develop.grassserver.member.application.exception.UnauthorizedException;
 import develop.grassserver.member.domain.entity.Member;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemberService {
 
+    private final JwtService jwtService;
     private final BadgeService badgeService;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
@@ -70,6 +72,8 @@ public class MemberService {
             throw new UnauthorizedException();
         }
 
-        memberRepository.delete(findMember);
+        findMember.deleteEmailAndName();
+
+        jwtService.deleteRefreshToken(findMember.getEmail());
     }
 }
