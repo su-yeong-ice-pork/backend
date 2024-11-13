@@ -1,17 +1,15 @@
 package develop.grassserver.badge.presentation.controller;
 
 import develop.grassserver.badge.application.service.BadgeService;
-import develop.grassserver.common.security.CustomUserDetails;
+import develop.grassserver.badge.presentation.dto.FindAllMemberBadgesResponse;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
-import develop.grassserver.member.badge.dto.FindAllMemberBadgesResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,9 +29,8 @@ public class BadgeController {
             @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
     })
     @GetMapping
-    public ResponseEntity<ApiResult<?>> findBadges(
-            @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+    public ResponseEntity<ApiResult<FindAllMemberBadgesResponse>> findBadges(
+            @PathVariable Long id
     ) {
         FindAllMemberBadgesResponse response = badgeService.findAllMemberBadges(id);
         return ResponseEntity.ok()

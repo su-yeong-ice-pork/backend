@@ -3,7 +3,7 @@ package develop.grassserver.badge.application.service;
 import develop.grassserver.badge.domain.entity.Badge;
 import develop.grassserver.badge.domain.entity.MemberBadge;
 import develop.grassserver.badge.infrastructure.MemberBadgeRepository;
-import develop.grassserver.member.badge.dto.FindAllMemberBadgesResponse;
+import develop.grassserver.badge.presentation.dto.FindAllMemberBadgesResponse;
 import develop.grassserver.member.domain.entity.Member;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package develop.grassserver.member.badge.dto;
+package develop.grassserver.badge.presentation.dto;
 
 import develop.grassserver.badge.domain.entity.MemberBadge;
 import java.util.List;

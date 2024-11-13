@@ -62,5 +62,4 @@ public class JwtService {
     public void deleteRefreshToken(String email) {
         redisService.deleteRefreshToken(email);
     }
-
 }
