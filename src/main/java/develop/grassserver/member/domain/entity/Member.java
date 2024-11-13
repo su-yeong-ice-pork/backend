@@ -27,10 +27,10 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("status = true")
 public class Member extends BaseEntity {
 
-    @Column(length = 8, nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(length = 64, nullable = false)
@@ -64,5 +64,11 @@ public class Member extends BaseEntity {
 
     public void updateProfileMessage(String message) {
         profile.updateMessage(message);
+    }
+
+    public void deleteEmailAndName() {
+        this.email = email + "_deleted" + this.getId();
+        this.name = name + "_deleted" + this.getId();
+        delete();
     }
 }
