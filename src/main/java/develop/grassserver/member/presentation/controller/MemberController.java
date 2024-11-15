@@ -7,6 +7,7 @@ import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.presentation.dto.ChangePasswordRequest;
 import develop.grassserver.member.presentation.dto.DeleteMemberRequest;
+import develop.grassserver.member.presentation.dto.FindMembersResponse;
 import develop.grassserver.member.presentation.dto.MemberJoinRequest;
 import develop.grassserver.member.presentation.dto.MemberProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "멤버 CRUD APIs", description = "멤버 조회, 생성, 수정, 삭제를 담당하는 APIs")
@@ -88,5 +90,12 @@ public class MemberController {
         memberService.deleteMember(request, member);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResult<FindMembersResponse>> findMembers(@RequestParam String keyword) {
+        FindMembersResponse response = memberService.findMembers(keyword);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(response));
     }
 }
