@@ -1,6 +1,7 @@
 package develop.grassserver.member.infrastructure.repository;
 
 import develop.grassserver.member.domain.entity.Member;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m join fetch m.profile where m.id = :id")
     Optional<Member> findByIdWithProfile(@Param("id") Long id);
+
+    List<Member> findByNameContainingOrEmailContaining(String name, String email);
 }
