@@ -1,5 +1,6 @@
 package develop.grassserver.friend.application.service;
 
+import develop.grassserver.friend.application.exception.NotExistFriendRelationException;
 import develop.grassserver.friend.domain.entity.Friend;
 import develop.grassserver.friend.domain.entity.FriendRequestStatus;
 import develop.grassserver.friend.infrastructure.repository.FriendRepository;
@@ -43,5 +44,16 @@ public class FriendService {
                 .member2(other)
                 .requestStatus(FriendRequestStatus.PENDING)
                 .build();
+    }
+
+    @Transactional
+    public void deleteFriend(Long id, Member member) {
+        Member me = memberService.findMemberById(member.getId());
+        Member other = memberService.findMemberById(id);
+
+        Friend friend = friendRepository.findFriend(me.getId(), other.getId())
+                .orElseThrow(NotExistFriendRelationException::new);
+
+        friend.disconnect();
     }
 }
