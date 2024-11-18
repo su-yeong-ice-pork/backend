@@ -4,6 +4,8 @@ import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.notification.application.exception.ExceedSendEmojiCountException;
 import develop.grassserver.notification.domain.entity.EmojiNotification;
 import develop.grassserver.notification.infrastructure.repository.EmojiNotificationRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,7 +27,10 @@ public class EmojiNotificationService {
     }
 
     private void checkTodaySentEmojiCount(Member me, Member other) {
-        long todaySentEmojiCount = emojiNotificationRepository.findAllBySenderAndReceiverAndToday(me, other);
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59);
+        long todaySentEmojiCount =
+                emojiNotificationRepository.findAllBySenderAndReceiverAndToday(me, other, startOfDay, endOfDay);
         if (todaySentEmojiCount >= 2) {
             throw new ExceedSendEmojiCountException();
         }
