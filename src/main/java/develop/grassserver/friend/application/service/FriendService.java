@@ -1,5 +1,6 @@
 package develop.grassserver.friend.application.service;
 
+import develop.grassserver.friend.application.exception.AlreadyFriendRequestException;
 import develop.grassserver.friend.application.exception.ExistFriendRelationException;
 import develop.grassserver.friend.application.exception.NotExistFriendRelationException;
 import develop.grassserver.friend.domain.entity.Friend;
@@ -38,14 +39,21 @@ public class FriendService {
     private void handleFriendRelation(Member me, Member other) {
         Optional<Friend> optionalFriend = friendRepository.findFriend(me.getId(), other.getId());
         if (optionalFriend.isPresent()) {
-            Friend friend = optionalFriend.get();
-            if (friend.getRequestStatus() == FriendRequestStatus.DELETED) {
-                friend.reconnect();
-                return;
-            }
-            throw new ExistFriendRelationException();
+            handleExistingFriendRelation(optionalFriend.get());
+        } else {
+            createAndSaveFriendRelation(me, other);
         }
-        createAndSaveFriendRelation(me, other);
+    }
+
+    private void handleExistingFriendRelation(Friend friend) {
+        if (friend.getRequestStatus() == FriendRequestStatus.DELETED) {
+            friend.reconnect();
+            return;
+        }
+        if (friend.getRequestStatus() == FriendRequestStatus.PENDING) {
+            throw new AlreadyFriendRequestException();
+        }
+        throw new ExistFriendRelationException();
     }
 
     private void createAndSaveFriendRelation(Member me, Member other) {
