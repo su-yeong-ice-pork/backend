@@ -1,5 +1,6 @@
 package develop.grassserver.notification.domain.entity;
 
+import develop.grassserver.member.domain.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
@@ -13,4 +14,9 @@ public class MessageNotification extends Notification {
 
     @Column(length = 20, nullable = false)
     private String message;
+
+    public MessageNotification(Member sender, Member receiver, String message) {
+        super(sender, receiver);
+        this.message = message;
+    }
 }
