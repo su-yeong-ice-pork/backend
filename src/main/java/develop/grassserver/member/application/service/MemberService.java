@@ -99,9 +99,10 @@ public class MemberService {
     }
 
     private Optional<Member> getOptionalMemberByNameOrEmail(boolean isEmail, String keyword) {
-        return isEmail
-                ? memberRepository.findByEmailWithProfile(keyword)
-                : memberRepository.findByNameWithProfile(keyword);
+        if (isEmail) {
+            return memberRepository.findByEmailWithProfile(keyword);
+        }
+        return memberRepository.findByNameWithProfile(keyword);
     }
 
     public FindOtherMemberResponse findOtherMember(Long id, Member member) {
