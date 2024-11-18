@@ -7,9 +7,12 @@ import develop.grassserver.friend.domain.entity.FriendRequestStatus;
 import develop.grassserver.friend.infrastructure.repository.FriendRepository;
 import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
+import develop.grassserver.friend.presentation.dto.SendCheerUpMessageRequest;
 import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.notification.application.service.EmojiNotificationService;
+import develop.grassserver.notification.application.service.MessageNotificationService;
+import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ public class FriendService {
 
     private final MemberService memberService;
     private final EmojiNotificationService emojiNotificationService;
+    private final MessageNotificationService messageNotificationService;
 
     private final FriendRepository friendRepository;
 
@@ -76,6 +80,15 @@ public class FriendService {
         checkExistFriendRelation(me, other);
 
         emojiNotificationService.saveEmojiNotification(me, other, request.emojiNumber());
+    }
+
+    public void sendCheerUpMessage(Long id, Member member, @Valid SendCheerUpMessageRequest request) {
+        Member me = memberService.findMemberById(member.getId());
+        Member other = memberService.findMemberById(id);
+
+        checkExistFriendRelation(me, other);
+
+        messageNotificationService.saveMessageNotification(me, other, request.message());
     }
 
     private void checkExistFriendRelation(Member me, Member other) {
