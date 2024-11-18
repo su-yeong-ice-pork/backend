@@ -92,6 +92,11 @@ public class MemberController {
                 .body(ApiUtils.success());
     }
 
+    @Operation(summary = "멤버 검색 API", description = "멤버 검색 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "멤버 검색 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "404", description = "해당 유저를 찾을 수 없음."),
+    })
     @GetMapping("/search")
     public ResponseEntity<ApiResult<FindMemberResponse>> findMemberByNameOrEmail(@RequestParam String keyword) {
         FindMemberResponse response = memberService.findMemberByNameOrEmail(keyword);
