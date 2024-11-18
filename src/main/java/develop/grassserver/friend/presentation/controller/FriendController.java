@@ -6,6 +6,7 @@ import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.friend.application.service.FriendService;
 import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
+import develop.grassserver.friend.presentation.dto.SendCheerUpMessageRequest;
 import develop.grassserver.member.domain.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -82,4 +83,22 @@ public class FriendController {
                 .body(ApiUtils.success());
     }
 
+    @Operation(summary = "응원 메세지 보내기 API", description = "응원 메세지 보내기 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "응원 메세지 보내기 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "400", description = "친구 관계가 아니므로 응원 메세지 보내기 실패"),
+            @ApiResponse(responseCode = "400", description = "응원 메세지 보내기 횟수 초과"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "404", description = "상대 멤버 정보를 찾을 수 없음")
+    })
+    @PostMapping("/{id}/message")
+    public ResponseEntity<ApiResult<String>> sendCheerUpMessage(
+            @PathVariable Long id,
+            @LoginMember Member member,
+            @Valid @RequestBody SendCheerUpMessageRequest request
+    ) {
+        friendService.sendCheerUpMessage(id, member, request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiUtils.success());
+    }
 }
