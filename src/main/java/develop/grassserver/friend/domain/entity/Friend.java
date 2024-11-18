@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,8 @@ import lombok.NoArgsConstructor;
         @UniqueConstraint(columnNames = {"member1_id", "member2_id"})
 })
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Friend extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
