@@ -7,11 +7,13 @@ import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.infrastructure.repository.MemberRepository;
 import develop.grassserver.member.presentation.dto.ChangePasswordRequest;
 import develop.grassserver.member.presentation.dto.DeleteMemberRequest;
+import develop.grassserver.member.presentation.dto.FindMemberResponse;
 import develop.grassserver.member.presentation.dto.MemberJoinRequest;
 import develop.grassserver.member.presentation.dto.MemberProfileResponse;
 import develop.grassserver.profile.domain.entity.Profile;
 import develop.grassserver.profile.infrastructure.repository.ProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,5 +77,18 @@ public class MemberService {
         findMember.deleteEmailAndName();
 
         jwtService.deleteRefreshToken(findMember.getEmail());
+    }
+
+    public FindMemberResponse findMemberByNameOrEmail(String keyword) {
+        boolean isEmail = keyword.contains("@pusan.ac.kr");
+        Optional<Member> optionalMember = getOptionalMemberByNameOrEmail(isEmail, keyword);
+        return optionalMember.map(FindMemberResponse::from)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    private Optional<Member> getOptionalMemberByNameOrEmail(boolean isEmail, String keyword) {
+        return isEmail
+                ? memberRepository.findByEmailWithProfile(keyword)
+                : memberRepository.findByNameWithProfile(keyword);
     }
 }
