@@ -13,8 +13,10 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"member1_id", "member2_id"})
@@ -33,4 +35,8 @@ public class Friend extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private FriendRequestStatus requestStatus;
+
+    public void disconnect() {
+        this.requestStatus = FriendRequestStatus.DELETED;
+    }
 }
