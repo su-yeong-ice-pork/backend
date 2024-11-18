@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,22 @@ public class FriendController {
     ) {
         friendService.requestFriend(member, request);
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiUtils.success());
+    }
+
+    @Operation(summary = "친구 떠나기 API", description = "친구 떠나기 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "친구 떠나기 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "400", description = "친구 관계가 아니므로 친구 떠나기 실패"),
+            @ApiResponse(responseCode = "404", description = "상대 멤버 정보를 찾을 수 없음")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResult<String>> deleteFriend(
+            @PathVariable Long id,
+            @LoginMember Member member
+    ) {
+        friendService.deleteFriend(id, member);
+        return ResponseEntity.ok()
                 .body(ApiUtils.success());
     }
 }
