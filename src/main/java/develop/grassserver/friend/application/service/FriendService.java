@@ -1,11 +1,11 @@
 package develop.grassserver.friend.application.service;
 
+import develop.grassserver.friend.application.exception.ExistFriendRelationException;
 import develop.grassserver.friend.application.exception.NotExistFriendRelationException;
 import develop.grassserver.friend.domain.entity.Friend;
 import develop.grassserver.friend.domain.entity.FriendRequestStatus;
 import develop.grassserver.friend.infrastructure.repository.FriendRepository;
 import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
-import develop.grassserver.friend.application.exception.ExistFriendRelationException;
 import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import java.util.Optional;
@@ -25,17 +25,25 @@ public class FriendService {
         Member me = memberService.findMemberById(member.getId());
         Member other = memberService.findMemberById(request.memberId());
 
-        checkExistFriendRelation(me, other);
-
-        Friend friend = createFriendRelation(me, other);
-        friendRepository.save(friend);
+        handleFriendRelation(me, other);
     }
 
-    private void checkExistFriendRelation(Member me, Member other) {
+    private void handleFriendRelation(Member me, Member other) {
         Optional<Friend> optionalFriend = friendRepository.findFriend(me.getId(), other.getId());
         if (optionalFriend.isPresent()) {
+            Friend friend = optionalFriend.get();
+            if (friend.getRequestStatus() == FriendRequestStatus.DELETED) {
+                friend.reconnect();
+                return;
+            }
             throw new ExistFriendRelationException();
         }
+        createAndSaveFriendRelation(me, other);
+    }
+
+    private void createAndSaveFriendRelation(Member me, Member other) {
+        Friend friend = createFriendRelation(me, other);
+        friendRepository.save(friend);
     }
 
     private Friend createFriendRelation(Member me, Member other) {
