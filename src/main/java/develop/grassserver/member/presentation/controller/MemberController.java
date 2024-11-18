@@ -7,7 +7,7 @@ import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.presentation.dto.ChangePasswordRequest;
 import develop.grassserver.member.presentation.dto.DeleteMemberRequest;
-import develop.grassserver.member.presentation.dto.FindMembersResponse;
+import develop.grassserver.member.presentation.dto.FindMemberResponse;
 import develop.grassserver.member.presentation.dto.MemberJoinRequest;
 import develop.grassserver.member.presentation.dto.MemberProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -93,8 +93,8 @@ public class MemberController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResult<FindMembersResponse>> findMembers(@RequestParam String keyword) {
-        FindMembersResponse response = memberService.findMembers(keyword);
+    public ResponseEntity<ApiResult<FindMemberResponse>> findMemberByNameOrEmail(@RequestParam String keyword) {
+        FindMemberResponse response = memberService.findMemberByNameOrEmail(keyword);
         return ResponseEntity.ok()
                 .body(ApiUtils.success(response));
     }
