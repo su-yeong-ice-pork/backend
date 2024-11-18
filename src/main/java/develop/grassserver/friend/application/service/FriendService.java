@@ -6,8 +6,10 @@ import develop.grassserver.friend.domain.entity.Friend;
 import develop.grassserver.friend.domain.entity.FriendRequestStatus;
 import develop.grassserver.friend.infrastructure.repository.FriendRepository;
 import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
+import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
 import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
+import develop.grassserver.notification.application.service.EmojiNotificationService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class FriendService {
 
     private final MemberService memberService;
+    private final EmojiNotificationService emojiNotificationService;
+
     private final FriendRepository friendRepository;
 
     @Transactional
@@ -63,5 +67,17 @@ public class FriendService {
                 .orElseThrow(NotExistFriendRelationException::new);
 
         friend.disconnect();
+    }
+
+    public void sendCheerUpEmoji(Long id, Member member, SendCheerUpEmojiRequest request) {
+        Member me = memberService.findMemberById(member.getId());
+        Member other = memberService.findMemberById(id);
+
+        Optional<Friend> optionalFriend = friendRepository.findFriend(me.getId(), other.getId());
+        if (optionalFriend.isEmpty()) {
+            throw new NotExistFriendRelationException();
+        }
+
+        emojiNotificationService.saveEmojiNotification(me, other, request.emojiNumber());
     }
 }
