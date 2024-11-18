@@ -28,7 +28,7 @@ public class EmojiNotificationService {
 
     private void checkTodaySentEmojiCount(Member me, Member other) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59);
+        LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59, 999999999);
         long todaySentEmojiCount =
                 emojiNotificationRepository.findAllBySenderAndReceiverAndToday(me, other, startOfDay, endOfDay);
         if (todaySentEmojiCount >= 2) {

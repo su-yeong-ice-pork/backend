@@ -28,7 +28,7 @@ public class MessageNotificationService {
 
     private void checkTodaySentMessageCount(Member me, Member other) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59);
+        LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59, 999999999);
         long todaySentMessageCount =
                 messageNotificationRepository.findAllBySenderAndReceiverAndToday(me, other, startOfDay, endOfDay);
         if (todaySentMessageCount >= 2) {
