@@ -12,7 +12,6 @@ import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.notification.application.service.EmojiNotificationService;
 import develop.grassserver.notification.application.service.MessageNotificationService;
-import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -82,7 +81,7 @@ public class FriendService {
         emojiNotificationService.saveEmojiNotification(me, other, request.emojiNumber());
     }
 
-    public void sendCheerUpMessage(Long id, Member member, @Valid SendCheerUpMessageRequest request) {
+    public void sendCheerUpMessage(Long id, Member member, SendCheerUpMessageRequest request) {
         Member me = memberService.findMemberById(member.getId());
         Member other = memberService.findMemberById(id);
 
