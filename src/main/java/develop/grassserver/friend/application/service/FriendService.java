@@ -73,11 +73,15 @@ public class FriendService {
         Member me = memberService.findMemberById(member.getId());
         Member other = memberService.findMemberById(id);
 
+        checkExistFriendRelation(me, other);
+
+        emojiNotificationService.saveEmojiNotification(me, other, request.emojiNumber());
+    }
+
+    private void checkExistFriendRelation(Member me, Member other) {
         Optional<Friend> optionalFriend = friendRepository.findFriend(me.getId(), other.getId());
         if (optionalFriend.isEmpty()) {
             throw new NotExistFriendRelationException();
         }
-
-        emojiNotificationService.saveEmojiNotification(me, other, request.emojiNumber());
     }
 }
