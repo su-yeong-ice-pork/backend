@@ -6,6 +6,7 @@ import develop.grassserver.auth.application.valid.AuthValidator;
 import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -60,5 +61,10 @@ public class RedisService {
 
     private String getRefreshCodeKey(String code) {
         return REFRESH_TOKEN_PREFIX + code;
+    }
+
+    public void saveStudyStatus(Long memberId) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set("studying-" + memberId, LocalDateTime.now().toString());
     }
 }
