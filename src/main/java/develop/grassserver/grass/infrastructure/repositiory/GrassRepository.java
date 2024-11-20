@@ -27,4 +27,12 @@ public interface GrassRepository extends JpaRepository<Grass, Long> {
                                             @Param("month") int month);
 
     long countByMemberId(Long memberId);
+
+    @Query("SELECT g "
+            + "FROM Grass g JOIN FETCH g.member "
+            + "WHERE (g.member.id IN :ids) "
+            + "AND (g.createdAt >= :startOfDay AND g.createdAt < :endOfDay)")
+    List<Grass> findAllByMemberIdsAndDate(@Param("ids") List<Long> ids,
+                                          @Param("startOfDay") LocalDateTime startOfDay,
+                                          @Param("endOfDay") LocalDateTime endOfDay);
 }
