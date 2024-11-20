@@ -2,6 +2,7 @@ package develop.grassserver.grass.application.service;
 
 import static develop.grassserver.common.utils.GrassScoreUtil.calculateStudyScore;
 
+import develop.grassserver.auth.application.service.RedisService;
 import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.application.exception.AlreadyCheckedInException;
 import develop.grassserver.grass.application.exception.MissingAttendanceException;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GrassService {
 
+    private final RedisService redisService;
     private final GrassRepository grassRepository;
 
     private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
@@ -112,6 +114,7 @@ public class GrassService {
         } else {
             throw new MissingAttendanceException();
         }
+        redisService.deleteMemberStudyStatus(member.getId());
         return getStudyRecord(member);
     }
 
