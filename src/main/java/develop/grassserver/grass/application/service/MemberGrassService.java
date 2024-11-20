@@ -1,5 +1,6 @@
 package develop.grassserver.grass.application.service;
 
+import develop.grassserver.auth.application.service.RedisService;
 import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.domain.entity.Grass;
 import develop.grassserver.grass.presentation.dto.MemberStreakResponse;
@@ -8,6 +9,7 @@ import develop.grassserver.grass.presentation.dto.MonthlyGrassResponse;
 import develop.grassserver.grass.presentation.dto.MonthlyTotalGrassResponse;
 import develop.grassserver.grass.presentation.dto.YearlyGrassResponse;
 import develop.grassserver.grass.presentation.dto.YearlyTotalGrassResponse;
+import develop.grassserver.member.application.exception.UnauthorizedException;
 import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.member.domain.entity.StudyRecord;
@@ -21,8 +23,18 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberGrassService {
 
-    private final MemberService memberService;
+    private final RedisService redisService;
     private final GrassService grassService;
+    private final MemberService memberService;
+
+    public void startStudyRecord(Long id, Member member) {
+        Member findMember = memberService.findMemberById(id);
+        if (!member.isMyName(findMember.getName())) {
+            throw new UnauthorizedException();
+        }
+
+        redisService.saveStudyStatus(findMember.getId());
+    }
 
     @Transactional
     public void createAttendance(Member member) {
