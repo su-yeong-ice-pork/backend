@@ -15,6 +15,7 @@ import develop.grassserver.member.presentation.dto.MemberProfileResponse;
 import develop.grassserver.profile.domain.entity.Profile;
 import develop.grassserver.profile.infrastructure.repository.ProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -113,5 +114,9 @@ public class MemberService {
 
         boolean isMyFriend = friendRepository.findFriend(me.getId(), other.getId()).isPresent();
         return FindOtherMemberResponse.from(isMyFriend, other);
+    }
+
+    public List<Member> findAllMembersByIds(List<Long> ids) {
+        return memberRepository.findAllByIdsWithProfile(ids);
     }
 }
