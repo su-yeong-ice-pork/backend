@@ -1,11 +1,13 @@
 package develop.grassserver.grass.presentation.controller;
 
+import develop.grassserver.common.annotation.LoginMember;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.grass.application.service.MemberGrassService;
 import develop.grassserver.grass.presentation.dto.MemberStreakResponse;
 import develop.grassserver.grass.presentation.dto.MonthlyTotalGrassResponse;
 import develop.grassserver.grass.presentation.dto.YearlyTotalGrassResponse;
+import develop.grassserver.member.domain.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +28,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberGrassController {
 
     private final MemberGrassService memberGrassService;
+
+    @Operation(summary = "공부(기록) 시작 API", description = "공부(기록) 시작 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "공부(기록) 시작 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    @PostMapping("/study-start")
+    public ResponseEntity<ApiResult<String>> startStudy(
+            @PathVariable Long id,
+            @LoginMember Member member
+    ) {
+        memberGrassService.startStudyRecord(id, member);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success());
+    }
 
     @Operation(summary = "사용자 스트릭 조회 API", description = "사용자 최장 스트릭, 현재 스트릭, 총 공부시간 조회 API")
     @ApiResponses(value = {
