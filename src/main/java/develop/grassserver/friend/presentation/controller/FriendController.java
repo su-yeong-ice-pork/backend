@@ -31,6 +31,11 @@ public class FriendController {
 
     private final FriendService friendService;
 
+    @Operation(summary = "친구 목록 조회 API", description = "친구 목록 조회 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "친구 목록 조회 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
     @GetMapping
     public ResponseEntity<ApiResult<FindAllFriendsResponse>> findAllFriends(@LoginMember Member member) {
         FindAllFriendsResponse response = friendService.findAllFriends(member);
