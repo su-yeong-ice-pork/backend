@@ -1,13 +1,16 @@
 package develop.grassserver.friend.presentation.dto;
 
-import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.member.domain.entity.Member;
 import java.util.List;
 import java.util.Map;
 
 public record FindAllFriendsResponse(List<FriendDTO> friends) {
 
-    public static FindAllFriendsResponse from(List<Member> members, Map<Long, Boolean> friendStudyStatus) {
+    public static FindAllFriendsResponse from(
+            List<Member> members,
+            Map<Long, String> studyTimes,
+            Map<Long, Boolean> friendStudyStatus
+    ) {
         return new FindAllFriendsResponse(
                 members.stream()
                         .map(member ->
@@ -16,7 +19,7 @@ public record FindAllFriendsResponse(List<FriendDTO> friends) {
                                         member.getName(),
                                         member.getProfile().getMessage(),
                                         member.getProfile().getImage(),
-                                        DurationUtils.formatHourAndMinute(member.getStudyRecord().getTotalStudyTime()),
+                                        studyTimes.get(member.getId()),
                                         friendStudyStatus.get(member.getId())
                                 )
                         )
