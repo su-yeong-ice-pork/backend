@@ -7,6 +7,9 @@ import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -66,5 +69,16 @@ public class RedisService {
     public void saveStudyStatus(Long memberId) {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         valueOperations.set("studying-" + memberId, LocalDateTime.now().toString());
+    }
+
+    public Map<Long, Boolean> getFriendStudyStatus(List<Long> friendIds) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        return friendIds.stream()
+                .collect(
+                        Collectors.toMap(
+                                friendId -> friendId,
+                                friendId -> valueOperations.get("studying-" + friendId) != null
+                        )
+                );
     }
 }
