@@ -16,6 +16,8 @@ import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.notification.application.service.EmojiNotificationService;
 import develop.grassserver.notification.application.service.MessageNotificationService;
+import develop.grassserver.requestNotification.domain.entity.FriendRequestNotification;
+import develop.grassserver.requestNotification.infrastructure.repository.FriendRequestNotificationRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,6 +39,7 @@ public class FriendService {
     private final MessageNotificationService messageNotificationService;
 
     private final FriendRepository friendRepository;
+    private final FriendRequestNotificationRepository friendRequestNotificationRepository;
 
     public FindAllFriendsResponse findAllFriends(Member me) {
         List<Friend> friends = friendRepository.findAllMyFriends(me.getId());
@@ -73,15 +76,17 @@ public class FriendService {
     private void handleFriendRelation(Member me, Member other) {
         Optional<Friend> optionalFriend = friendRepository.findFriend(me.getId(), other.getId());
         if (optionalFriend.isPresent()) {
-            handleExistingFriendRelation(optionalFriend.get());
+            handleExistingFriendRelation(me, other, optionalFriend.get());
         } else {
             createAndSaveFriendRelation(me, other);
         }
     }
 
-    private void handleExistingFriendRelation(Friend friend) {
+    private void handleExistingFriendRelation(Member me, Member other, Friend friend) {
         if (friend.getRequestStatus() == FriendRequestStatus.DELETED) {
             friend.reconnect();
+            FriendRequestNotification friendRequestNotification = new FriendRequestNotification(me, other, friend);
+            friendRequestNotificationRepository.save(friendRequestNotification);
             return;
         }
         if (friend.getRequestStatus() == FriendRequestStatus.PENDING) {
@@ -93,6 +98,9 @@ public class FriendService {
     private void createAndSaveFriendRelation(Member me, Member other) {
         Friend friend = createFriendRelation(me, other);
         friendRepository.save(friend);
+
+        FriendRequestNotification friendRequestNotification = new FriendRequestNotification(me, other, friend);
+        friendRequestNotificationRepository.save(friendRequestNotification);
     }
 
     private Friend createFriendRelation(Member me, Member other) {
@@ -137,5 +145,9 @@ public class FriendService {
         if (optionalFriend.isEmpty()) {
             throw new NotExistFriendRelationException();
         }
+    }
+
+    public List<Friend> findAllNotAcceptedFriendRelations(Long memberId) {
+        return friendRepository.findAllPendingFriends(memberId);
     }
 }
