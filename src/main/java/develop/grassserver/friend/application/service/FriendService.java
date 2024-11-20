@@ -39,6 +39,8 @@ public class FriendService {
     private final MessageNotificationService messageNotificationService;
 
     private final FriendRepository friendRepository;
+
+    // 순환 참조 해결 필요
     private final FriendRequestNotificationRepository friendRequestNotificationRepository;
 
     public FindAllFriendsResponse findAllFriends(Member me) {
