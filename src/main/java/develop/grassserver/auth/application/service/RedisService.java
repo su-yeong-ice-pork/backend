@@ -6,11 +6,11 @@ import develop.grassserver.auth.application.valid.AuthValidator;
 import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import java.time.Duration;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class RedisService {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         String email = request.email();
         String code = (String) valueOperations.get(email);
-        if (Objects.isNull(code)) {
+        if (!StringUtils.hasText(code)) {
             throw new ExpirationAuthCodeException("인증코드가 만료되었습니다. 인증코드를 재발급해주세요.");
         }
         if (!AuthValidator.isCorrectAuthCode(code, request)) {
