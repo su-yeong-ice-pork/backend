@@ -22,6 +22,8 @@ public class RedisService {
 
     private static final String REFRESH_TOKEN_PREFIX = "refresh-token";
     private static final long AUTH_CODE_EXPIRATION_TIME = 60 * 5L;
+    private static final String STUDY_STATUS_KEY_PREFIX = "studying-";
+
     private final RedisTemplate<String, Object> redisTemplate;
 
     public void saveAuthCode(String email, String code) {
@@ -68,7 +70,7 @@ public class RedisService {
 
     public void saveStudyStatus(Long memberId) {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set("studying-" + memberId, LocalDateTime.now().toString());
+        valueOperations.set(STUDY_STATUS_KEY_PREFIX + memberId, LocalDateTime.now().toString());
     }
 
     public Map<Long, Boolean> getFriendStudyStatus(List<Long> friendIds) {
@@ -77,8 +79,12 @@ public class RedisService {
                 .collect(
                         Collectors.toMap(
                                 friendId -> friendId,
-                                friendId -> valueOperations.get("studying-" + friendId) != null
+                                friendId -> valueOperations.get(STUDY_STATUS_KEY_PREFIX + friendId) != null
                         )
                 );
+    }
+
+    public void deleteMemberStudyStatus(Long memberId) {
+        redisTemplate.delete(STUDY_STATUS_KEY_PREFIX + memberId);
     }
 }
