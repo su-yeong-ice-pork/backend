@@ -3,11 +3,11 @@ package develop.grassserver.randomStudy.application.exception;
 import develop.grassserver.common.utils.ApiUtils;
 import org.springframework.http.HttpStatus;
 
-public class NotAStudyMemberException extends RuntimeException {
+public class NotARandomStudyMemberException extends RuntimeException {
 
-    private static final String MESSAGE = "해당 스터디에 소속되어 있지 않습니다.";
+    private static final String MESSAGE = "해당 랜덤 스터디에 소속되어 있지 않습니다.";
 
-    public NotAStudyMemberException() {
+    public NotARandomStudyMemberException() {
         super(MESSAGE);
     }
 
