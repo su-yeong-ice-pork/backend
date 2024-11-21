@@ -1,6 +1,7 @@
 package develop.grassserver.study.domain.entity;
 
 import develop.grassserver.common.BaseEntity;
+import develop.grassserver.member.domain.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -40,4 +41,9 @@ public class Study extends BaseEntity {
     @OneToMany(mappedBy = "study")
     @Builder.Default
     private List<StudyMember> members = new ArrayList<>();
+
+    public void addMember(Member member, StudyRole role) {
+        StudyMember studyMember = new StudyMember(member, this, role);
+        this.members.add(studyMember);
+    }
 }
