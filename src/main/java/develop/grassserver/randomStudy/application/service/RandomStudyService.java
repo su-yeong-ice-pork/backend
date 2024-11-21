@@ -43,7 +43,7 @@ public class RandomStudyService {
         }
     }
 
-    public FindAllRandomStudyMembersResponse getAllRandomStudyMember(Member member, Long studyId) {
+    public FindAllRandomStudyMembersResponse getAllRandomStudyMembers(Member member, Long studyId) {
         validStudyMember(member, studyId);
 
         List<RandomStudyMember> studyMembers = randomStudyMemberRepository.findAllByRandomStudyId(studyId);

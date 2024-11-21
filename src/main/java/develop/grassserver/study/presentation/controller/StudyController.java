@@ -65,7 +65,7 @@ public class StudyController {
     @GetMapping("{studyId}/participants")
     public ResponseEntity<ApiResult<FindAllStudyMembersResponse>> getAllStudyMembers(@PathVariable Long studyId,
                                                                                      @LoginMember Member member) {
-        FindAllStudyMembersResponse response = studyQueryService.getAllStudyMember(member, studyId);
+        FindAllStudyMembersResponse response = studyQueryService.getAllStudyMembers(member, studyId);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 

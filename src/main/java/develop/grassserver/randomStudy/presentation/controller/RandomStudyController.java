@@ -43,9 +43,9 @@ public class RandomStudyController {
             @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
     })
     @GetMapping("{studyId}/participants")
-    public ResponseEntity<ApiResult<FindAllRandomStudyMembersResponse>> getAllRandomStudyMember(
+    public ResponseEntity<ApiResult<FindAllRandomStudyMembersResponse>> getAllRandomStudyMembers(
             @PathVariable Long studyId, @LoginMember Member member) {
-        FindAllRandomStudyMembersResponse response = randomStudyService.getAllRandomStudyMember(member, studyId);
+        FindAllRandomStudyMembersResponse response = randomStudyService.getAllRandomStudyMembers(member, studyId);
         return ResponseEntity.ok()
                 .body(ApiUtils.success(response));
     }

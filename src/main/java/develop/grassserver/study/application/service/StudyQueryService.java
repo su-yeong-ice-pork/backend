@@ -69,7 +69,7 @@ public class StudyQueryService {
         return new FindAllStudyResponse(regularStudies);
     }
 
-    public FindAllStudyMembersResponse getAllStudyMember(Member member, Long studyId) {
+    public FindAllStudyMembersResponse getAllStudyMembers(Member member, Long studyId) {
         validStudyMember(member, studyId);
 
         List<StudyMember> studyMembers = studyMemberRepository.findAllByStudyId(studyId);
