@@ -1,7 +1,7 @@
 package develop.grassserver.randomStudy.application.service;
 
 import develop.grassserver.member.domain.entity.Member;
-import develop.grassserver.randomStudy.application.exception.NotAStudyMemberException;
+import develop.grassserver.randomStudy.application.exception.NotARandomStudyMemberException;
 import develop.grassserver.randomStudy.domain.entity.RandomStudy;
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyMemberRepository;
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyRepository;
@@ -23,7 +23,7 @@ public class RandomStudyService {
 
     public RandomStudyDetailResponse getRandomStudyDetail(Member member, Long studyId) {
         if (!randomStudyMemberRepository.existsByMemberIdAndRandomStudyId(member.getId(), studyId)) {
-            throw new NotAStudyMemberException();
+            throw new NotARandomStudyMemberException();
         }
 
         RandomStudy randomStudy = randomStudyRepository.findById(studyId)
