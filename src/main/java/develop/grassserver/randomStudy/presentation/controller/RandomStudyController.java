@@ -5,6 +5,7 @@ import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.randomStudy.application.service.RandomStudyService;
+import develop.grassserver.randomStudy.presentation.dto.FindAllRandomStudyMembersResponse;
 import develop.grassserver.randomStudy.presentation.dto.RandomStudyDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,5 +35,18 @@ public class RandomStudyController {
                                                                                      @LoginMember Member member) {
         RandomStudyDetailResponse response = randomStudyService.getRandomStudyDetail(member, studyId);
         return ResponseEntity.ok(ApiUtils.success(response));
+    }
+
+    @Operation(summary = "랜덤 스터디 구성원 전체 조회 API", description = "랜덤 스터디 구성원 전체 조회 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "스터디 구성원 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
+    })
+    @GetMapping("{studyId}/participants")
+    public ResponseEntity<ApiResult<FindAllRandomStudyMembersResponse>> getAllRandomStudyMember(
+            @PathVariable Long studyId, @LoginMember Member member) {
+        FindAllRandomStudyMembersResponse response = randomStudyService.getAllRandomStudyMember(member, studyId);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(response));
     }
 }
