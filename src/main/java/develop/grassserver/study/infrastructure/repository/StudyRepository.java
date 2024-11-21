@@ -9,6 +9,10 @@ import org.springframework.data.repository.query.Param;
 public interface StudyRepository extends JpaRepository<Study, Long> {
     boolean existsByInviteCode(String inviteCode);
 
-    @Query("SELECT sm.study FROM StudyMember sm WHERE sm.member.id = :memberId AND sm.status = TRUE")
-    List<Study> findAllStudiesByMemberId(@Param("memberId") Long memberId);
+    @Query("SELECT s, COUNT(sm) " +
+            "FROM Study s " +
+            "JOIN s.members sm " +
+            "WHERE sm.status = TRUE AND s.status = TRUE AND sm.member.id = :memberId " +
+            "GROUP BY s")
+    List<Object[]> findStudiesWithMemberCountByMemberId(@Param("memberId") Long memberId);
 }
