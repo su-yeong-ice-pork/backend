@@ -38,6 +38,8 @@ public class Study extends BaseEntity {
     @Column(nullable = false)
     private Duration totalStudyTime = Duration.ZERO;
 
+    private String inviteCode;
+
     @OneToMany(mappedBy = "study")
     @Builder.Default
     private List<StudyMember> members = new ArrayList<>();
