@@ -1,6 +1,5 @@
 package develop.grassserver.friend.application.service;
 
-import develop.grassserver.auth.application.service.RedisService;
 import develop.grassserver.friend.application.exception.AlreadyFriendRequestException;
 import develop.grassserver.friend.application.exception.ExistFriendRelationException;
 import develop.grassserver.friend.application.exception.NotExistFriendRelationException;
@@ -11,13 +10,13 @@ import develop.grassserver.friend.presentation.dto.FindAllFriendsResponse;
 import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpMessageRequest;
-import develop.grassserver.grass.application.service.GrassService;
+import develop.grassserver.grass.application.dto.MemberStudyInfoDTO;
+import develop.grassserver.grass.application.service.MemberStudyInfoService;
 import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.notification.application.service.EmojiNotificationService;
 import develop.grassserver.notification.application.service.MessageNotificationService;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -30,9 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class FriendService {
 
-    private final GrassService grassService;
-    private final RedisService redisService;
     private final MemberService memberService;
+    private final MemberStudyInfoService memberStudyInfoService;
     private final EmojiNotificationService emojiNotificationService;
     private final MessageNotificationService messageNotificationService;
 
@@ -42,12 +40,9 @@ public class FriendService {
         List<Friend> friends = friendRepository.findAllMyFriends(me.getId());
         List<Long> friendIds = getFriendIds(me, friends);
 
-        List<Member> members = memberService.findAllMembersByIds(friendIds);
+        MemberStudyInfoDTO studyInfo = memberStudyInfoService.getMemberStudyInfo(friendIds);
 
-        Map<Long, String> studyTimes = grassService.getFriendsTodayStudyTime(friendIds);
-
-        Map<Long, Boolean> friendStudyStatus = redisService.getFriendStudyStatus(friendIds);
-        return FindAllFriendsResponse.from(members, studyTimes, friendStudyStatus);
+        return FindAllFriendsResponse.from(studyInfo.members(), studyInfo.studyTimes(), studyInfo.studyStatuses());
     }
 
     private List<Long> getFriendIds(Member me, List<Friend> friends) {
