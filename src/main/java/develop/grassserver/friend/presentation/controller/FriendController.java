@@ -4,6 +4,7 @@ import develop.grassserver.common.annotation.LoginMember;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.friend.application.service.FriendService;
+import develop.grassserver.friend.presentation.dto.FindAllFriendsResponse;
 import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpMessageRequest;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +30,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class FriendController {
 
     private final FriendService friendService;
+
+    @Operation(summary = "친구 목록 조회 API", description = "친구 목록 조회 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "친구 목록 조회 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    @GetMapping
+    public ResponseEntity<ApiResult<FindAllFriendsResponse>> findAllFriends(@LoginMember Member member) {
+        FindAllFriendsResponse response = friendService.findAllFriends(member);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(response));
+    }
 
     @Operation(summary = "친구 추가 API", description = "친구 추가 시 사용되는 API")
     @ApiResponses(value = {
