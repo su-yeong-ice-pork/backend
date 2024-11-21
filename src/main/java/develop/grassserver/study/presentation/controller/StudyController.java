@@ -9,6 +9,7 @@ import develop.grassserver.study.application.service.StudyQueryService;
 import develop.grassserver.study.presentation.dto.CreateStudyRequest;
 import develop.grassserver.study.presentation.dto.CreateStudyResponse;
 import develop.grassserver.study.presentation.dto.EnterStudyRequest;
+import develop.grassserver.study.presentation.dto.FindAllStudyMembersResponse;
 import develop.grassserver.study.presentation.dto.FindAllStudyResponse;
 import develop.grassserver.study.presentation.dto.StudyDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,6 +57,18 @@ public class StudyController {
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 
+    @Operation(summary = "고정 스터디 구성원 전체 조회 API", description = "고정 스터디 구성원 조회 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "스터디 구성원 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
+    })
+    @GetMapping("{studyId}/participants")
+    public ResponseEntity<ApiResult<FindAllStudyMembersResponse>> getAllStudyMembers(@PathVariable Long studyId,
+                                                                                     @LoginMember Member member) {
+        FindAllStudyMembersResponse response = studyQueryService.getAllStudyMember(member, studyId);
+        return ResponseEntity.ok(ApiUtils.success(response));
+    }
+
     @Operation(summary = "초대코드로 고정 스터디 입장 API", description = "초대코드로 고정 스터디 입장 시 사용되는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "스터디 입장 성공"),
@@ -82,5 +95,4 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success(response));
     }
-
 }
