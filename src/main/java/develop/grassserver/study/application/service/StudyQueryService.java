@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +73,13 @@ public class StudyQueryService {
         validStudyMember(member, studyId);
 
         List<StudyMember> studyMembers = studyMemberRepository.findAllByStudyId(studyId);
+        Pair<List<Long>, Map<Long, StudyRole>> idsAndRoles = getStudyMemberIdsAndRoles(studyMembers);
+        MemberStudyInfoDTO studyInfo = memberStudyInfoService.getMemberStudyInfo(idsAndRoles.getFirst());
 
+        return FindAllStudyMembersResponse.from(studyInfo, idsAndRoles.getSecond());
+    }
+
+    private Pair<List<Long>, Map<Long, StudyRole>> getStudyMemberIdsAndRoles(List<StudyMember> studyMembers) {
         List<Long> studyMemberIds = new ArrayList<>();
         Map<Long, StudyRole> roles = new HashMap<>();
 
@@ -82,8 +89,7 @@ public class StudyQueryService {
             roles.put(id, studyMember.getRole());
         });
 
-        MemberStudyInfoDTO studyInfo = memberStudyInfoService.getMemberStudyInfo(studyMemberIds);
-
-        return FindAllStudyMembersResponse.from(studyInfo, roles);
+        return Pair.of(studyMemberIds, roles);
     }
+
 }
