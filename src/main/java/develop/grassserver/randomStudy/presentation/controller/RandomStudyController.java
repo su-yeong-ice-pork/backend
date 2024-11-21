@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/random-studies")
 public class RandomStudyController {
+
     private RandomStudyService randomStudyService;
 
     @Operation(summary = "랜덤 스터디 상세 조회 API", description = "랜덤 스터디 상세 조회 조회 시 사용되는 API")

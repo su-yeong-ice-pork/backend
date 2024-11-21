@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RandomStudyService {
+
     private final RandomStudyRepository randomStudyRepository;
 
     public RandomStudyDetailResponse getRandomStudyDetail(Long studyId) {
