@@ -42,7 +42,7 @@ public class FriendService {
 
         MemberStudyInfoDTO studyInfo = memberStudyInfoService.getMemberStudyInfo(friendIds);
 
-        return FindAllFriendsResponse.from(studyInfo.members(), studyInfo.studyTimes(), studyInfo.studyStatuses());
+        return FindAllFriendsResponse.from(studyInfo);
     }
 
     private List<Long> getFriendIds(Member me, List<Friend> friends) {
