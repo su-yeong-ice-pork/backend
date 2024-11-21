@@ -31,8 +31,7 @@ public class RandomStudyController {
     })
     @GetMapping("/{studyId}")
     public ResponseEntity<ApiResult<RandomStudyDetailResponse>> getRandomStudyDetail(@PathVariable Long studyId,
-                                                                                     @LoginMember
-                                                                                     Member member) {
+                                                                                     @LoginMember Member member) {
         RandomStudyDetailResponse response = randomStudyService.getRandomStudyDetail(member, studyId);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
