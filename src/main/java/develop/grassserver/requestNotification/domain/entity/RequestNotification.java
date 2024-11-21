@@ -11,12 +11,16 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE request_notification SET status = false WHERE id = ?")
+@SQLRestriction("status = true")
 public abstract class RequestNotification extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

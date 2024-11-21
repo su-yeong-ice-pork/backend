@@ -8,11 +8,15 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE request_notification SET status = false WHERE id = ?")
+@SQLRestriction("status = true")
 public class FriendRequestNotification extends RequestNotification {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
