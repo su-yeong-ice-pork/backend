@@ -2,6 +2,7 @@ package develop.grassserver.study.application.service;
 
 import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.member.domain.entity.Member;
+import develop.grassserver.study.application.exception.InvalidInviteCodeException;
 import develop.grassserver.study.application.exception.NotAStudyMemberException;
 import develop.grassserver.study.domain.entity.Study;
 import develop.grassserver.study.domain.entity.StudyRole;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StudyService {
+
     private final StudyRepository studyRepository;
     private final StudyMemberRepository studyMemberRepository;
 
@@ -57,6 +59,13 @@ public class StudyService {
                 .collect(Collectors.toList());
 
         return new FindAllStudyResponse(regularStudies);
+    }
+
+    @Transactional
+    public void enterStudyWithInviteCode(Member member, String inviteCode) {
+        Study study = studyRepository.findStudyByInviteCode(inviteCode).orElseThrow(InvalidInviteCodeException::new);
+        study.addMember(member, StudyRole.MEMBER);
+        studyRepository.save(study);
     }
 
     @Transactional
