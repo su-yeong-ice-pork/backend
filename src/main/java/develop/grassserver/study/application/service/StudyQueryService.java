@@ -25,14 +25,18 @@ public class StudyQueryService {
     private final StudyMemberRepository studyMemberRepository;
 
     public StudyDetailResponse getStudyDetail(Member member, Long studyId) {
-        if (!studyMemberRepository.existsByMemberIdAndStudyId(member.getId(), studyId)) {
-            throw new NotAStudyMemberException();
-        }
+        validStudyMember(member, studyId);
 
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 스터디를 찾을 수 없습니다."));
 
         return StudyDetailResponse.from(study);
+    }
+
+    private void validStudyMember(Member member, Long studyId) {
+        if (!studyMemberRepository.existsByMemberIdAndStudyId(member.getId(), studyId)) {
+            throw new NotAStudyMemberException();
+        }
     }
 
     public FindAllStudyResponse getAllStudies(Member member) {
