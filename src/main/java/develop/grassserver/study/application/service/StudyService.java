@@ -2,7 +2,7 @@ package develop.grassserver.study.application.service;
 
 import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.member.domain.entity.Member;
-import develop.grassserver.study.application.service.exception.NotAStudyMemberException;
+import develop.grassserver.study.application.exception.NotAStudyMemberException;
 import develop.grassserver.study.domain.entity.Study;
 import develop.grassserver.study.domain.entity.StudyRole;
 import develop.grassserver.study.infrastructure.repository.StudyMemberRepository;
