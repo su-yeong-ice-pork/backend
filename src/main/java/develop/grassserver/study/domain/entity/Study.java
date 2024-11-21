@@ -38,6 +38,7 @@ public class Study extends BaseEntity {
     @Column(nullable = false)
     private Duration totalStudyTime = Duration.ZERO;
 
+    @Column(unique = true)
     private String inviteCode;
 
     @OneToMany(mappedBy = "study")
