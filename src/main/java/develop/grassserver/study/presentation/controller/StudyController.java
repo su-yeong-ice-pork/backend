@@ -7,6 +7,7 @@ import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.study.application.service.StudyService;
 import develop.grassserver.study.presentation.dto.CreateStudyRequest;
 import develop.grassserver.study.presentation.dto.CreateStudyResponse;
+import develop.grassserver.study.presentation.dto.EnterStudyRequest;
 import develop.grassserver.study.presentation.dto.FindAllStudyResponse;
 import develop.grassserver.study.presentation.dto.StudyDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +52,20 @@ public class StudyController {
     public ResponseEntity<ApiResult<FindAllStudyResponse>> getAllStudies(@LoginMember Member member) {
         FindAllStudyResponse response = studyService.getAllStudies(member);
         return ResponseEntity.ok(ApiUtils.success(response));
+    }
+
+    @Operation(summary = "초대코드로 고정 스터디 입장 API", description = "초대코드로 고정 스터디 입장 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "스터디 입장 성공"),
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
+            @ApiResponse(responseCode = "404", description = "잘못된 초대코드")
+    })
+    @PostMapping("/entries")
+    public ResponseEntity<ApiResult<String>> enterStudyWithInviteCode(
+            @RequestBody EnterStudyRequest request, @LoginMember Member member) {
+        studyService.enterStudyWithInviteCode(member, request.inviteCode());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiUtils.success());
     }
 
     @Operation(summary = "고정 스터디 생성 API", description = "고정 스터디 생성 시 사용되는 API")
