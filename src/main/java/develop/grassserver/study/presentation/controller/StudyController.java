@@ -7,6 +7,7 @@ import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.study.application.service.StudyService;
 import develop.grassserver.study.presentation.dto.CreateStudyRequest;
 import develop.grassserver.study.presentation.dto.CreateStudyResponse;
+import develop.grassserver.study.presentation.dto.FindAllStudyResponse;
 import develop.grassserver.study.presentation.dto.StudyDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/regular-studies")
 public class StudyController {
+
     private final StudyService studyService;
 
     @Operation(summary = "고정 스터디 세부 조회 API", description = "고정 스터디 세부 조회 시 사용되는 API")
@@ -37,6 +39,17 @@ public class StudyController {
     public ResponseEntity<ApiResult<StudyDetailResponse>> getStudyDetail(@PathVariable Long studyId,
                                                                          @LoginMember Member member) {
         StudyDetailResponse response = studyService.getStudyDetail(member, studyId);
+        return ResponseEntity.ok(ApiUtils.success(response));
+    }
+
+    @Operation(summary = "고정 스터디 목록 조회 API", description = "고정 스터디 목록 조회 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "스터디 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
+    })
+    @GetMapping
+    public ResponseEntity<ApiResult<FindAllStudyResponse>> getAllStudies(@LoginMember Member member) {
+        FindAllStudyResponse response = studyService.getAllStudies(member);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 
