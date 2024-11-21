@@ -17,7 +17,10 @@ import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.notification.application.service.EmojiNotificationService;
 import develop.grassserver.notification.application.service.MessageNotificationService;
 import develop.grassserver.requestNotification.domain.entity.FriendRequestNotification;
+import develop.grassserver.requestNotification.domain.entity.RequestNotification;
 import develop.grassserver.requestNotification.infrastructure.repository.FriendRequestNotificationRepository;
+import develop.grassserver.requestNotification.infrastructure.repository.RequestNotificationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,6 +45,7 @@ public class FriendService {
 
     // 순환 참조 해결 필요
     private final FriendRequestNotificationRepository friendRequestNotificationRepository;
+    private final RequestNotificationRepository requestNotificationRepository;
 
     public FindAllFriendsResponse findAllFriends(Member me) {
         List<Friend> friends = friendRepository.findAllMyFriends(me.getId());
@@ -151,5 +155,22 @@ public class FriendService {
 
     public List<Friend> findAllNotAcceptedFriendRelations(Long memberId) {
         return friendRepository.findAllPendingFriends(memberId);
+    }
+
+    @Transactional
+    public void acceptFriendRequest(Long id) {
+        FriendRequestNotification friendRequestNotification = friendRequestNotificationRepository.findByIdWithFriend(id)
+                .orElseThrow(EntityNotFoundException::new);
+        Friend friend = friendRequestNotification.getFriend();
+
+        if (friend.getRequestStatus() == FriendRequestStatus.ACCEPTED) {
+            throw new ExistFriendRelationException();
+        }
+
+        friend.connect();
+
+        RequestNotification requestNotification = requestNotificationRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+        requestNotificationRepository.delete(requestNotification);
     }
 }
