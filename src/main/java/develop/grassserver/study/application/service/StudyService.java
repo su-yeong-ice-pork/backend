@@ -5,6 +5,7 @@ import develop.grassserver.study.domain.entity.Study;
 import develop.grassserver.study.domain.entity.StudyRole;
 import develop.grassserver.study.infrastructure.repository.StudyRepository;
 import develop.grassserver.study.presentation.dto.CreateStudyRequest;
+import develop.grassserver.study.presentation.dto.CreateStudyResponse;
 import java.security.SecureRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class StudyService {
     private final StudyRepository studyRepository;
 
     @Transactional
-    public void createStudy(Member member, CreateStudyRequest request) {
+    public CreateStudyResponse createStudy(Member member, CreateStudyRequest request) {
         Study study = Study.builder()
                 .name(request.name())
                 .goalMessage(request.goalMessage())
@@ -29,6 +30,8 @@ public class StudyService {
 
         study.addMember(member, StudyRole.LEADER);
         studyRepository.save(study);
+
+        return new CreateStudyResponse(study.getInviteCode());
     }
 
     private String generateUniqueInviteCode() {

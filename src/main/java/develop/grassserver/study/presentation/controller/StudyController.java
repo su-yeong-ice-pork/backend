@@ -6,6 +6,7 @@ import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.study.application.service.StudyService;
 import develop.grassserver.study.presentation.dto.CreateStudyRequest;
+import develop.grassserver.study.presentation.dto.CreateStudyResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -29,11 +30,11 @@ public class StudyController {
             @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
     })
     @PostMapping
-    public ResponseEntity<ApiResult<String>> createStudy(@RequestBody CreateStudyRequest request,
-                                                         @LoginMember Member member) {
-        studyService.createStudy(member, request);
+    public ResponseEntity<ApiResult<CreateStudyResponse>> createStudy(@RequestBody CreateStudyRequest request,
+                                                                      @LoginMember Member member) {
+        CreateStudyResponse response = studyService.createStudy(member, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiUtils.success());
+                .body(ApiUtils.success(response));
     }
 
 }
