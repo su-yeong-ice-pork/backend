@@ -20,7 +20,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE studymember SET status = false WHERE id = ?")
+@SQLDelete(sql = "UPDATE study_member SET status = false WHERE id = ?")
 @SQLRestriction("status = true")
 public class StudyMember extends BaseEntity {
 
