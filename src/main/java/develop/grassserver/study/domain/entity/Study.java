@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,9 +30,14 @@ public class Study extends BaseEntity {
 
     @ColumnDefault("0")
     @Builder.Default
+    private long goalTime = 0;
+
+    @ColumnDefault("0")
+    @Builder.Default
     @Column(nullable = false)
     private Duration totalStudyTime = Duration.ZERO;
 
     @OneToMany(mappedBy = "study")
-    private List<StudyMember> members;
+    @Builder.Default
+    private List<StudyMember> members = new ArrayList<>();
 }
