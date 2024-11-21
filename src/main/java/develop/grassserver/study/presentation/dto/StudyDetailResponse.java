@@ -1,4 +1,4 @@
-package develop.grassserver.randomStudy.presentation.dto;
+package develop.grassserver.study.presentation.dto;
 
 public record StudyDetailResponse(
         Long id,
