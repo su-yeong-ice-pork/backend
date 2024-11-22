@@ -36,6 +36,10 @@ public class Friend extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private FriendRequestStatus requestStatus;
 
+    public void connect() {
+        this.requestStatus = FriendRequestStatus.ACCEPTED;
+    }
+
     public void reconnect() {
         this.requestStatus = FriendRequestStatus.PENDING;
     }

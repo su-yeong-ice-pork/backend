@@ -39,7 +39,6 @@ public class Member extends BaseEntity {
     @Embedded
     private Major major;
 
-
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     private Profile profile;
 
