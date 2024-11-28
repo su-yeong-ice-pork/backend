@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Version;
 import java.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,10 +42,13 @@ public class Grass extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Version
+    private Long version;
+
     public void updateStudyTime(Duration todayStudyTime) {
         member.getStudyRecord().updateTotalStudyTime(todayStudyTime);
         this.studyTime = todayStudyTime.plus(studyTime);
-        
+
     }
 
     public void updateGrassScore(int grassScore) {
