@@ -8,12 +8,11 @@ import develop.grassserver.grass.application.exception.MissingAttendanceExceptio
 import develop.grassserver.grass.domain.entity.Grass;
 import develop.grassserver.grass.infrastructure.repositiory.GrassRepository;
 import develop.grassserver.grass.presentation.dto.AttendanceResponse;
-import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
 import develop.grassserver.grass.presentation.dto.StudyTimeRequest;
+import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
 import develop.grassserver.member.domain.entity.Member;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +26,12 @@ public class GrassService {
 
     private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
         LocalDate today = LocalDate.now();
-        return grassRepository.findByMemberIdAndDate(memberId, today.atStartOfDay(), today.atTime(LocalTime.MAX));
+        return grassRepository.findByMemberIdAndDate(memberId, today);
     }
 
     private Optional<Grass> findYesterdayGrassByMemberId(Long memberId) {
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        return grassRepository.findByMemberIdAndDate(memberId, yesterday.atStartOfDay(),
-                yesterday.atTime(LocalTime.MAX));
+        return grassRepository.findByMemberIdAndDate(memberId, yesterday);
     }
 
     public boolean isTodayGrassExist(Member member) {
