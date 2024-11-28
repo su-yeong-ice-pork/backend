@@ -91,16 +91,14 @@ public class GrassService {
     }
 
     public StudyTimeResponse getStudyRecord(Member member) {
-        Optional<Grass> optionalGrass = findTodayGrassByMemberId(member.getId());
-        if (optionalGrass.isPresent()) {
-            Grass grass = optionalGrass.get();
-            String todayStudyTime = DurationUtils.formatDuration(grass.getStudyTime());
-            String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
-            return new StudyTimeResponse(todayStudyTime, totalStudyTime);
-        } else {
-            String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
-            return new StudyTimeResponse("00:00:00", totalStudyTime);
-        }
+        Optional<Grass> optionalGrass = findTodayGrass(member.getId());
+        String todayStudyTime = optionalGrass
+                .map(grass -> DurationUtils.formatDuration(grass.getStudyTime()))
+                .orElse("00:00:00");
+
+        String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
+
+        return new StudyTimeResponse(todayStudyTime, totalStudyTime);
     }
 
     @Transactional
