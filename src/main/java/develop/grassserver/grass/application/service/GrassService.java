@@ -11,6 +11,7 @@ import develop.grassserver.grass.presentation.dto.AttendanceResponse;
 import develop.grassserver.grass.presentation.dto.StudyTimeRequest;
 import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
 import develop.grassserver.member.domain.entity.Member;
+import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,14 +24,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GrassService {
     private final GrassRepository grassRepository;
+    private final Clock clock;
 
     private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
         return grassRepository.findByMemberIdAndDate(memberId, today);
     }
 
     private Optional<Grass> findYesterdayGrassByMemberId(Long memberId) {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate yesterday = LocalDate.now(clock).minusDays(1);
         return grassRepository.findByMemberIdAndDate(memberId, yesterday);
     }
 
@@ -60,7 +62,7 @@ public class GrassService {
     }
 
     public Grass findDayGrassByMemberId(Long memberId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
         LocalDate yesterday = today.minusDays(1);
 
         return grassRepository.findTopByMemberIdOrderByCreatedAtDesc(memberId)
