@@ -103,15 +103,12 @@ public class GrassService {
 
     @Transactional
     public StudyTimeResponse updateStudyRecord(Member member, StudyTimeRequest request) {
-        Optional<Grass> optionalGrass = findTodayGrassByMemberId(member.getId());
-        if (optionalGrass.isPresent()) {
-            Grass grass = optionalGrass.get();
-            Duration todayStudyTime = DurationUtils.parseDuration(request.todayStudyTime());
-            grass.updateStudyTime(todayStudyTime);
-            grass.updateGrassScore(calculateStudyScore(todayStudyTime));
-        } else {
-            throw new MissingAttendanceException();
-        }
+        Grass grass = findTodayGrass(member.getId()).orElseThrow(MissingAttendanceException::new);
+
+        Duration todayStudyTime = DurationUtils.parseDuration(request.todayStudyTime());
+        grass.updateStudyTime(todayStudyTime);
+        grass.updateGrassScore(calculateStudyScore(todayStudyTime));
+
         return getStudyRecord(member);
     }
 
