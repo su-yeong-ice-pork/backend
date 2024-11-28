@@ -47,7 +47,7 @@ public class GrassService {
                 .member(member)
                 .currentStreak(currentStreak)
                 .build();
-        
+
         return grassRepository.save(grass);
     }
 
@@ -66,7 +66,7 @@ public class GrassService {
         LocalDate today = LocalDate.now(clock);
         LocalDate yesterday = today.minusDays(1);
 
-        return grassRepository.findTopByMemberIdOrderByCreatedAtDesc(memberId)
+        return grassRepository.findTopByMemberIdOrderByAttendanceDateDesc(memberId)
                 .filter(grass -> {
                     LocalDate grassCreatedDate = grass.getCreatedAt().toLocalDate();
                     return grassCreatedDate.equals(today) || grassCreatedDate.equals(yesterday);
