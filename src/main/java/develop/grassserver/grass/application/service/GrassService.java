@@ -26,18 +26,13 @@ public class GrassService {
     private final GrassRepository grassRepository;
     private final Clock clock;
 
-    private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
-        LocalDate today = LocalDate.now(clock);
-        return grassRepository.findByMemberIdAndDate(memberId, today);
-    }
-
-    private Optional<Grass> findYesterdayGrassByMemberId(Long memberId) {
-        LocalDate yesterday = LocalDate.now(clock).minusDays(1);
-        return grassRepository.findByMemberIdAndDate(memberId, yesterday);
-    }
-
     public boolean isTodayGrassExist(Member member) {
         return findTodayGrassByMemberId(member.getId()).isPresent();
+    }
+
+    private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
+        LocalDate today = LocalDate.now(clock);
+        return grassRepository.findByMemberIdAndAttendanceDate(memberId, today);
     }
 
     @Transactional
@@ -59,6 +54,18 @@ public class GrassService {
                 .currentStreak(currentStreak)
                 .build();
         return grassRepository.save(grass);
+    }
+
+    private int calculateCurrentStreak(Long memberId) {
+        return findYesterdayGrass(memberId)
+                .map(grass -> grass.getCurrentStreak() + 1)
+                .orElse(1);
+    }
+
+
+    private Optional<Grass> findYesterdayGrassByMemberId(Long memberId) {
+        LocalDate yesterday = LocalDate.now(clock).minusDays(1);
+        return grassRepository.findByMemberIdAndAttendanceDate(memberId, yesterday);
     }
 
     public Grass findDayGrassByMemberId(Long memberId) {
