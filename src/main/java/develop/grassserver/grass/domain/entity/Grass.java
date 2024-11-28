@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -25,6 +27,9 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE grass SET status = false WHERE id = ?")
 @SQLRestriction("status = true")
+@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = {"member_id", "attendance_date"})
+)
 public class Grass extends BaseEntity {
 
     @Column(name = "study_time_seconds", nullable = false)
