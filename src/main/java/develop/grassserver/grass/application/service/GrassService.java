@@ -78,12 +78,16 @@ public class GrassService {
         return grassRepository.countByMemberId(memberId);
     }
 
-    public List<Grass> findYearlyGrassByMemberId(Member member, int year) {
-        return grassRepository.findByMemberAndYear(member, year);
+    public List<Grass> findYearlyGrass(Member member, int year) {
+        LocalDate startDate = LocalDate.of(year, 1, 1);
+        LocalDate endDate = LocalDate.of(year, 12, 31);
+        return grassRepository.findByMemberAndAttendanceDateBetween(member, startDate, endDate);
     }
 
-    public List<Grass> findMonthlyGrassByMemberId(Member member, int year, int month) {
-        return grassRepository.findByMemberAndYearAndMonth(member, year, month);
+    public List<Grass> findMonthlyGrass(Member member, int year, int month) {
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        return grassRepository.findByMemberAndAttendanceDateBetween(member, startDate, endDate);
     }
 
     public StudyTimeResponse getStudyRecord(Member member) {
