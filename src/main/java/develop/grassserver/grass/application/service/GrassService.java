@@ -27,10 +27,10 @@ public class GrassService {
     private final Clock clock;
 
     public boolean isTodayGrassExist(Member member) {
-        return findTodayGrassByMemberId(member.getId()).isPresent();
+        return findTodayGrass(member.getId()).isPresent();
     }
 
-    private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
+    private Optional<Grass> findTodayGrass(Long memberId) {
         LocalDate today = LocalDate.now(clock);
         return grassRepository.findByMemberIdAndAttendanceDate(memberId, today);
     }
@@ -42,17 +42,12 @@ public class GrassService {
             throw new AlreadyCheckedInException();
         }
 
-        int currentStreak = 1;
-        Optional<Grass> yesterdayGrass = findYesterdayGrassByMemberId(member.getId());
-
-        if (yesterdayGrass.isPresent()) {
-            currentStreak = yesterdayGrass.get().getCurrentStreak() + 1;
-        }
-
+        int currentStreak = calculateCurrentStreak(member.getId());
         Grass grass = Grass.builder()
                 .member(member)
                 .currentStreak(currentStreak)
                 .build();
+        
         return grassRepository.save(grass);
     }
 
@@ -62,8 +57,7 @@ public class GrassService {
                 .orElse(1);
     }
 
-
-    private Optional<Grass> findYesterdayGrassByMemberId(Long memberId) {
+    private Optional<Grass> findYesterdayGrass(Long memberId) {
         LocalDate yesterday = LocalDate.now(clock).minusDays(1);
         return grassRepository.findByMemberIdAndAttendanceDate(memberId, yesterday);
     }
