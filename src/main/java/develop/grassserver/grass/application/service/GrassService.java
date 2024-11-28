@@ -37,7 +37,6 @@ public class GrassService {
 
     @Transactional
     public Grass createGrass(Member member) {
-
         if (isTodayGrassExist(member)) {
             throw new AlreadyCheckedInException();
         }
