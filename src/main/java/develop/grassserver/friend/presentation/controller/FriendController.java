@@ -5,7 +5,6 @@ import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.friend.application.service.FriendService;
 import develop.grassserver.friend.presentation.dto.FindAllFriendsResponse;
-import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpMessageRequest;
 import develop.grassserver.member.domain.entity.Member;
@@ -52,12 +51,12 @@ public class FriendController {
             @ApiResponse(responseCode = "409", description = "이미 요청을 보낸 상태임"),
             @ApiResponse(responseCode = "409", description = "이미 등록된 친구")
     })
-    @PostMapping
+    @PostMapping("/{otherMemberId}/request")
     public ResponseEntity<ApiResult<String>> requestFriend(
             @LoginMember Member member,
-            @Valid @RequestBody RequestFriendRequest request
+            @PathVariable Long otherMemberId
     ) {
-        friendService.requestFriend(member, request);
+        friendService.requestFriend(member, otherMemberId);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success());
     }
