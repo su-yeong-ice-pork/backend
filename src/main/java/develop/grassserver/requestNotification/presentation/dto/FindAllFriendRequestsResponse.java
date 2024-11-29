@@ -1,6 +1,6 @@
 package develop.grassserver.requestNotification.presentation.dto;
 
-import develop.grassserver.common.utils.duration.DurationUtils;
+import develop.grassserver.common.utils.DateTimeUtils;
 import develop.grassserver.requestNotification.domain.entity.FriendRequestNotification;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,9 +19,9 @@ public record FindAllFriendRequestsResponse(List<FriendRequest> friendRequests) 
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime createdAt = notification.getCreatedAt();
 
-        boolean isToday = isSameDay(today, createdAt);
-        String time = DurationUtils.formatNotificationTime(createdAt);
-        String date = DurationUtils.formatNotificationDate(createdAt);
+        boolean isToday = DateTimeUtils.isSameDay(today, createdAt);
+        String time = DateTimeUtils.formatNotificationTime(createdAt);
+        String date = DateTimeUtils.formatNotificationDate(createdAt);
 
         return new FriendRequest(
                 notification.getId(),
@@ -30,11 +30,6 @@ public record FindAllFriendRequestsResponse(List<FriendRequest> friendRequests) 
                 time,
                 date
         );
-    }
-
-    private static boolean isSameDay(LocalDateTime today, LocalDateTime createdAt) {
-        return today.toLocalDate()
-                .isEqual(createdAt.toLocalDate());
     }
 
     public record FriendRequest(

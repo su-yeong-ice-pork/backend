@@ -1,7 +1,6 @@
 package develop.grassserver.common.utils.duration;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -12,8 +11,6 @@ public class DurationUtils {
     public static final int SECONDS_IN_MINUTE = 60;
     public static final int SECONDS_IN_HOUR = 3600;
 
-    private static final DateTimeFormatter NOTIFICATION_TIME_FORMATTER = DateTimeFormatter.ofPattern("오늘 a hh:mm");
-    private static final DateTimeFormatter NOTIFICATION_DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일");
     private static final DateTimeFormatter DURATION_FORMATTER = new DateTimeFormatterBuilder()
             .appendPattern("[H][HH]")
             .appendLiteral(':')
@@ -51,13 +48,5 @@ public class DurationUtils {
         long hours = totalSeconds / SECONDS_IN_HOUR;
         long minutes = (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
         return String.format("%02d시간 %02d분", hours, minutes);
-    }
-
-    public static String formatNotificationTime(LocalDateTime createdAt) {
-        return createdAt.format(NOTIFICATION_TIME_FORMATTER);
-    }
-
-    public static String formatNotificationDate(LocalDateTime createdAt) {
-        return createdAt.format(NOTIFICATION_DATE_FORMATTER);
     }
 }

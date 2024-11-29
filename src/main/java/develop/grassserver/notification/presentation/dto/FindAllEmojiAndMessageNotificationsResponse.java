@@ -1,6 +1,6 @@
 package develop.grassserver.notification.presentation.dto;
 
-import develop.grassserver.common.utils.duration.DurationUtils;
+import develop.grassserver.common.utils.DateTimeUtils;
 import develop.grassserver.notification.domain.entity.EmojiNotification;
 import develop.grassserver.notification.domain.entity.MessageNotification;
 import develop.grassserver.notification.domain.entity.Notification;
@@ -21,9 +21,9 @@ public record FindAllEmojiAndMessageNotificationsResponse(List<NotificationDTO> 
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime createdAt = notification.getCreatedAt();
 
-        boolean isToday = isSameDay(today, createdAt);
-        String time = DurationUtils.formatNotificationTime(createdAt);
-        String date = DurationUtils.formatNotificationDate(createdAt);
+        boolean isToday = DateTimeUtils.isSameDay(today, createdAt);
+        String time = DateTimeUtils.formatNotificationTime(createdAt);
+        String date = DateTimeUtils.formatNotificationDate(createdAt);
 
         if (notification instanceof EmojiNotification emojiNotification) {
             return new NotificationDTO(
@@ -47,29 +47,6 @@ public record FindAllEmojiAndMessageNotificationsResponse(List<NotificationDTO> 
             );
         }
         throw new IllegalArgumentException("예기치 못한 오류가 발생하였습니다.");
-    }
-
-    private static boolean isSameDay(LocalDateTime today, LocalDateTime createdAt) {
-        return today.getYear() == createdAt.getYear()
-                && today.getMonthValue() == createdAt.getMonthValue()
-                && today.getDayOfMonth() == createdAt.getDayOfMonth();
-    }
-
-    private static String formatTime(LocalDateTime createdAt) {
-        int hour = createdAt.getHour();
-        int minute = createdAt.getMinute();
-
-        if (hour > 12) {
-            return String.format("오늘 오후 %02d:%02d", hour - 12, minute);
-        } else if (hour == 12) {
-            return String.format("오늘 오후 %02d:%02d", hour, minute);
-        } else {
-            return String.format("오늘 오전 %02d:%02d", hour, minute);
-        }
-    }
-
-    private static String formatDate(LocalDateTime createdAt) {
-        return String.format("%02d월 %02d일", createdAt.getMonthValue(), createdAt.getDayOfMonth());
     }
 
     public record NotificationDTO(
