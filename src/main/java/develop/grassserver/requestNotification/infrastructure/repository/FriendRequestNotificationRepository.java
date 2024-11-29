@@ -11,9 +11,11 @@ public interface FriendRequestNotificationRepository extends JpaRepository<Frien
 
     @Query("select frn "
             + "from FriendRequestNotification frn join fetch frn.friend "
-            + "where frn.friend.id in :friendRelationIds")
+            + "where frn.friend.id in :friendRelationIds and frn.status = true")
     List<FriendRequestNotification> findAllByFriends(@Param("friendRelationIds") List<Long> friendRelationIds);
 
-    @Query("select frn from FriendRequestNotification frn join fetch frn.friend where frn.id = :id")
+    @Query("select frn "
+            + "from FriendRequestNotification frn join fetch frn.friend "
+            + "where frn.id = :id and frn.status = true")
     Optional<FriendRequestNotification> findByIdWithFriend(@Param("id") Long id);
 }
