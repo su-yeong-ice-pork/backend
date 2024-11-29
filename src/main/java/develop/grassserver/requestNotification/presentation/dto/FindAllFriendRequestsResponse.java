@@ -33,9 +33,8 @@ public record FindAllFriendRequestsResponse(List<FriendRequest> friendRequests) 
     }
 
     private static boolean isSameDay(LocalDateTime today, LocalDateTime createdAt) {
-        return today.getYear() == createdAt.getYear()
-                && today.getMonthValue() == createdAt.getMonthValue()
-                && today.getDayOfMonth() == createdAt.getDayOfMonth();
+        return today.toLocalDate()
+                .isEqual(createdAt.toLocalDate());
     }
 
     public record FriendRequest(
