@@ -1,5 +1,6 @@
 package develop.grassserver.notification.presentation.dto;
 
+import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.notification.domain.entity.EmojiNotification;
 import develop.grassserver.notification.domain.entity.MessageNotification;
 import develop.grassserver.notification.domain.entity.Notification;
@@ -21,8 +22,8 @@ public record FindAllEmojiAndMessageNotificationsResponse(List<NotificationDTO> 
         LocalDateTime createdAt = notification.getCreatedAt();
 
         boolean isToday = isSameDay(today, createdAt);
-        String time = formatTime(createdAt);
-        String date = formatDate(createdAt);
+        String time = DurationUtils.formatNotificationTime(createdAt);
+        String date = DurationUtils.formatNotificationDate(createdAt);
 
         if (notification instanceof EmojiNotification emojiNotification) {
             return new NotificationDTO(
