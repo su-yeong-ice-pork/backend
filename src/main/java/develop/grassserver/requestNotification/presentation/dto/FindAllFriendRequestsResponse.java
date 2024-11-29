@@ -1,5 +1,6 @@
 package develop.grassserver.requestNotification.presentation.dto;
 
+import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.requestNotification.domain.entity.FriendRequestNotification;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,8 +20,8 @@ public record FindAllFriendRequestsResponse(List<FriendRequest> friendRequests) 
         LocalDateTime createdAt = notification.getCreatedAt();
 
         boolean isToday = isSameDay(today, createdAt);
-        String time = formatTime(createdAt);
-        String date = formatDate(createdAt);
+        String time = DurationUtils.formatNotificationTime(createdAt);
+        String date = DurationUtils.formatNotificationDate(createdAt);
 
         return new FriendRequest(
                 notification.getId(),
@@ -35,23 +36,6 @@ public record FindAllFriendRequestsResponse(List<FriendRequest> friendRequests) 
         return today.getYear() == createdAt.getYear()
                 && today.getMonthValue() == createdAt.getMonthValue()
                 && today.getDayOfMonth() == createdAt.getDayOfMonth();
-    }
-
-    private static String formatTime(LocalDateTime createdAt) {
-        int hour = createdAt.getHour();
-        int minute = createdAt.getMinute();
-
-        if (hour > 12) {
-            return String.format("오늘 오후 %02d:%02d", hour - 12, minute);
-        } else if (hour == 12) {
-            return String.format("오늘 오후 %02d:%02d", hour, minute);
-        } else {
-            return String.format("오늘 오전 %02d:%02d", hour, minute);
-        }
-    }
-
-    private static String formatDate(LocalDateTime createdAt) {
-        return String.format("%02d월 %02d일", createdAt.getMonthValue(), createdAt.getDayOfMonth());
     }
 
     public record FriendRequest(
