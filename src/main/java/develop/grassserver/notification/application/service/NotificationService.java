@@ -17,7 +17,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     public FindAllEmojiAndMessageNotificationsResponse findAllEmojiAndMessageNotifications(Member member) {
-        List<Notification> notifications = notificationRepository.findByReceiverId(member.getId());
+        List<Notification> notifications = notificationRepository.findByReceiverIdWithSender(member.getId());
         return FindAllEmojiAndMessageNotificationsResponse.from(notifications);
     }
 }
