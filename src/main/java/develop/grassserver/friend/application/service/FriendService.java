@@ -8,7 +8,6 @@ import develop.grassserver.friend.domain.entity.Friend;
 import develop.grassserver.friend.domain.entity.FriendRequestStatus;
 import develop.grassserver.friend.infrastructure.repository.FriendRepository;
 import develop.grassserver.friend.presentation.dto.FindAllFriendsResponse;
-import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpMessageRequest;
 import develop.grassserver.grass.application.service.GrassService;
@@ -72,9 +71,9 @@ public class FriendService {
     }
 
     @Transactional
-    public void requestFriend(Member member, RequestFriendRequest request) {
+    public void requestFriend(Member member, Long otherMemberId) {
         Member me = memberService.findMemberById(member.getId());
-        Member other = memberService.findMemberById(request.memberId());
+        Member other = memberService.findMemberById(otherMemberId);
 
         handleFriendRelation(me, other);
     }
