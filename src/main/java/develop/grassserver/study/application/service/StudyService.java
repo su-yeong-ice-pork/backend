@@ -46,7 +46,7 @@ public class StudyService {
 
         List<StudySummaryResponse> regularStudies = results.stream()
                 .map(StudySummaryResponse::from)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
 
         return new FindAllStudyResponse(regularStudies);
     }
