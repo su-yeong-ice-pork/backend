@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record EnterRandomStudyRequest(
+public record ApplyRandomStudyRequest(
         @NotNull(message = "출석 시간은 필수입니다.")
         @JsonFormat(pattern = "HH:mm")
         LocalTime attendanceTime,
