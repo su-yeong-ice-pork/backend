@@ -19,7 +19,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE study SET status = false WHERE id = ?")
@@ -45,9 +44,10 @@ public class Study extends BaseEntity {
     private List<StudyMember> members = new ArrayList<>();
 
     @Builder
-    public Study(String name, String goalMessage, String inviteCode) {
+    public Study(String name, String goalMessage, long goalTime, String inviteCode) {
         this.name = name;
         this.goalMessage = goalMessage;
+        this.goalTime = goalTime;
         this.inviteCode = inviteCode;
     }
 
