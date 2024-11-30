@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RandomStudyMemberRepository extends JpaRepository<RandomStudyMember, Long> {
+
     boolean existsByMemberIdAndRandomStudyId(Long memberId, Long randomStudyId);
 }
