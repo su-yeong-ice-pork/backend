@@ -1,6 +1,5 @@
 package develop.grassserver.study.application.service;
 
-import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.study.application.exception.InvalidInviteCodeException;
 import develop.grassserver.study.application.exception.NotAStudyMemberException;
@@ -44,16 +43,7 @@ public class StudyService {
         List<Object[]> results = studyRepository.findStudiesWithMemberCountByMemberId(member.getId());
 
         List<StudySummaryResponse> regularStudies = results.stream()
-                .map(result -> {
-                    Study study = (Study) result[0];
-                    Long memberCount = (Long) result[1];
-                    return new StudySummaryResponse(
-                            study.getId(),
-                            study.getName(),
-                            memberCount.intValue(),
-                            DurationUtils.formatHourDuration(study.getTotalStudyTime())
-                    );
-                })
+                .map(StudySummaryResponse::from)
                 .collect(Collectors.toList());
 
         return new FindAllStudyResponse(regularStudies);
