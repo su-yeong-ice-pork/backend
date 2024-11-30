@@ -4,6 +4,7 @@ import develop.grassserver.common.BaseEntity;
 import develop.grassserver.member.domain.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -32,19 +33,17 @@ public class Study extends BaseEntity {
     private String goalMessage;
 
     @ColumnDefault("0")
-    @Builder.Default
+    @Column(nullable = false)
     private long goalTime = 0;
 
     @ColumnDefault("0")
-    @Builder.Default
     @Column(nullable = false)
     private Duration totalStudyTime = Duration.ZERO;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String inviteCode;
 
-    @OneToMany(mappedBy = "study")
-    @Builder.Default
+    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
     private List<StudyMember> members = new ArrayList<>();
 
     public void addMember(Member member, StudyRole role) {
