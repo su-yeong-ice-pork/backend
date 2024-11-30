@@ -58,7 +58,7 @@ public class StudyController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "스터디 입장 성공"),
             @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
-            @ApiResponse(responseCode = "404", description = "잘못된 초대코드")
+            @ApiResponse(responseCode = "400", description = "잘못된 초대코드")
     })
     @PostMapping("/entries")
     public ResponseEntity<ApiResult<String>> enterStudyWithInviteCode(
