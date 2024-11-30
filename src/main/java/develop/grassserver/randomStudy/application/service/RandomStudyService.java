@@ -8,11 +8,9 @@ import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyRepo
 import develop.grassserver.randomStudy.presentation.dto.RandomStudyDetailResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
