@@ -1,6 +1,5 @@
 package develop.grassserver.study.application.service;
 
-import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.application.dto.MemberStudyInfoDTO;
 import develop.grassserver.grass.application.service.MemberStudyInfoService;
 import develop.grassserver.member.domain.entity.Member;
@@ -21,10 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -54,17 +55,8 @@ public class StudyQueryService {
         List<Object[]> results = studyRepository.findStudiesWithMemberCountByMemberId(member.getId());
 
         List<StudySummaryResponse> regularStudies = results.stream()
-                .map(result -> {
-                    Study study = (Study) result[0];
-                    Long memberCount = (Long) result[1];
-                    return new StudySummaryResponse(
-                            study.getId(),
-                            study.getName(),
-                            memberCount.intValue(),
-                            DurationUtils.formatHourDuration(study.getTotalStudyTime())
-                    );
-                })
-                .collect(Collectors.toList());
+                .map(StudySummaryResponse::from)
+                .collect(Collectors.toUnmodifiableList());
 
         return new FindAllStudyResponse(regularStudies);
     }
@@ -91,5 +83,4 @@ public class StudyQueryService {
 
         return Pair.of(studyMemberIds, roles);
     }
-
 }

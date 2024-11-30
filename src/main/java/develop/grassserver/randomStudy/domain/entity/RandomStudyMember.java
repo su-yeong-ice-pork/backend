@@ -4,7 +4,6 @@ import develop.grassserver.common.BaseEntity;
 import develop.grassserver.member.domain.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,11 +21,9 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("status = true")
 public class RandomStudyMember extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "random_study_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private RandomStudy randomStudy;
 }

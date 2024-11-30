@@ -26,11 +26,11 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("status = true")
 public class StudyMember extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "study_id")
     private Study study;
 

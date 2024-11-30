@@ -2,8 +2,10 @@ package develop.grassserver.study.domain.entity;
 
 import develop.grassserver.common.BaseEntity;
 import develop.grassserver.member.domain.entity.Member;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -18,7 +20,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE study SET status = false WHERE id = ?")
@@ -28,27 +29,36 @@ public class Study extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String goalMessage;
 
     @ColumnDefault("0")
-    @Builder.Default
     private long goalTime = 0;
 
     @ColumnDefault("0")
-    @Builder.Default
     @Column(nullable = false)
     private Duration totalStudyTime = Duration.ZERO;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String inviteCode;
 
-    @OneToMany(mappedBy = "study")
-    @Builder.Default
+    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudyMember> members = new ArrayList<>();
 
+    @Builder
+    public Study(String name, String goalMessage, long goalTime, String inviteCode) {
+        this.name = name;
+        this.goalMessage = goalMessage;
+        this.goalTime = goalTime;
+        this.inviteCode = inviteCode;
+    }
+
     public void addMember(Member member, StudyRole role) {
-        StudyMember studyMember = new StudyMember(member, this, role);
-        this.members.add(studyMember);
+        boolean isMemberAlreadyAdded = members.stream()
+                .anyMatch(studyMember -> studyMember.getMember().getId().equals(member.getId()));
+
+        if (!isMemberAlreadyAdded) {
+            StudyMember studyMember = new StudyMember(member, this, role);
+            this.members.add(studyMember);
+        }
     }
 }

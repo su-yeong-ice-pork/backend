@@ -4,6 +4,7 @@ import static develop.grassserver.common.utils.duration.DurationUtils.formatHour
 
 import develop.grassserver.randomStudy.domain.entity.RandomStudy;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public record RandomStudyDetailResponse(
         Long id,
@@ -12,7 +13,7 @@ public record RandomStudyDetailResponse(
         Long totalStudyTime
 ) {
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("a h시");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("a h시", Locale.KOREA);
 
     public static RandomStudyDetailResponse from(RandomStudy randomStudy) {
         return new RandomStudyDetailResponse(
