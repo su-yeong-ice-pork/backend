@@ -76,7 +76,7 @@ public class StudyService {
     private String generateUniqueInviteCode() {
         String code;
         do {
-            code = generateRandomCode() + System.currentTimeMillis();
+            code = generateRandomCode();
         } while (studyRepository.existsByInviteCode(code));
         return code;
     }
