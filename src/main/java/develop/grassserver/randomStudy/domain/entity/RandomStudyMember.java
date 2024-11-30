@@ -21,10 +21,10 @@ import org.hibernate.annotations.SQLRestriction;
 public class RandomStudyMember extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "random_study_id", nullable = false)
+    @JoinColumn(nullable = false)
     private RandomStudy randomStudy;
 }
