@@ -52,7 +52,12 @@ public class Study extends BaseEntity {
     }
 
     public void addMember(Member member, StudyRole role) {
-        StudyMember studyMember = new StudyMember(member, this, role);
-        this.members.add(studyMember);
+        boolean isMemberAlreadyAdded = members.stream()
+                .anyMatch(studyMember -> studyMember.getMember().getId().equals(member.getId()));
+
+        if (!isMemberAlreadyAdded) {
+            StudyMember studyMember = new StudyMember(member, this, role);
+            this.members.add(studyMember);
+        }
     }
 }
