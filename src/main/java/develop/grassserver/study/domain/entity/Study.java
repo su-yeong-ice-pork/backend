@@ -2,6 +2,7 @@ package develop.grassserver.study.domain.entity;
 
 import develop.grassserver.common.BaseEntity;
 import develop.grassserver.member.domain.entity.Member;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,7 +41,7 @@ public class Study extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String inviteCode;
 
-    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudyMember> members = new ArrayList<>();
 
     @Builder
