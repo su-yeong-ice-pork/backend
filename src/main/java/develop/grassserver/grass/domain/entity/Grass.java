@@ -6,7 +6,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import java.time.Duration;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +27,9 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE grass SET status = false WHERE id = ?")
 @SQLRestriction("status = true")
+@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = {"member_id", "attendance_date"})
+)
 public class Grass extends BaseEntity {
 
     @Column(name = "study_time_seconds", nullable = false)
@@ -41,10 +49,21 @@ public class Grass extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDate attendanceDate;
+
+    @Version
+    private Long version;
+
+    @PrePersist
+    private void prePersist() {
+        this.attendanceDate = this.getCreatedAt().toLocalDate();
+    }
+
     public void updateStudyTime(Duration todayStudyTime) {
         member.getStudyRecord().updateTotalStudyTime(todayStudyTime);
         this.studyTime = todayStudyTime.plus(studyTime);
-        
+
     }
 
     public void updateGrassScore(int grassScore) {
