@@ -29,11 +29,9 @@ public class Study extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String goalMessage;
 
     @ColumnDefault("0")
-    @Column(nullable = false)
     private long goalTime = 0;
 
     @ColumnDefault("0")
@@ -45,6 +43,13 @@ public class Study extends BaseEntity {
 
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
     private List<StudyMember> members = new ArrayList<>();
+
+    @Builder
+    public Study(String name, String goalMessage, String inviteCode) {
+        this.name = name;
+        this.goalMessage = goalMessage;
+        this.inviteCode = inviteCode;
+    }
 
     public void addMember(Member member, StudyRole role) {
         StudyMember studyMember = new StudyMember(member, this, role);
