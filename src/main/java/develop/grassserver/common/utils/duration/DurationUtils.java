@@ -42,4 +42,11 @@ public class DurationUtils {
     public static long formatHourDuration(Duration duration) {
         return (long) duration.getSeconds() / 3600;
     }
+
+    public static String formatHourAndMinute(Duration duration) {
+        long totalSeconds = duration.getSeconds();
+        long hours = totalSeconds / SECONDS_IN_HOUR;
+        long minutes = (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
+        return String.format("%02d시간 %02d분", hours, minutes);
+    }
 }

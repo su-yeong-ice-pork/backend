@@ -6,11 +6,15 @@ import develop.grassserver.auth.application.valid.AuthValidator;
 import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import java.time.Duration;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +22,8 @@ public class RedisService {
 
     private static final String REFRESH_TOKEN_PREFIX = "refresh-token";
     private static final long AUTH_CODE_EXPIRATION_TIME = 60 * 5L;
+    private static final String STUDY_STATUS_KEY_PREFIX = "studying-";
+
     private final RedisTemplate<String, Object> redisTemplate;
 
     public void saveAuthCode(String email, String code) {
@@ -30,7 +36,7 @@ public class RedisService {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         String email = request.email();
         String code = (String) valueOperations.get(email);
-        if (Objects.isNull(code)) {
+        if (!StringUtils.hasText(code)) {
             throw new ExpirationAuthCodeException("인증코드가 만료되었습니다. 인증코드를 재발급해주세요.");
         }
         if (!AuthValidator.isCorrectAuthCode(code, request)) {
@@ -60,5 +66,25 @@ public class RedisService {
 
     private String getRefreshCodeKey(String code) {
         return REFRESH_TOKEN_PREFIX + code;
+    }
+
+    public void saveStudyStatus(Long memberId) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(STUDY_STATUS_KEY_PREFIX + memberId, LocalDateTime.now().toString());
+    }
+
+    public Map<Long, Boolean> getFriendStudyStatus(List<Long> friendIds) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        return friendIds.stream()
+                .collect(
+                        Collectors.toMap(
+                                friendId -> friendId,
+                                friendId -> valueOperations.get(STUDY_STATUS_KEY_PREFIX + friendId) != null
+                        )
+                );
+    }
+
+    public void deleteMemberStudyStatus(Long memberId) {
+        redisTemplate.delete(STUDY_STATUS_KEY_PREFIX + memberId);
     }
 }

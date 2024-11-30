@@ -6,14 +6,20 @@ import develop.grassserver.friend.application.exception.NotExistFriendRelationEx
 import develop.grassserver.friend.domain.entity.Friend;
 import develop.grassserver.friend.domain.entity.FriendRequestStatus;
 import develop.grassserver.friend.infrastructure.repository.FriendRepository;
+import develop.grassserver.friend.presentation.dto.FindAllFriendsResponse;
 import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpMessageRequest;
+import develop.grassserver.grass.application.dto.MemberStudyInfoDTO;
+import develop.grassserver.grass.application.service.MemberStudyInfoService;
 import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.notification.application.service.EmojiNotificationService;
 import develop.grassserver.notification.application.service.MessageNotificationService;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +30,32 @@ import org.springframework.transaction.annotation.Transactional;
 public class FriendService {
 
     private final MemberService memberService;
+    private final MemberStudyInfoService memberStudyInfoService;
     private final EmojiNotificationService emojiNotificationService;
     private final MessageNotificationService messageNotificationService;
 
     private final FriendRepository friendRepository;
+
+    public FindAllFriendsResponse findAllFriends(Member me) {
+        List<Friend> friends = friendRepository.findAllMyFriends(me.getId());
+        List<Long> friendIds = getFriendIds(me, friends);
+
+        MemberStudyInfoDTO studyInfo = memberStudyInfoService.getMemberStudyInfo(friendIds);
+
+        return FindAllFriendsResponse.from(studyInfo);
+    }
+
+    private List<Long> getFriendIds(Member me, List<Friend> friends) {
+        return friends.stream()
+                .flatMap(friend ->
+                        Stream.of(
+                                friend.getMember1().getId(),
+                                friend.getMember2().getId()
+                        )
+                )
+                .filter(friendId -> !Objects.equals(me.getId(), friendId))
+                .toList();
+    }
 
     @Transactional
     public void requestFriend(Member member, RequestFriendRequest request) {

@@ -69,5 +69,4 @@ public class Grass extends BaseEntity {
     public void updateGrassScore(int grassScore) {
         this.grassScore = grassScore;
     }
-
 }
