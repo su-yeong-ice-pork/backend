@@ -1,10 +1,16 @@
 package develop.grassserver.randomStudy.domain.entity;
 
 import develop.grassserver.common.BaseEntity;
+import develop.grassserver.member.domain.entity.Member;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,4 +38,12 @@ public class RandomStudy extends BaseEntity {
     @Builder.Default
     @Column(nullable = false)
     private Duration totalStudyTime = Duration.ZERO;
+
+    @OneToMany(mappedBy = "random_study", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RandomStudyMember> members = new ArrayList<>();
+
+    public void addMember(Member member) {
+        RandomStudyMember studyMember = new RandomStudyMember(member, this);
+        this.members.add(studyMember);
+    }
 }
