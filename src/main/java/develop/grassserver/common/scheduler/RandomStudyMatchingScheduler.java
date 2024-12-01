@@ -26,7 +26,13 @@ public class RandomStudyMatchingScheduler {
 
             jobLauncher.run(randomStudyMatchingJob, jobParameters);
         } catch (Exception e) {
-            log.error("랜덤 스터디 매칭 스케줄러 에러 발생");
+            log.error("랜덤 스터디 매칭 스케줄러 에러 발생 " + e.getMessage());
         }
     }
+
+//    로컬에서 바로 테스트 해보고 싶을 때 실행
+//    @PostConstruct
+//    public void runOnStartup() {
+//        runJob();
+//    }
 }
