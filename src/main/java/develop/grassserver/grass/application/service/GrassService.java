@@ -14,6 +14,7 @@ import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
 import develop.grassserver.member.domain.entity.Member;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
