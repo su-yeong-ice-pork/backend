@@ -19,6 +19,7 @@ public class RandomStudyApplicationService {
     public static final int DEADLINE_HOUR = 5;
     private final RandomStudyApplicationRepository applicationRepository;
 
+    @Transactional
     public void applyRandomStudy(Member member, ApplyRandomStudyRequest request) {
         validateApplicationDeadline();
         checkDuplicateApplication(member, request.attendanceDate());
