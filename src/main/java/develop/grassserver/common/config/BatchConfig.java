@@ -1,5 +1,6 @@
 package develop.grassserver.common.config;
 
+import develop.grassserver.common.batch.RandomStudyApplicationItemWriter;
 import develop.grassserver.randomStudy.domain.entity.RandomStudyApplication;
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyMemberRepository;
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyRepository;
