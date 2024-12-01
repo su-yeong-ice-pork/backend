@@ -11,6 +11,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.item.ItemProcessor;
 
 public class RandomStudyItemProcessor implements ItemProcessor<RandomStudyApplication, RandomStudy> {
@@ -31,36 +34,40 @@ public class RandomStudyItemProcessor implements ItemProcessor<RandomStudyApplic
         LocalTime attendanceTime = application.getAttendanceTime();
 
         if (currentAttendanceTime == null || !attendanceTime.equals(currentAttendanceTime)) {
-            createRandomStudy(currentGroup, attendanceTime);
+            createRandomStudy();
             currentAttendanceTime = attendanceTime;
-            currentGroup.clear();
         }
 
         currentGroup.add(application.getMember());
 
         if (currentGroup.size() >= 5) {
-            RandomStudy study = createRandomStudy(currentGroup, attendanceTime);
-            currentGroup.clear();
-            return study;
+            return createRandomStudy();
         }
 
         return null;
     }
 
-    private RandomStudy createRandomStudy(List<Member> members, LocalTime attendanceTime) {
-        if (members.isEmpty()) {
+    @AfterStep
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        createRandomStudy();
+        return ExitStatus.COMPLETED;
+    }
+
+    private RandomStudy createRandomStudy() {
+        if (currentGroup.isEmpty()) {
             return null;
         }
 
         RandomStudy randomStudy = RandomStudy.builder()
                 .name("랜덤 스터디 " + UUID.randomUUID())
-                .attendanceTime(LocalDateTime.of(LocalDate.now(), attendanceTime))
+                .attendanceTime(LocalDateTime.of(LocalDate.now(), currentAttendanceTime))
                 .build();
 
-        for (Member member : members) {
+        for (Member member : currentGroup) {
             randomStudy.addMember(member);
         }
 
+        currentGroup.clear();
         return randomStudy;
     }
 }
