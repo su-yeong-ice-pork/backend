@@ -1,7 +1,5 @@
 package develop.grassserver.common.config;
 
-import develop.grassserver.common.batch.RandomStudyItemProcessor;
-import develop.grassserver.randomStudy.domain.entity.RandomStudy;
 import develop.grassserver.randomStudy.domain.entity.RandomStudyApplication;
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyMemberRepository;
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyRepository;
@@ -17,6 +15,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
@@ -44,10 +43,10 @@ public class BatchConfig {
     @Bean
     public Step matchingStep() {
         return new StepBuilder("matchingStep", jobRepository)
-                .<RandomStudyApplication, RandomStudy>chunk(100, transactionManager)
+                .<RandomStudyApplication, RandomStudyApplication>chunk(100, transactionManager)
                 .reader(applicationItemReader())
                 .processor(applicationItemProcessor())
-                .writer(randomStudyItemWriter())
+                .writer(applicationItemWriter())
                 .build();
 
     }
@@ -66,9 +65,12 @@ public class BatchConfig {
     }
 
     @Bean
-    @JobScope
-    public ItemProcessor<RandomStudyApplication, RandomStudy> applicationItemProcessor() {
-        return new RandomStudyItemProcessor(randomStudyRepository, randomStudyMemberRepository);
+    public ItemProcessor<RandomStudyApplication, RandomStudyApplication> applicationItemProcessor() {
+        return item -> item;
     }
 
+    @Bean
+    public ItemWriter<RandomStudyApplication> applicationItemWriter() {
+        return new RandomStudyApplicationItemWriter(randomStudyRepository, randomStudyMemberRepository);
+    }
 }
