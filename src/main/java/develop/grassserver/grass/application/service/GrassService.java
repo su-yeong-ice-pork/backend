@@ -14,7 +14,6 @@ import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
 import develop.grassserver.member.domain.entity.Member;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,47 +29,46 @@ public class GrassService {
     private final RedisService redisService;
     private final GrassRepository grassRepository;
 
-    private Optional<Grass> findTodayGrassByMemberId(Long memberId) {
-        LocalDate today = LocalDate.now();
-        return grassRepository.findByMemberIdAndDate(memberId, today.atStartOfDay(), today.atTime(LocalTime.MAX));
-    }
-
-    private Optional<Grass> findYesterdayGrassByMemberId(Long memberId) {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        return grassRepository.findByMemberIdAndDate(memberId, yesterday.atStartOfDay(),
-                yesterday.atTime(LocalTime.MAX));
-    }
-
     public boolean isTodayGrassExist(Member member) {
-        return findTodayGrassByMemberId(member.getId()).isPresent();
+        return findTodayGrass(member.getId()).isPresent();
+    }
+
+    private Optional<Grass> findTodayGrass(Long memberId) {
+        LocalDate today = LocalDate.now();
+        return grassRepository.findByMemberIdAndAttendanceDate(memberId, today);
     }
 
     @Transactional
     public Grass createGrass(Member member) {
-
         if (isTodayGrassExist(member)) {
             throw new AlreadyCheckedInException();
         }
 
-        int currentStreak = 1;
-        Optional<Grass> yesterdayGrass = findYesterdayGrassByMemberId(member.getId());
-
-        if (yesterdayGrass.isPresent()) {
-            currentStreak = yesterdayGrass.get().getCurrentStreak() + 1;
-        }
-
+        int currentStreak = calculateCurrentStreak(member.getId());
         Grass grass = Grass.builder()
                 .member(member)
                 .currentStreak(currentStreak)
                 .build();
+
         return grassRepository.save(grass);
+    }
+
+    private int calculateCurrentStreak(Long memberId) {
+        return findYesterdayGrass(memberId)
+                .map(grass -> grass.getCurrentStreak() + 1)
+                .orElse(1);
+    }
+
+    private Optional<Grass> findYesterdayGrass(Long memberId) {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        return grassRepository.findByMemberIdAndAttendanceDate(memberId, yesterday);
     }
 
     public Grass findDayGrassByMemberId(Long memberId) {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
 
-        return grassRepository.findTopByMemberIdOrderByCreatedAtDesc(memberId)
+        return grassRepository.findTopByMemberIdOrderByAttendanceDateDesc(memberId)
                 .filter(grass -> {
                     LocalDate grassCreatedDate = grass.getCreatedAt().toLocalDate();
                     return grassCreatedDate.equals(today) || grassCreatedDate.equals(yesterday);
@@ -83,38 +81,36 @@ public class GrassService {
     }
 
     public List<Grass> findYearlyGrassByMemberId(Member member, int year) {
-        return grassRepository.findByMemberAndYear(member, year);
+        LocalDate startDate = LocalDate.of(year, 1, 1);
+        LocalDate endDate = LocalDate.of(year, 12, 31);
+        return grassRepository.findByMemberAndAttendanceDateBetween(member, startDate, endDate);
     }
 
     public List<Grass> findMonthlyGrassByMemberId(Member member, int year, int month) {
-        return grassRepository.findByMemberAndYearAndMonth(member, year, month);
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        return grassRepository.findByMemberAndAttendanceDateBetween(member, startDate, endDate);
     }
 
     public StudyTimeResponse getStudyRecord(Member member) {
-        Optional<Grass> optionalGrass = findTodayGrassByMemberId(member.getId());
-        if (optionalGrass.isPresent()) {
-            Grass grass = optionalGrass.get();
-            String todayStudyTime = DurationUtils.formatDuration(grass.getStudyTime());
-            String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
-            return new StudyTimeResponse(todayStudyTime, totalStudyTime);
-        } else {
-            String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
-            return new StudyTimeResponse("00:00:00", totalStudyTime);
-        }
+        Optional<Grass> optionalGrass = findTodayGrass(member.getId());
+        String todayStudyTime = optionalGrass
+                .map(grass -> DurationUtils.formatDuration(grass.getStudyTime()))
+                .orElse("00:00:00");
+
+        String totalStudyTime = DurationUtils.formatDuration(member.getStudyRecord().getTotalStudyTime());
+
+        return new StudyTimeResponse(todayStudyTime, totalStudyTime);
     }
 
     @Transactional
     public StudyTimeResponse updateStudyRecord(Member member, StudyTimeRequest request) {
-        Optional<Grass> optionalGrass = findTodayGrassByMemberId(member.getId());
-        if (optionalGrass.isPresent()) {
-            Grass grass = optionalGrass.get();
-            Duration todayStudyTime = DurationUtils.parseDuration(request.todayStudyTime());
-            grass.updateStudyTime(todayStudyTime);
-            grass.updateGrassScore(calculateStudyScore(todayStudyTime));
-        } else {
-            throw new MissingAttendanceException();
-        }
         redisService.deleteMemberStudyStatus(member.getId());
+        Grass grass = findTodayGrass(member.getId()).orElseThrow(MissingAttendanceException::new);
+
+        Duration todayStudyTime = DurationUtils.parseDuration(request.todayStudyTime());
+        grass.updateStudyTime(todayStudyTime);
+        grass.updateGrassScore(calculateStudyScore(todayStudyTime));
         return getStudyRecord(member);
     }
 

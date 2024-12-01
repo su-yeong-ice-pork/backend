@@ -1,6 +1,5 @@
 name: Build and deploy JAR app to Azure Web App - grass-server
 
-
 on:
   push:
     branches:
@@ -15,7 +14,7 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       contents: read
-      id-token: write  
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -52,8 +51,23 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BCA99810567249F98FC37CFA9B624D6B }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8CF1A769465B43AEB7F9CDD407F60A95 }}
 
+      - name: Configure Azure Web App Settings
+        run: |
+          az webapp config appsettings set --name grass-server --resource-group grass-server-group --settings \
+          JWT_SECRET=${{ secrets.JWT_SECRET }} \
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          DB_URL=${{ secrets.DB_URL }} \
+          DB_USERNAME=${{ secrets.DB_USERNAME }} \
+          REDIS_ACCESS_KEY=${{ secrets.REDIS_ACCESS_KEY }} \
+          REDIS_SERVER_PORT=${{ secrets.REDIS_SERVER_PORT }} \
+          REDIS_URL=${{ secrets.REDIS_URL }} \
+          S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
+          S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} \
+          S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}
+
+
       - name: Verify JAR path
-        run:  |
+        run: |
           echo "Deploying JAR from path: $JAR_PATH"
 
       - name: Deploy to Azure Web App
@@ -62,6 +76,4 @@ jobs:
         with:
           app-name: 'grass-server'
           slot-name: 'Production'
-          package: ${{ env.JAR_PATH }}  
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          package: ${{ env.JAR_PATH }}
