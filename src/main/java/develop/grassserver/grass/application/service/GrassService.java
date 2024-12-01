@@ -2,6 +2,7 @@ package develop.grassserver.grass.application.service;
 
 import static develop.grassserver.common.utils.GrassScoreUtil.calculateStudyScore;
 
+import develop.grassserver.auth.application.service.RedisService;
 import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.application.exception.AlreadyCheckedInException;
 import develop.grassserver.grass.application.exception.MissingAttendanceException;
@@ -14,7 +15,9 @@ import develop.grassserver.member.domain.entity.Member;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class GrassService {
+
+    private final RedisService redisService;
     private final GrassRepository grassRepository;
 
     public boolean isTodayGrassExist(Member member) {
@@ -100,16 +105,46 @@ public class GrassService {
 
     @Transactional
     public StudyTimeResponse updateStudyRecord(Member member, StudyTimeRequest request) {
+        redisService.deleteMemberStudyStatus(member.getId());
         Grass grass = findTodayGrass(member.getId()).orElseThrow(MissingAttendanceException::new);
 
         Duration todayStudyTime = DurationUtils.parseDuration(request.todayStudyTime());
         grass.updateStudyTime(todayStudyTime);
         grass.updateGrassScore(calculateStudyScore(todayStudyTime));
-
         return getStudyRecord(member);
     }
 
     public AttendanceResponse getAttendance(Member member) {
         return new AttendanceResponse(isTodayGrassExist(member));
+    }
+
+    public Map<Long, String> getFriendsTodayStudyTime(List<Long> memberIds) {
+        LocalDate today = LocalDate.now();
+
+        Map<Long, String> studyTimes = memberIds.stream()
+                .collect(Collectors.toMap(memberId -> memberId, memberId -> "00시간 00분"));
+
+        List<Grass> grass = getAllByMemberIdsAndDate(memberIds, today);
+
+        mappedTodayStudyTime(grass, studyTimes);
+        return studyTimes;
+    }
+
+    private List<Grass> getAllByMemberIdsAndDate(List<Long> memberIds, LocalDate today) {
+        return grassRepository.findAllByMemberIdsAndDate(
+                memberIds,
+                today.atStartOfDay(),
+                today.atTime(LocalTime.MAX)
+        );
+    }
+
+    private void mappedTodayStudyTime(List<Grass> grass, Map<Long, String> studyTimes) {
+        grass.forEach(
+                todayGrass ->
+                        studyTimes.put(
+                                todayGrass.getMember().getId(),
+                                DurationUtils.formatHourAndMinute(todayGrass.getStudyTime())
+                        )
+        );
     }
 }
