@@ -1,5 +1,6 @@
 package develop.grassserver.common.config;
 
+import develop.grassserver.randomStudy.domain.entity.RandomStudy;
 import develop.grassserver.randomStudy.domain.entity.RandomStudyApplication;
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyMemberRepository;
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyRepository;
@@ -14,6 +15,7 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +43,7 @@ public class BatchConfig {
     @Bean
     public Step matchingStep() {
         return new StepBuilder("matchingStep", jobRepository)
-                .<RandomStudyApplication, RandomStudyApplication>chunk(100, transactionManager)
+                .<RandomStudyApplication, RandomStudy>chunk(100, transactionManager)
                 .reader(applicationItemReader())
                 .processor(applicationItemProcessor())
                 .writer(randomStudyItemWriter())
@@ -60,6 +62,12 @@ public class BatchConfig {
                 .parameterValues(Map.of("today", LocalDate.now()))
                 .pageSize(100)
                 .build();
+    }
+
+    @Bean
+    @JobScope
+    public ItemProcessor<RandomStudyApplication, RandomStudy> applicationItemProcessor() {
+        return new RandomStudyItemProcessor(randomStudyRepository, randomStudyMemberRepository);
     }
 
 }
