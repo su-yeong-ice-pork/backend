@@ -26,13 +26,17 @@ public class RandomStudyApplicationService {
         validateApplicationDeadline();
         checkDuplicateApplication(member, request.attendanceDate());
 
-        RandomStudyApplication application = RandomStudyApplication.builder()
+        RandomStudyApplication application = createRandomStudyApplication(member, request);
+
+        applicationRepository.save(application);
+    }
+
+    private RandomStudyApplication createRandomStudyApplication(Member member, ApplyRandomStudyRequest request) {
+        return RandomStudyApplication.builder()
                 .member(member)
                 .attendanceDate(request.attendanceDate())
                 .attendanceTime(request.attendanceTime())
                 .build();
-
-        applicationRepository.save(application);
     }
 
     private void validateApplicationDeadline() {
