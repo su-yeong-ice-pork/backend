@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
@@ -56,7 +55,7 @@ public class StudyQueryService {
 
         List<StudySummaryResponse> regularStudies = studies.stream()
                 .map(StudySummaryResponse::from)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
 
         return new FindAllStudyResponse(regularStudies);
     }
