@@ -61,4 +61,8 @@ public class Study extends BaseEntity {
             this.members.add(studyMember);
         }
     }
+
+    public void removeMember(Member member) {
+        members.removeIf(studyMember -> studyMember.getMember().getId().equals(member.getId()));
+    }
 }
