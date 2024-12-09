@@ -27,4 +27,11 @@ public class OldDataCleanupService {
                 )
                 .executeUpdate();
     }
+
+    public int deleteOldRandomStudyMembers() {
+        return entityManager.createQuery(
+                        "UPDATE RandomStudyMember rm SET rm.status = false WHERE rm.status = true"
+                )
+                .executeUpdate();
+    }
 }
