@@ -15,9 +15,5 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
             "WHERE sm.status = TRUE AND s.status = TRUE AND sm.member.id = :memberId")
     List<Study> findStudiesByMemberId(@Param("memberId") Long memberId);
 
-    @Query("SELECT COUNT(sm) FROM StudyMember sm " +
-            "WHERE sm.status = TRUE AND sm.study.id = :studyId")
-    Long countMembersByStudyId(@Param("studyId") Long studyId);
-
     Optional<Study> findStudyByInviteCode(String inviteCode);
 }
