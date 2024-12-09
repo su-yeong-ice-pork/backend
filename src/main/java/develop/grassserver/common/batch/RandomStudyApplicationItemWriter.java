@@ -83,21 +83,29 @@ public class RandomStudyApplicationItemWriter implements ItemWriter<RandomStudyA
         for (int i = 0; i < currentGroup.size(); i += 5) {
             List<Member> group = currentGroup.subList(i, Math.min(i + 5, currentGroup.size()));
 
-            RandomStudy randomStudy = RandomStudy.builder()
-                    .name("랜덤 스터디 " + UUID.randomUUID())
-                    .attendanceTime(LocalDateTime.of(LocalDate.now(), currentAttendanceTime))
-                    .build();
-            randomStudyRepository.save(randomStudy);
+            RandomStudy randomStudy = createAndSaveRandomStudy();
 
-            List<RandomStudyMember> studyMembers = group.stream()
-                    .map(member -> RandomStudyMember.builder()
-                            .member(member)
-                            .randomStudy(randomStudy)
-                            .build())
-                    .collect(Collectors.toUnmodifiableList());
-            randomStudyMemberRepository.saveAll(studyMembers);
+            saveRandomStudyMembers(group, randomStudy);
         }
 
         currentGroup.clear();
+    }
+
+    private RandomStudy createAndSaveRandomStudy() {
+        RandomStudy randomStudy = RandomStudy.builder()
+                .name("랜덤 스터디 " + UUID.randomUUID())
+                .attendanceTime(LocalDateTime.of(LocalDate.now(), currentAttendanceTime))
+                .build();
+        return randomStudyRepository.save(randomStudy);
+    }
+
+    private void saveRandomStudyMembers(List<Member> group, RandomStudy randomStudy) {
+        List<RandomStudyMember> studyMembers = group.stream()
+                .map(member -> RandomStudyMember.builder()
+                        .member(member)
+                        .randomStudy(randomStudy)
+                        .build())
+                .collect(Collectors.toUnmodifiableList());
+        randomStudyMemberRepository.saveAll(studyMembers);
     }
 }
