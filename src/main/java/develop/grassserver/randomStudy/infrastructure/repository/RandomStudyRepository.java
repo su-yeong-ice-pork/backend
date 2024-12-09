@@ -18,7 +18,7 @@ public interface RandomStudyRepository extends JpaRepository<RandomStudy, Long> 
     Long countMembersByStudyId(@Param("studyId") Long studyId);
 
     @Query("SELECT rs FROM RandomStudy rs " +
-            "JOIN RandomStudyMember rsm ON rsm.randomStudy = rs " +
+            "JOIN rs.members rsm " +
             "WHERE rsm.member.id = :memberId " +
             "AND rs.attendanceTime BETWEEN :startOfDay AND :endOfDay " +
             "AND rs.status = true")
