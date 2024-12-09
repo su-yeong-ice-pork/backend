@@ -55,10 +55,7 @@ public class StudyQueryService {
         List<Study> studies = studyRepository.findStudiesByMemberId(member.getId());
 
         List<StudySummaryResponse> regularStudies = studies.stream()
-                .map(study -> {
-                    Long memberCount = studyRepository.countMembersByStudyId(study.getId());
-                    return StudySummaryResponse.from(study, memberCount);
-                })
+                .map(StudySummaryResponse::from)
                 .collect(Collectors.toUnmodifiableList());
 
         return new FindAllStudyResponse(regularStudies);
