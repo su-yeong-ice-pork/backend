@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RandomStudyApplicationService {
+
     public static final int DEADLINE_HOUR = 5;
+
     private final RandomStudyApplicationRepository applicationRepository;
 
     @Transactional
