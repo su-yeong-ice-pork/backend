@@ -49,8 +49,8 @@ public class RandomStudyApplicationService {
     }
 
     private void checkDuplicateApplication(Member member, LocalDate attendanceDate) {
-        boolean exist = applicationRepository.existsByMemberAndAttendanceDate(member, attendanceDate);
-        if (exist) {
+        boolean isDuplicateApplication = applicationRepository.existsByMemberAndAttendanceDate(member, attendanceDate);
+        if (isDuplicateApplication) {
             throw new DuplicateApplicationException();
         }
     }
