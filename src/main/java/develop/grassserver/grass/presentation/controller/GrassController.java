@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/grass")
 public class GrassController {
+
     private final GrassService grassService;
     private final MemberGrassService memberGrassService;
 
@@ -82,6 +83,4 @@ public class GrassController {
         AttendanceResponse response = grassService.getAttendance(member);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
-
-
 }

@@ -1,7 +1,7 @@
 package develop.grassserver.notification.application.service;
 
 import develop.grassserver.member.domain.entity.Member;
-import develop.grassserver.notification.application.exception.ExceedSendEmojiCountException;
+import develop.grassserver.notification.application.exception.ExceedSendMessageCountException;
 import develop.grassserver.notification.domain.entity.MessageNotification;
 import develop.grassserver.notification.infrastructure.repository.MessageNotificationRepository;
 import java.time.LocalDate;
@@ -32,7 +32,7 @@ public class MessageNotificationService {
         long todaySentMessageCount =
                 messageNotificationRepository.findAllBySenderAndReceiverAndToday(me, other, startOfDay, endOfDay);
         if (todaySentMessageCount >= 2) {
-            throw new ExceedSendEmojiCountException();
+            throw new ExceedSendMessageCountException();
         }
     }
 

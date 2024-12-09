@@ -4,10 +4,12 @@ import develop.grassserver.common.annotation.LoginMember;
 import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.member.domain.entity.Member;
-import develop.grassserver.study.application.service.StudyService;
+import develop.grassserver.study.application.service.StudyCommandService;
+import develop.grassserver.study.application.service.StudyQueryService;
 import develop.grassserver.study.presentation.dto.CreateStudyRequest;
 import develop.grassserver.study.presentation.dto.CreateStudyResponse;
 import develop.grassserver.study.presentation.dto.EnterStudyRequest;
+import develop.grassserver.study.presentation.dto.FindAllStudyMembersResponse;
 import develop.grassserver.study.presentation.dto.FindAllStudyResponse;
 import develop.grassserver.study.presentation.dto.StudyDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/regular-studies")
 public class StudyController {
 
-    private final StudyService studyService;
+    private final StudyCommandService studyCommandService;
+    private final StudyQueryService studyQueryService;
 
     @Operation(summary = "고정 스터디 세부 조회 API", description = "고정 스터디 세부 조회 시 사용되는 API")
     @ApiResponses(value = {
@@ -39,7 +42,7 @@ public class StudyController {
     @GetMapping("/{studyId}")
     public ResponseEntity<ApiResult<StudyDetailResponse>> getStudyDetail(@PathVariable Long studyId,
                                                                          @LoginMember Member member) {
-        StudyDetailResponse response = studyService.getStudyDetail(member, studyId);
+        StudyDetailResponse response = studyQueryService.getStudyDetail(member, studyId);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 
@@ -50,7 +53,19 @@ public class StudyController {
     })
     @GetMapping
     public ResponseEntity<ApiResult<FindAllStudyResponse>> getAllStudies(@LoginMember Member member) {
-        FindAllStudyResponse response = studyService.getAllStudies(member);
+        FindAllStudyResponse response = studyQueryService.getAllStudies(member);
+        return ResponseEntity.ok(ApiUtils.success(response));
+    }
+
+    @Operation(summary = "고정 스터디 구성원 전체 조회 API", description = "고정 스터디 구성원 조회 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "스터디 구성원 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
+    })
+    @GetMapping("{studyId}/participants")
+    public ResponseEntity<ApiResult<FindAllStudyMembersResponse>> getAllStudyMembers(@PathVariable Long studyId,
+                                                                                     @LoginMember Member member) {
+        FindAllStudyMembersResponse response = studyQueryService.getAllStudyMembers(member, studyId);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 
@@ -63,7 +78,7 @@ public class StudyController {
     @PostMapping("/entries")
     public ResponseEntity<ApiResult<String>> enterStudyWithInviteCode(
             @RequestBody EnterStudyRequest request, @LoginMember Member member) {
-        studyService.enterStudyWithInviteCode(member, request.inviteCode());
+        studyCommandService.enterStudyWithInviteCode(member, request.inviteCode());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success());
     }
@@ -76,9 +91,8 @@ public class StudyController {
     @PostMapping
     public ResponseEntity<ApiResult<CreateStudyResponse>> createStudy(@RequestBody CreateStudyRequest request,
                                                                       @LoginMember Member member) {
-        CreateStudyResponse response = studyService.createStudy(member, request);
+        CreateStudyResponse response = studyCommandService.createStudy(member, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success(response));
     }
-
 }
