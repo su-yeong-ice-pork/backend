@@ -38,7 +38,7 @@ public class StudyController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "스터디 세부 조회 성공"),
             @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
-            @ApiResponse(responseCode = "400", description = "해당하는 스터디가 없음")
+            @ApiResponse(responseCode = "404", description = "해당하는 스터디가 없음")
     })
     @GetMapping("/{studyId}")
     public ResponseEntity<ApiResult<StudyDetailResponse>> getStudyDetail(@PathVariable Long studyId,
@@ -61,7 +61,8 @@ public class StudyController {
     @Operation(summary = "고정 스터디 구성원 전체 조회 API", description = "고정 스터디 구성원 조회 시 사용되는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "스터디 구성원 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
+            @ApiResponse(responseCode = "403", description = "스터디 구성원이 아님")
     })
     @GetMapping("{studyId}/participants")
     public ResponseEntity<ApiResult<FindAllStudyMembersResponse>> getAllStudyMembers(@PathVariable Long studyId,
@@ -101,7 +102,9 @@ public class StudyController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "스터디 세부 조회 성공"),
             @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
-            @ApiResponse(responseCode = "400", description = "해당하는 스터디가 없음")
+            @ApiResponse(responseCode = "404", description = "해당하는 스터디가 없음"),
+            @ApiResponse(responseCode = "403", description = "스터디 구성원이 아님"),
+            @ApiResponse(responseCode = "400", description = "리더는 방을 나갈 수 없음")
     })
     @DeleteMapping("{studyId}/participants")
     public ResponseEntity<ApiResult<String>> goOutStudy(@PathVariable Long studyId,
