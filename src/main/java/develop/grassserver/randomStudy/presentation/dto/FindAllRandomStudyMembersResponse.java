@@ -1,18 +1,19 @@
-package develop.grassserver.friend.presentation.dto;
+package develop.grassserver.randomStudy.presentation.dto;
 
 import develop.grassserver.grass.application.dto.MemberStudyInfoDTO;
 import java.util.List;
 
-public record FindAllFriendsResponse(List<FriendDTO> friends) {
+public record FindAllRandomStudyMembersResponse(
+        List<ParticipantDTO> participants
+) {
 
-    public static FindAllFriendsResponse from(MemberStudyInfoDTO studyInfo) {
-        return new FindAllFriendsResponse(
+    public static FindAllRandomStudyMembersResponse from(MemberStudyInfoDTO studyInfo) {
+        return new FindAllRandomStudyMembersResponse(
                 studyInfo.members().stream()
                         .map(member ->
-                                new FriendDTO(
+                                new ParticipantDTO(
                                         member.getId(),
                                         member.getName(),
-                                        member.getProfile().getMessage(),
                                         member.getProfile().getImage(),
                                         studyInfo.studyTimes().get(member.getId()),
                                         studyInfo.studyStatuses().get(member.getId())
@@ -22,11 +23,9 @@ public record FindAllFriendsResponse(List<FriendDTO> friends) {
         );
     }
 
-
-    public record FriendDTO(
-            Long id,
+    public record ParticipantDTO(
+            Long memberId,
             String name,
-            String message,
             String profileImage,
             String todayStudyTime,
             boolean studyStatus
