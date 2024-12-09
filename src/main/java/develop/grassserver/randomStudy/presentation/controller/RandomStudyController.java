@@ -36,7 +36,7 @@ public class RandomStudyController {
             @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
             @ApiResponse(responseCode = "404", description = "해당하는 스터디가 없음")
     })
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ApiResult<RandomStudyResponse>> getRandomStudyDetail(
             @LoginMember Member member) {
         RandomStudyResponse response = randomStudyService.getRandomStudyDetail(member);
