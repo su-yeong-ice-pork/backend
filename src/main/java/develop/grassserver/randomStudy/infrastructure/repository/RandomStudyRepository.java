@@ -1,6 +1,5 @@
 package develop.grassserver.randomStudy.infrastructure.repository;
 
-import develop.grassserver.member.domain.entity.Member;
 import develop.grassserver.randomStudy.domain.entity.RandomStudy;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -12,12 +11,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RandomStudyRepository extends JpaRepository<RandomStudy, Long> {
 
-    @Query("SELECT rs FROM RandomStudy rs " +
-            "JOIN RandomStudyMember rsm ON rs = rsm.randomStudy " +
-            "WHERE rsm.status = TRUE AND rs.status = TRUE AND rsm.member = :member " +
-            "AND rs.attendanceTime BETWEEN :startOfDay AND :endOfDay")
-    Optional<RandomStudy> findByMemberAndToday(@Param("member") Member member,
-                                               @Param("startOfDay") LocalDateTime startOfDay,
-                                               @Param("endOfDay") LocalDateTime endOfDay);
+    @Query("SELECT COUNT(rsm) " +
+            "FROM RandomStudyMember rsm " +
+            "WHERE rsm.randomStudy.id = :studyId " +
+            "AND rsm.status = true")
+    Long countMembersByStudyId(@Param("studyId") Long studyId);
 
+    @Query("SELECT rs FROM RandomStudy rs " +
+            "JOIN RandomStudyMember rsm ON rsm.randomStudy = rs " +
+            "WHERE rsm.member.id = :memberId " +
+            "AND rs.attendanceTime BETWEEN :startOfDay AND :endOfDay " +
+            "AND rs.status = true")
+    Optional<RandomStudy> findRandomStudyByMemberId(
+            @Param("memberId") Long memberId,
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay") LocalDateTime endOfDay);
 }
