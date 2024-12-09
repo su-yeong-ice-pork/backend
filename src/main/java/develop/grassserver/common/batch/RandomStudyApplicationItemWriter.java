@@ -94,7 +94,7 @@ public class RandomStudyApplicationItemWriter implements ItemWriter<RandomStudyA
                             .member(member)
                             .randomStudy(randomStudy)
                             .build())
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toUnmodifiableList());
             randomStudyMemberRepository.saveAll(studyMembers);
         }
 
