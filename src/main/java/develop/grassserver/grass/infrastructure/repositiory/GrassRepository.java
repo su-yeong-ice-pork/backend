@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GrassRepository extends JpaRepository<Grass, Long> {
+  
     Optional<Grass> findByMemberIdAndAttendanceDate(Long memberId, LocalDate attendanceDate);
 
     Optional<Grass> findTopByMemberIdOrderByAttendanceDateDesc(Long memberId);

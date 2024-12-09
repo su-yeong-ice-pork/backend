@@ -106,13 +106,12 @@ public class GrassService {
 
     @Transactional
     public StudyTimeResponse updateStudyRecord(Member member, StudyTimeRequest request) {
+        redisService.deleteMemberStudyStatus(member.getId());
         Grass grass = findTodayGrass(member.getId()).orElseThrow(MissingAttendanceException::new);
 
         Duration todayStudyTime = DurationUtils.parseDuration(request.todayStudyTime());
         grass.updateStudyTime(todayStudyTime);
         grass.updateGrassScore(calculateStudyScore(todayStudyTime));
-
-        redisService.deleteMemberStudyStatus(member.getId());
         return getStudyRecord(member);
     }
 
