@@ -36,15 +36,12 @@ public class RandomStudyService {
 
         return randomStudyRepository.findRandomStudyByMemberId(
                         member.getId(), startOfDay, endOfDay)
-                .map(randomStudy -> {
-                    Long memberCount = randomStudyRepository.countMembersByStudyId(randomStudy.getId());
-                    return mapToResponse(randomStudy, memberCount);
-                })
+                .map(this::mapToResponse)
                 .orElseGet(RandomStudyResponse::empty);
     }
 
-    private RandomStudyResponse mapToResponse(RandomStudy randomStudy, Long memberCount) {
-        RandomStudyDetailResponse detailResponse = RandomStudyDetailResponse.from(randomStudy, memberCount.intValue());
+    private RandomStudyResponse mapToResponse(RandomStudy randomStudy) {
+        RandomStudyDetailResponse detailResponse = RandomStudyDetailResponse.from(randomStudy);
         return RandomStudyResponse.of(detailResponse);
     }
 
