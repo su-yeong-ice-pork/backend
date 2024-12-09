@@ -11,12 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RandomStudyRepository extends JpaRepository<RandomStudy, Long> {
 
-    @Query("SELECT COUNT(rsm) " +
-            "FROM RandomStudyMember rsm " +
-            "WHERE rsm.randomStudy.id = :studyId " +
-            "AND rsm.status = true")
-    Long countMembersByStudyId(@Param("studyId") Long studyId);
-
     @Query("SELECT rs FROM RandomStudy rs " +
             "JOIN rs.members rsm " +
             "WHERE rsm.member.id = :memberId " +

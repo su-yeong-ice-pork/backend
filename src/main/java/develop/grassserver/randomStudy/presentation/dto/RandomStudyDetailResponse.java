@@ -16,11 +16,11 @@ public record RandomStudyDetailResponse(
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("a h시", Locale.KOREA);
 
-    public static RandomStudyDetailResponse from(RandomStudy randomStudy, int memberCount) {
+    public static RandomStudyDetailResponse from(RandomStudy randomStudy) {
         return new RandomStudyDetailResponse(
                 randomStudy.getId(),
                 randomStudy.getName(),
-                memberCount,
+                randomStudy.getMembers().size(),
                 randomStudy.getAttendanceTime().format(TIME_FORMATTER),
                 formatHourDuration(randomStudy.getTotalStudyTime())
         );

@@ -10,11 +10,11 @@ public record StudySummaryResponse(
         Long totalStudyTime
 ) {
 
-    public static StudySummaryResponse from(Study study, Long memberCount) {
+    public static StudySummaryResponse from(Study study) {
         return new StudySummaryResponse(
                 study.getId(),
                 study.getName(),
-                memberCount.intValue(),
+                study.getMembers().size(),
                 DurationUtils.formatHourDuration(study.getTotalStudyTime())
         );
     }

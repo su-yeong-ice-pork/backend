@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
@@ -55,11 +54,8 @@ public class StudyQueryService {
         List<Study> studies = studyRepository.findStudiesByMemberId(member.getId());
 
         List<StudySummaryResponse> regularStudies = studies.stream()
-                .map(study -> {
-                    Long memberCount = studyRepository.countMembersByStudyId(study.getId());
-                    return StudySummaryResponse.from(study, memberCount);
-                })
-                .collect(Collectors.toUnmodifiableList());
+                .map(StudySummaryResponse::from)
+                .toList();
 
         return new FindAllStudyResponse(regularStudies);
     }
