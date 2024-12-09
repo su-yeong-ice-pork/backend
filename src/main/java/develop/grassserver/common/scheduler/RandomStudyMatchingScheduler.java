@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class RandomStudyMatchingScheduler {
+    
     private final JobLauncher jobLauncher;
     private final Job randomStudyMatchingJob;
 
