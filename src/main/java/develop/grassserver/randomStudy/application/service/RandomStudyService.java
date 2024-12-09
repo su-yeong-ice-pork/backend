@@ -10,7 +10,10 @@ import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyMemb
 import develop.grassserver.randomStudy.infrastructure.repository.RandomStudyRepository;
 import develop.grassserver.randomStudy.presentation.dto.FindAllRandomStudyMembersResponse;
 import develop.grassserver.randomStudy.presentation.dto.RandomStudyDetailResponse;
-import jakarta.persistence.EntityNotFoundException;
+import develop.grassserver.randomStudy.presentation.dto.RandomStudyResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,19 +29,23 @@ public class RandomStudyService {
     private final RandomStudyRepository randomStudyRepository;
     private final RandomStudyMemberRepository randomStudyMemberRepository;
 
-    public RandomStudyDetailResponse getRandomStudyDetail(Member member, Long studyId) {
-        validStudyMember(member, studyId);
+    public RandomStudyResponse getRandomStudyDetail(Member member) {
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
-        RandomStudy randomStudy = randomStudyRepository.findById(studyId)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 스터디를 찾을 수 없습니다."));
-
-        return RandomStudyDetailResponse.from(randomStudy);
+        return randomStudyRepository.findRandomStudyByMemberId(
+                        member.getId(), startOfDay, endOfDay)
+                .map(randomStudy -> {
+                    Long memberCount = randomStudyRepository.countMembersByStudyId(randomStudy.getId());
+                    return mapToResponse(randomStudy, memberCount);
+                })
+                .orElseGet(RandomStudyResponse::empty);
     }
 
-    private void validStudyMember(Member member, Long studyId) {
-        if (!randomStudyMemberRepository.existsByMemberIdAndRandomStudyId(member.getId(), studyId)) {
-            throw new NotARandomStudyMemberException();
-        }
+    private RandomStudyResponse mapToResponse(RandomStudy randomStudy, Long memberCount) {
+        RandomStudyDetailResponse detailResponse = RandomStudyDetailResponse.from(randomStudy, memberCount.intValue());
+        return RandomStudyResponse.of(detailResponse);
     }
 
     public FindAllRandomStudyMembersResponse getAllRandomStudyMembers(Member member, Long studyId) {
@@ -50,6 +57,12 @@ public class RandomStudyService {
         MemberStudyInfoDTO studyInfo = memberStudyInfoService.getMemberStudyInfo(studyMemberIds);
 
         return FindAllRandomStudyMembersResponse.from(studyInfo);
+    }
+
+    private void validStudyMember(Member member, Long studyId) {
+        if (!randomStudyMemberRepository.existsByMemberIdAndRandomStudyId(member.getId(), studyId)) {
+            throw new NotARandomStudyMemberException();
+        }
     }
 
     private List<Long> getStudyMemberIds(List<RandomStudyMember> studyMembers) {
