@@ -2,6 +2,8 @@ package develop.grassserver.study.domain.entity;
 
 import develop.grassserver.common.BaseEntity;
 import develop.grassserver.member.domain.entity.Member;
+import develop.grassserver.study.application.exception.LeaderCannotLeaveException;
+import develop.grassserver.study.application.exception.NotAStudyMemberException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,6 +65,15 @@ public class Study extends BaseEntity {
     }
 
     public void removeMember(Member member) {
-        members.removeIf(studyMember -> studyMember.getMember().getId().equals(member.getId()));
+        StudyMember studyMemberToRemove = members.stream()
+                .filter(studyMember -> studyMember.getMember().getId().equals(member.getId()))
+                .findFirst()
+                .orElseThrow(NotAStudyMemberException::new);
+
+        if (studyMemberToRemove.getRole() == StudyRole.LEADER) {
+            throw new LeaderCannotLeaveException();
+        }
+
+        members.remove(studyMemberToRemove);
     }
 }
