@@ -46,7 +46,8 @@ public class RandomStudyController {
     @Operation(summary = "랜덤 스터디 구성원 전체 조회 API", description = "랜덤 스터디 구성원 전체 조회 시 사용되는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "스터디 구성원 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
+            @ApiResponse(responseCode = "403", description = "스터디 구성원이 아님")
     })
     @GetMapping("{studyId}/participants")
     public ResponseEntity<ApiResult<FindAllRandomStudyMembersResponse>> getAllRandomStudyMembers(

@@ -7,6 +7,7 @@ import develop.grassserver.study.domain.entity.StudyRole;
 import develop.grassserver.study.infrastructure.repository.StudyRepository;
 import develop.grassserver.study.presentation.dto.CreateStudyRequest;
 import develop.grassserver.study.presentation.dto.CreateStudyResponse;
+import jakarta.persistence.EntityNotFoundException;
 import java.security.SecureRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,5 +62,13 @@ public class StudyCommandService {
             sb.append(chars.charAt(random.nextInt(chars.length())));
         }
         return sb.toString();
+    }
+
+    @Transactional
+    public void goOutStudy(Member member, Long studyId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 스터디를 찾을 수 없습니다."));
+
+        study.removeMember(member);
     }
 }
