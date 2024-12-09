@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RandomStudyApplicationRepository extends JpaRepository<RandomStudyApplication, Long> {
+
     boolean existsByMemberAndAttendanceDate(Member member, LocalDate attendanceDate);
 }
