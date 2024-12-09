@@ -52,14 +52,18 @@ public class StudyQueryService {
     }
 
     public FindAllStudyResponse getAllStudies(Member member) {
-        List<Object[]> results = studyRepository.findStudiesWithMemberCountByMemberId(member.getId());
+        List<Study> studies = studyRepository.findStudiesByMemberId(member.getId());
 
-        List<StudySummaryResponse> regularStudies = results.stream()
-                .map(StudySummaryResponse::from)
+        List<StudySummaryResponse> regularStudies = studies.stream()
+                .map(study -> {
+                    Long memberCount = studyRepository.countMembersByStudyId(study.getId());
+                    return StudySummaryResponse.from(study, memberCount);
+                })
                 .collect(Collectors.toUnmodifiableList());
 
         return new FindAllStudyResponse(regularStudies);
     }
+
 
     public FindAllStudyMembersResponse getAllStudyMembers(Member member, Long studyId) {
         validStudyMember(member, studyId);

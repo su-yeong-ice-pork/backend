@@ -10,9 +10,7 @@ public record StudySummaryResponse(
         Long totalStudyTime
 ) {
 
-    public static StudySummaryResponse from(Object[] result) {
-        Study study = (Study) result[0];
-        Long memberCount = (Long) result[1];
+    public static StudySummaryResponse from(Study study, Long memberCount) {
         return new StudySummaryResponse(
                 study.getId(),
                 study.getName(),
