@@ -8,7 +8,7 @@ import develop.grassserver.randomStudy.application.service.RandomStudyApplicatio
 import develop.grassserver.randomStudy.application.service.RandomStudyService;
 import develop.grassserver.randomStudy.presentation.dto.ApplyRandomStudyRequest;
 import develop.grassserver.randomStudy.presentation.dto.FindAllRandomStudyMembersResponse;
-import develop.grassserver.randomStudy.presentation.dto.RandomStudyDetailResponse;
+import develop.grassserver.randomStudy.presentation.dto.RandomStudyResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,10 +36,10 @@ public class RandomStudyController {
             @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
             @ApiResponse(responseCode = "404", description = "해당하는 스터디가 없음")
     })
-    @GetMapping("/{studyId}")
-    public ResponseEntity<ApiResult<RandomStudyDetailResponse>> getRandomStudyDetail(@PathVariable Long studyId,
-                                                                                     @LoginMember Member member) {
-        RandomStudyDetailResponse response = randomStudyService.getRandomStudyDetail(member, studyId);
+    @GetMapping
+    public ResponseEntity<ApiResult<RandomStudyResponse>> getRandomStudyDetail(
+            @LoginMember Member member) {
+        RandomStudyResponse response = randomStudyService.getRandomStudyDetail(member);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 

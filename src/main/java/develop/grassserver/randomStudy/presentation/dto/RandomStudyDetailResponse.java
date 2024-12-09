@@ -9,6 +9,7 @@ import java.util.Locale;
 public record RandomStudyDetailResponse(
         Long id,
         String studyName,
+        int memberCount,
         String attendanceTime,
         Long totalStudyTime
 ) {
@@ -19,6 +20,7 @@ public record RandomStudyDetailResponse(
         return new RandomStudyDetailResponse(
                 randomStudy.getId(),
                 randomStudy.getName(),
+                randomStudy.getMembers().size(),
                 randomStudy.getAttendanceTime().format(TIME_FORMATTER),
                 formatHourDuration(randomStudy.getTotalStudyTime())
         );
