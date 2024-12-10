@@ -11,8 +11,8 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
     boolean existsByInviteCode(String inviteCode);
 
     @Query("SELECT DISTINCT s FROM Study s " +
-            "JOIN s.members smFilter " + // 필터링을 위한 조인
-            "JOIN FETCH s.members sm " +  // 페칭을 위한 조인
+            "JOIN s.members smFilter " +
+            "JOIN FETCH s.members sm " +
             "WHERE s.status = TRUE AND smFilter.status = TRUE AND smFilter.member.id = :memberId")
     List<Study> findStudiesByMemberId(@Param("memberId") Long memberId);
 
