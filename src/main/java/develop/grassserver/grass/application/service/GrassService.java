@@ -30,15 +30,6 @@ public class GrassService {
     private final RedisService redisService;
     private final GrassRepository grassRepository;
 
-    public boolean isTodayGrassExist(Member member) {
-        return findTodayGrass(member.getId()).isPresent();
-    }
-
-    private Optional<Grass> findTodayGrass(Long memberId) {
-        LocalDate today = LocalDate.now();
-        return grassRepository.findByMemberIdAndAttendanceDate(memberId, today);
-    }
-
     @Transactional
     public Grass createGrass(Member member) {
         if (isTodayGrassExist(member)) {
