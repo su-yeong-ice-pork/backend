@@ -8,13 +8,12 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class RandomStudyMatchingScheduler {
-    
+
     private final JobLauncher jobLauncher;
     private final Job randomStudyMatchingJob;
 
