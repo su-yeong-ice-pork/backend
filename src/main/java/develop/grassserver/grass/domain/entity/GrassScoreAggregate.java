@@ -7,10 +7,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GrassScoreAggregate extends BaseEntity {
 
@@ -19,5 +23,6 @@ public class GrassScoreAggregate extends BaseEntity {
 
     @Column(nullable = false)
     @ColumnDefault("0")
+    @Builder.Default
     private Long grassScore = 0L;
 }
