@@ -7,7 +7,9 @@ import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.application.exception.AlreadyCheckedInException;
 import develop.grassserver.grass.application.exception.MissingAttendanceException;
 import develop.grassserver.grass.domain.entity.Grass;
+import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassRepository;
+import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateRepository;
 import develop.grassserver.grass.presentation.dto.AttendanceResponse;
 import develop.grassserver.grass.presentation.dto.StudyTimeRequest;
 import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
@@ -42,6 +44,8 @@ public class GrassService {
                 .currentStreak(currentStreak)
                 .build();
 
+        createGrassScoreAggregate(member);
+
         return grassRepository.save(grass);
     }
 
@@ -54,6 +58,15 @@ public class GrassService {
     private Optional<Grass> findYesterdayGrass(Long memberId) {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         return grassRepository.findByMemberIdAndAttendanceDate(memberId, yesterday);
+    }
+
+    private void createGrassScoreAggregate(Member member) {
+        if (!grassScoreAggregateRepository.existsByMember(member)) {
+            GrassScoreAggregate aggregate = GrassScoreAggregate.builder()
+                    .member(member)
+                    .build();
+            grassScoreAggregateRepository.save(aggregate);
+        }
     }
 
     public Grass findDayGrassByMemberId(Long memberId) {
