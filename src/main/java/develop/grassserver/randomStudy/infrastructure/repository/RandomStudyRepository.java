@@ -11,11 +11,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RandomStudyRepository extends JpaRepository<RandomStudy, Long> {
 
-    @Query("SELECT rs FROM RandomStudy rs " +
-            "JOIN rs.members rsm " +
-            "WHERE rsm.member.id = :memberId " +
-            "AND rs.attendanceTime BETWEEN :startOfDay AND :endOfDay " +
-            "AND rs.status = true")
+    @Query("SELECT DISTINCT rs FROM RandomStudy rs " +
+            "JOIN rs.members rsmFilter " +
+            "JOIN FETCH rs.members rsmFetch " +
+            "WHERE rs.status = true " +
+            "AND rsmFilter.member.id = :memberId " +
+            "AND rs.attendanceTime BETWEEN :startOfDay AND :endOfDay")
     Optional<RandomStudy> findRandomStudyByMemberId(
             @Param("memberId") Long memberId,
             @Param("startOfDay") LocalDateTime startOfDay,
