@@ -106,7 +106,7 @@ public class StudyController {
             @ApiResponse(responseCode = "403", description = "스터디 구성원이 아님"),
             @ApiResponse(responseCode = "400", description = "리더는 방을 나갈 수 없음")
     })
-    @DeleteMapping("{studyId}/participants")
+    @DeleteMapping("/{studyId}/participants")
     public ResponseEntity<ApiResult<String>> goOutStudy(@PathVariable Long studyId,
                                                         @LoginMember Member member) {
         studyCommandService.goOutStudy(member, studyId);
