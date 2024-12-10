@@ -66,7 +66,7 @@ public class StudyCommandService {
 
     @Transactional
     public void goOutStudy(Member member, Long studyId) {
-        Study study = studyRepository.findById(studyId)
+        Study study = studyRepository.findStudyByIdWithMembers(studyId)
                 .orElseThrow(() -> new EntityNotFoundException("해당하는 스터디를 찾을 수 없습니다."));
 
         study.removeMember(member);

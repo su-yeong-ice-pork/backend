@@ -16,4 +16,7 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
     List<Study> findStudiesByMemberId(@Param("memberId") Long memberId);
 
     Optional<Study> findStudyByInviteCode(String inviteCode);
+
+    @Query("SELECT s FROM Study s JOIN FETCH s.members WHERE s.id = :studyId AND s.status = TRUE")
+    Optional<Study> findStudyByIdWithMembers(@Param("studyId") Long studyId);
 }
