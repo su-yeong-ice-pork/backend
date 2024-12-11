@@ -27,10 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GrassService {
 
     private final RedisService redisService;
     private final GrassRepository grassRepository;
+    private final GrassScoreAggregateRepository grassScoreAggregateRepository;
 
     @Transactional
     public Grass createGrass(Member member) {
@@ -47,6 +49,15 @@ public class GrassService {
         createGrassScoreAggregate(member);
 
         return grassRepository.save(grass);
+    }
+
+    private boolean isTodayGrassExist(Member member) {
+        return findTodayGrass(member.getId()).isPresent();
+    }
+
+    private Optional<Grass> findTodayGrass(Long memberId) {
+        LocalDate today = LocalDate.now();
+        return grassRepository.findByMemberIdAndAttendanceDate(memberId, today);
     }
 
     private int calculateCurrentStreak(Long memberId) {
