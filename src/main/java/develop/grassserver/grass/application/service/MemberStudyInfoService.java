@@ -25,8 +25,8 @@ public class MemberStudyInfoService {
      */
     public MemberStudyInfoDTO getMemberStudyInfo(List<Long> memberIds) {
         List<Member> members = memberService.findAllMembersByIds(memberIds);
-        Map<Long, String> studyTimes = grassService.getFriendsTodayStudyTime(memberIds);
-        Map<Long, Boolean> studyStatuses = redisService.getFriendStudyStatus(memberIds);
+        Map<Long, String> studyTimes = grassService.getOthersTodayStudyTime(memberIds);
+        Map<Long, Boolean> studyStatuses = redisService.getOthersStudyStatus(memberIds);
 
         return new MemberStudyInfoDTO(members, studyTimes, studyStatuses);
     }

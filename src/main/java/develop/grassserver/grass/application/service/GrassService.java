@@ -135,7 +135,7 @@ public class GrassService {
         return new AttendanceResponse(isTodayGrassExist(member));
     }
 
-    public Map<Long, String> getFriendsTodayStudyTime(List<Long> memberIds) {
+    public Map<Long, String> getOthersTodayStudyTime(List<Long> memberIds) {
         LocalDate today = LocalDate.now();
 
         Map<Long, String> studyTimes = memberIds.stream()
