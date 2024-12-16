@@ -9,9 +9,11 @@ import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+@Getter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -24,5 +26,9 @@ public class GrassScoreAggregate extends BaseEntity {
     @Column(nullable = false)
     @ColumnDefault("0")
     @Builder.Default
-    private Long grassScore = 0L;
+    private int grassScore = 0;
+
+    public void updateAggregateScore(int yesterdayScore) {
+        grassScore += yesterdayScore;
+    }
 }
