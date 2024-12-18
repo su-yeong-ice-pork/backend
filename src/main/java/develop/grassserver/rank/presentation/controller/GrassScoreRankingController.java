@@ -1,5 +1,6 @@
 package develop.grassserver.rank.presentation.controller;
 
+import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.rank.application.service.GrassScoreRankingService;
 import develop.grassserver.rank.presentation.dto.GrassScoreIndividualRankingResponse;
@@ -18,7 +19,8 @@ public class GrassScoreRankingController {
 
     @GetMapping("/individual")
     public ResponseEntity<ApiResult<GrassScoreIndividualRankingResponse>> getIndividualRanking() {
-        rankingService.getIndividualRanking();
-        return null;
+        GrassScoreIndividualRankingResponse response = rankingService.getIndividualRanking();
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(response));
     }
 }
