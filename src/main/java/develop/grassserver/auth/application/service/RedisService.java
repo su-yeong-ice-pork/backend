@@ -123,8 +123,8 @@ public class RedisService {
             ListOperations<String, Object> listOperations = redisTemplate.opsForList();
             StudyRankingDTO dto = studyRankings.get(i - 1);
             listOperations.rightPush(key, dto.studyName());
-            listOperations.rightPush(key, dto.memberCount());
-            listOperations.rightPush(key, dto.totalStudyTime());
+            listOperations.rightPush(key, String.valueOf(dto.memberCount()));
+            listOperations.rightPush(key, String.valueOf(dto.totalStudyTime()));
         }
     }
 
@@ -141,8 +141,8 @@ public class RedisService {
                     List<Object> values = redisTemplate.opsForList().range(key, 0, -1);
 
                     String studyName = (String) values.get(0);
-                    int memberCount = (Integer) values.get(1);
-                    Long totalStudyTime = (Long) values.get(2);
+                    int memberCount = Integer.parseInt(values.get(1).toString());
+                    Long totalStudyTime = Long.parseLong(values.get(2).toString());
 
                     return new StudyRankingDTO(studyName, memberCount, totalStudyTime);
                 })
