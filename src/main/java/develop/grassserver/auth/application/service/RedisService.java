@@ -140,5 +140,4 @@ public class RedisService {
                 })
                 .collect(Collectors.toList());
     }
-
 }
