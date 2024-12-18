@@ -17,15 +17,15 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   
     Optional<Member> findByEmail(String email);
 
-    @Query("select m from Member m join fetch m.profile where m.name = :name")
+    @Query("select m from Member m join fetch m.profile where m.name = :name and m.status = true")
     Optional<Member> findByNameWithProfile(@Param("name") String name);
 
-    @Query("select m from Member m join fetch m.profile where m.email = :email")
+    @Query("select m from Member m join fetch m.profile where m.email = :email and m.status = true")
     Optional<Member> findByEmailWithProfile(@Param("email") String email);
 
-    @Query("select m from Member m join fetch m.profile where m.id = :id")
+    @Query("select m from Member m join fetch m.profile where m.id = :id and m.status = true")
     Optional<Member> findByIdWithProfile(@Param("id") Long id);
 
-    @Query("select m from Member m join fetch m.profile where m.id in :ids")
+    @Query("select m from Member m join fetch m.profile where m.id in :ids and m.status = true")
     List<Member> findAllByIdsWithProfile(@Param("ids") List<Long> ids);
 }

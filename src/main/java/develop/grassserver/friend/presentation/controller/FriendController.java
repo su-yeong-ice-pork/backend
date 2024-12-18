@@ -5,7 +5,6 @@ import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.friend.application.service.FriendService;
 import develop.grassserver.friend.presentation.dto.FindAllFriendsResponse;
-import develop.grassserver.friend.presentation.dto.RequestFriendRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpEmojiRequest;
 import develop.grassserver.friend.presentation.dto.SendCheerUpMessageRequest;
 import develop.grassserver.member.domain.entity.Member;
@@ -52,12 +51,12 @@ public class FriendController {
             @ApiResponse(responseCode = "409", description = "이미 요청을 보낸 상태임"),
             @ApiResponse(responseCode = "409", description = "이미 등록된 친구")
     })
-    @PostMapping
+    @PostMapping("/{otherMemberId}/request")
     public ResponseEntity<ApiResult<String>> requestFriend(
             @LoginMember Member member,
-            @Valid @RequestBody RequestFriendRequest request
+            @PathVariable Long otherMemberId
     ) {
-        friendService.requestFriend(member, request);
+        friendService.requestFriend(member, otherMemberId);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success());
     }
@@ -114,6 +113,20 @@ public class FriendController {
     ) {
         friendService.sendCheerUpMessage(id, member, request);
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiUtils.success());
+    }
+
+    @Operation(summary = "친구 수락 API", description = "친구 수락 시 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "친구 수락 성공. 응답 에러 코드는 무시하셈"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "404", description = "상대 멤버 정보를 찾을 수 없음"),
+            @ApiResponse(responseCode = "409", description = "이미 등록된 친구")
+    })
+    @PostMapping("/{id}/accept")
+    public ResponseEntity<ApiResult<String>> acceptFriendRequest(@PathVariable Long id) {
+        friendService.acceptFriendRequest(id);
+        return ResponseEntity.ok()
                 .body(ApiUtils.success());
     }
 }
