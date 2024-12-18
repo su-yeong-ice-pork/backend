@@ -8,9 +8,11 @@ import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import develop.grassserver.study.application.dto.StudyRankingDTO;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
@@ -127,7 +129,13 @@ public class RedisService {
     }
 
     public List<StudyRankingDTO> getStudyRanking() {
-        return redisTemplate.keys(STUDY_RANKING_KEY + "*").stream()
+        Set<String> keys = redisTemplate.keys(STUDY_RANKING_KEY + "*");
+
+        if (keys == null || keys.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return keys.stream()
                 .sorted()
                 .map(key -> {
                     List<Object> values = redisTemplate.opsForList().range(key, 0, -1);
