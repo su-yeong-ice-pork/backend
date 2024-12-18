@@ -15,20 +15,7 @@ public record GrassScoreMajorRankingResponse(String date, List<MajorRank> rankin
             Map<String, List<Member>> membersGroupByMajor,
             Map<Long, GrassScoreAggregate> aggregateMap
     ) {
-        List<MajorRank> majorRanks = new java.util.ArrayList<>(membersGroupByMajor.entrySet()
-                .stream()
-                .map(group -> {
-                    String major = group.getKey();
-                    int memberCount = group.getValue().size();
-                    String totalStudyTime = String.format("%d시간", getMajorTotalStudyTime(group));
-                    int totalGrassScore = group.getValue().stream()
-                            .filter(member -> aggregateMap.containsKey(member.getId()))
-                            .mapToInt(member -> aggregateMap.get(member.getId()).getGrassScore())
-                            .sum();
-                    return new MajorRank(0, major, memberCount, totalStudyTime, totalGrassScore);
-                })
-                .sorted((r1, r2) -> Integer.compare(r2.majorGrassScore(), r1.majorGrassScore())) // 잔디 점수로 내림차순 정렬
-                .toList());
+        List<MajorRank> majorRanks = calculateRanks(membersGroupByMajor, aggregateMap);
 
         for (int i = 0; i < majorRanks.size(); i++) {
             MajorRank updatedRank = new MajorRank(
@@ -44,6 +31,25 @@ public record GrassScoreMajorRankingResponse(String date, List<MajorRank> rankin
         LocalDate yesterday = LocalDate.now().minusDays(1);
         String date = DateTimeUtils.formatRankingDate(yesterday);
         return new GrassScoreMajorRankingResponse(date, majorRanks);
+    }
+
+    private static List<MajorRank> calculateRanks(
+            Map<String, List<Member>> membersGroupByMajor,
+            Map<Long, GrassScoreAggregate> aggregateMap
+    ) {
+        return membersGroupByMajor.entrySet().stream()
+                .map(group -> {
+                    String major = group.getKey();
+                    int memberCount = group.getValue().size();
+                    String totalStudyTime = String.format("%d시간", getMajorTotalStudyTime(group));
+                    int totalGrassScore = group.getValue().stream()
+                            .filter(member -> aggregateMap.containsKey(member.getId()))
+                            .mapToInt(member -> aggregateMap.get(member.getId()).getGrassScore())
+                            .sum();
+                    return new MajorRank(0, major, memberCount, totalStudyTime, totalGrassScore);
+                })
+                .sorted((r1, r2) -> Integer.compare(r2.majorGrassScore(), r1.majorGrassScore())) // 잔디 점수로 내림차순 정렬
+                .toList();
     }
 
     private static long getMajorTotalStudyTime(Entry<String, List<Member>> group) {
