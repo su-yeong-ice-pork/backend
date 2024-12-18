@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public record GrassScoreMajorRankingResponse(String date, List<MajorRank> ranking) {
 
@@ -16,17 +17,6 @@ public record GrassScoreMajorRankingResponse(String date, List<MajorRank> rankin
             Map<Long, GrassScoreAggregate> aggregateMap
     ) {
         List<MajorRank> majorRanks = calculateRanks(membersGroupByMajor, aggregateMap);
-
-        for (int i = 0; i < majorRanks.size(); i++) {
-            MajorRank updatedRank = new MajorRank(
-                    i + 1,
-                    majorRanks.get(i).majorName(),
-                    majorRanks.get(i).memberCount(),
-                    majorRanks.get(i).majorTotalStudyTime(),
-                    majorRanks.get(i).majorGrassScore()
-            );
-            majorRanks.set(i, updatedRank);
-        }
 
         LocalDate yesterday = LocalDate.now().minusDays(1);
         String date = DateTimeUtils.formatRankingDate(yesterday);
@@ -37,10 +27,16 @@ public record GrassScoreMajorRankingResponse(String date, List<MajorRank> rankin
             Map<String, List<Member>> membersGroupByMajor,
             Map<Long, GrassScoreAggregate> aggregateMap
     ) {
-        return membersGroupByMajor.entrySet().stream()
+        List<MajorRank> sortedRanks = membersGroupByMajor.entrySet().stream()
                 .map(group -> toMajorRank(group, aggregateMap))
                 .sorted((r1, r2) -> Integer.compare(r2.majorGrassScore(), r1.majorGrassScore()))
-                .toList();
+                .collect(Collectors.toList());
+
+        for (int i = 0; i < sortedRanks.size(); i++) {
+            MajorRank majorRank = sortedRanks.get(i).withRank(i + 1);
+            sortedRanks.set(i, majorRank);
+        }
+        return sortedRanks;
     }
 
     private static MajorRank toMajorRank(
@@ -76,5 +72,9 @@ public record GrassScoreMajorRankingResponse(String date, List<MajorRank> rankin
             String majorTotalStudyTime,
             int majorGrassScore
     ) {
+
+        public MajorRank withRank(int rank) {
+            return new MajorRank(rank, this.majorName, this.memberCount, this.majorTotalStudyTime, this.majorGrassScore);
+        }
     }
 }
