@@ -1,14 +1,16 @@
 package develop.grassserver.rank.presentation.dto;
 
+import develop.grassserver.common.utils.DateTimeUtils;
 import develop.grassserver.grass.application.dto.MemberStudyInfoDTO;
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.member.domain.entity.Member;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public record GrassScoreIndividualRankingResponse(List<IndividualRank> ranking) {
+public record GrassScoreIndividualRankingResponse(String date, List<IndividualRank> ranking) {
 
     public static GrassScoreIndividualRankingResponse from(
             List<Long> rankingIds,
@@ -31,7 +33,9 @@ public record GrassScoreIndividualRankingResponse(List<IndividualRank> ranking) 
         List<IndividualRank> ranks =
                 getIndividualRanks(rankingIds, memberStudyInfoDTO, rank, rankingMemberMap, aggregateMap);
 
-        return new GrassScoreIndividualRankingResponse(ranks);
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        String date = DateTimeUtils.formatRankingDate(yesterday);
+        return new GrassScoreIndividualRankingResponse(date, ranks);
     }
 
     private static List<IndividualRank> getIndividualRanks(
