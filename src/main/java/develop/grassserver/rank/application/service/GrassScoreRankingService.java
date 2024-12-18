@@ -6,6 +6,8 @@ import develop.grassserver.grass.application.service.MemberStudyInfoService;
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateRepository;
 import develop.grassserver.rank.presentation.dto.GrassScoreIndividualRankingResponse;
+import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
+import develop.grassserver.study.application.dto.StudyRankingDTO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,5 +38,10 @@ public class GrassScoreRankingService {
                 .mapToLong(grassScoreAggregate -> grassScoreAggregate.getMember().getId())
                 .boxed()
                 .toList();
+    }
+
+    public StudyRankingResponse getStudyRanking() {
+        List<StudyRankingDTO> studyRankingDTOS = redisService.getStudyRanking();
+        return StudyRankingResponse.from(studyRankingDTOS);
     }
 }

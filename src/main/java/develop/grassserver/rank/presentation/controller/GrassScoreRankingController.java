@@ -4,6 +4,7 @@ import develop.grassserver.common.utils.ApiUtils;
 import develop.grassserver.common.utils.ApiUtils.ApiResult;
 import develop.grassserver.rank.application.service.GrassScoreRankingService;
 import develop.grassserver.rank.presentation.dto.GrassScoreIndividualRankingResponse;
+import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,4 +24,12 @@ public class GrassScoreRankingController {
         return ResponseEntity.ok()
                 .body(ApiUtils.success(response));
     }
+
+    @GetMapping("/studies")
+    public ResponseEntity<ApiResult<StudyRankingResponse>> getStudyRanking() {
+        StudyRankingResponse response = rankingService.getStudyRanking();
+        return ResponseEntity.ok()
+                .body(ApiUtils.success(response));
+    }
+
 }
