@@ -115,26 +115,26 @@ public class RedisService {
 
     public void saveStudyRanking(List<StudyRankingDTO> studyRankings) {
         for (int i = 1; i <= studyRankings.size(); i++) {
-            String key = "STUDY_RANKING_KEY_" + i;
+            String key = STUDY_RANKING_KEY + i;
             redisTemplate.delete(key);
 
             ListOperations<String, Object> listOperations = redisTemplate.opsForList();
             StudyRankingDTO dto = studyRankings.get(i - 1);
             listOperations.rightPush(key, dto.studyName());
-            listOperations.rightPush(key, String.valueOf(dto.memberCount()));
-            listOperations.rightPush(key, String.valueOf(dto.totalStudyTime()));
+            listOperations.rightPush(key, dto.memberCount());
+            listOperations.rightPush(key, dto.totalStudyTime());
         }
     }
 
     public List<StudyRankingDTO> getStudyRanking() {
-        return redisTemplate.keys("STUDY_RANKING_KEY_*").stream()
+        return redisTemplate.keys(STUDY_RANKING_KEY + "*").stream()
                 .sorted()
                 .map(key -> {
                     List<Object> values = redisTemplate.opsForList().range(key, 0, -1);
 
                     String studyName = (String) values.get(0);
-                    int memberCount = Integer.parseInt(values.get(1).toString());
-                    Long totalStudyTime = Long.parseLong(values.get(2).toString());
+                    int memberCount = (Integer) values.get(1);
+                    Long totalStudyTime = (Long) values.get(2);
 
                     return new StudyRankingDTO(studyName, memberCount, totalStudyTime);
                 })
