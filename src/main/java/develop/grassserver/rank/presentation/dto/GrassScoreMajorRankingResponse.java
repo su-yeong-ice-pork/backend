@@ -38,18 +38,20 @@ public record GrassScoreMajorRankingResponse(String date, List<MajorRank> rankin
             Map<Long, GrassScoreAggregate> aggregateMap
     ) {
         return membersGroupByMajor.entrySet().stream()
-                .map(group -> {
-                    String major = group.getKey();
-                    int memberCount = group.getValue().size();
-                    String totalStudyTime = String.format("%d시간", getMajorTotalStudyTime(group));
-                    int totalGrassScore = group.getValue().stream()
-                            .filter(member -> aggregateMap.containsKey(member.getId()))
-                            .mapToInt(member -> aggregateMap.get(member.getId()).getGrassScore())
-                            .sum();
-                    return new MajorRank(0, major, memberCount, totalStudyTime, totalGrassScore);
-                })
-                .sorted((r1, r2) -> Integer.compare(r2.majorGrassScore(), r1.majorGrassScore())) // 잔디 점수로 내림차순 정렬
+                .map(group -> toMajorRank(group, aggregateMap))
+                .sorted((r1, r2) -> Integer.compare(r2.majorGrassScore(), r1.majorGrassScore()))
                 .toList();
+    }
+
+    private static MajorRank toMajorRank(
+            Map.Entry<String, List<Member>> group,
+            Map<Long, GrassScoreAggregate> aggregateMap
+    ) {
+        String majorName = group.getKey();
+        int memberCount = group.getValue().size();
+        String totalStudyTime = String.format("%d시간", getMajorTotalStudyTime(group));
+        int totalGrassScore = calculateTotalGrassScore(group, aggregateMap);
+        return new MajorRank(0, majorName, memberCount, totalStudyTime, totalGrassScore);
     }
 
     private static long getMajorTotalStudyTime(Entry<String, List<Member>> group) {
@@ -60,6 +62,12 @@ public record GrassScoreMajorRankingResponse(String date, List<MajorRank> rankin
                 .sum();
     }
 
+    private static int calculateTotalGrassScore(Entry<String, List<Member>> group, Map<Long, GrassScoreAggregate> aggregateMap) {
+        return group.getValue().stream()
+                .filter(member -> aggregateMap.containsKey(member.getId()))
+                .mapToInt(member -> aggregateMap.get(member.getId()).getGrassScore())
+                .sum();
+    }
 
     public record MajorRank(
             int rank,
