@@ -20,4 +20,7 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
     @Query("SELECT s FROM Study s JOIN FETCH s.members WHERE s.id = :studyId AND s.status = TRUE")
     Optional<Study> findStudyByIdWithMembers(@Param("studyId") Long studyId);
+
+    @Query("SELECT s FROM Study s WHERE s.status = true ORDER BY s.totalStudyTime DESC")
+    List<Study> findTopByTotalStudyTime();
 }
