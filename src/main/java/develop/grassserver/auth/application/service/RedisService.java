@@ -125,4 +125,20 @@ public class RedisService {
             listOperations.rightPush(key, String.valueOf(dto.totalStudyTime()));
         }
     }
+
+    public List<StudyRankingDTO> getStudyRanking() {
+        return redisTemplate.keys("STUDY_RANKING_KEY_*").stream()
+                .sorted()
+                .map(key -> {
+                    List<Object> values = redisTemplate.opsForList().range(key, 0, -1);
+
+                    String studyName = (String) values.get(0);
+                    int memberCount = Integer.parseInt(values.get(1).toString());
+                    Long totalStudyTime = Long.parseLong(values.get(2).toString());
+
+                    return new StudyRankingDTO(studyName, memberCount, totalStudyTime);
+                })
+                .collect(Collectors.toList());
+    }
+
 }
