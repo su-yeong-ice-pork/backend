@@ -7,7 +7,9 @@ import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.application.exception.AlreadyCheckedInException;
 import develop.grassserver.grass.application.exception.MissingAttendanceException;
 import develop.grassserver.grass.domain.entity.Grass;
+import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassRepository;
+import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateRepository;
 import develop.grassserver.grass.presentation.dto.AttendanceResponse;
 import develop.grassserver.grass.presentation.dto.StudyTimeRequest;
 import develop.grassserver.grass.presentation.dto.StudyTimeResponse;
@@ -25,19 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GrassService {
 
     private final RedisService redisService;
     private final GrassRepository grassRepository;
-
-    public boolean isTodayGrassExist(Member member) {
-        return findTodayGrass(member.getId()).isPresent();
-    }
-
-    private Optional<Grass> findTodayGrass(Long memberId) {
-        LocalDate today = LocalDate.now();
-        return grassRepository.findByMemberIdAndAttendanceDate(memberId, today);
-    }
+    private final GrassScoreAggregateRepository grassScoreAggregateRepository;
 
     @Transactional
     public Grass createGrass(Member member) {
@@ -51,7 +46,18 @@ public class GrassService {
                 .currentStreak(currentStreak)
                 .build();
 
+        createGrassScoreAggregate(member);
+
         return grassRepository.save(grass);
+    }
+
+    private boolean isTodayGrassExist(Member member) {
+        return findTodayGrass(member.getId()).isPresent();
+    }
+
+    private Optional<Grass> findTodayGrass(Long memberId) {
+        LocalDate today = LocalDate.now();
+        return grassRepository.findByMemberIdAndAttendanceDate(memberId, today);
     }
 
     private int calculateCurrentStreak(Long memberId) {
@@ -63,6 +69,15 @@ public class GrassService {
     private Optional<Grass> findYesterdayGrass(Long memberId) {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         return grassRepository.findByMemberIdAndAttendanceDate(memberId, yesterday);
+    }
+
+    private void createGrassScoreAggregate(Member member) {
+        if (!grassScoreAggregateRepository.existsByMember(member)) {
+            GrassScoreAggregate aggregate = GrassScoreAggregate.builder()
+                    .member(member)
+                    .build();
+            grassScoreAggregateRepository.save(aggregate);
+        }
     }
 
     public Grass findDayGrassByMemberId(Long memberId) {
@@ -106,13 +121,12 @@ public class GrassService {
 
     @Transactional
     public StudyTimeResponse updateStudyRecord(Member member, StudyTimeRequest request) {
+        redisService.deleteMemberStudyStatus(member.getId());
         Grass grass = findTodayGrass(member.getId()).orElseThrow(MissingAttendanceException::new);
 
         Duration todayStudyTime = DurationUtils.parseDuration(request.todayStudyTime());
         grass.updateStudyTime(todayStudyTime);
         grass.updateGrassScore(calculateStudyScore(todayStudyTime));
-
-        redisService.deleteMemberStudyStatus(member.getId());
         return getStudyRecord(member);
     }
 
@@ -120,7 +134,7 @@ public class GrassService {
         return new AttendanceResponse(isTodayGrassExist(member));
     }
 
-    public Map<Long, String> getFriendsTodayStudyTime(List<Long> memberIds) {
+    public Map<Long, String> getOthersTodayStudyTime(List<Long> memberIds) {
         LocalDate today = LocalDate.now();
 
         Map<Long, String> studyTimes = memberIds.stream()
