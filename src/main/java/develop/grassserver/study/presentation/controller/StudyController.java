@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +61,8 @@ public class StudyController {
     @Operation(summary = "고정 스터디 구성원 전체 조회 API", description = "고정 스터디 구성원 조회 시 사용되는 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "스터디 구성원 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "멤버 인증 실패")
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
+            @ApiResponse(responseCode = "403", description = "스터디 구성원이 아님")
     })
     @GetMapping("{studyId}/participants")
     public ResponseEntity<ApiResult<FindAllStudyMembersResponse>> getAllStudyMembers(@PathVariable Long studyId,
@@ -94,5 +96,20 @@ public class StudyController {
         CreateStudyResponse response = studyCommandService.createStudy(member, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiUtils.success(response));
+    }
+
+    @Operation(summary = "고정 스터디 나가기(구성원) API", description = "스터디 구성원이 고정 스터디를 나갈 때 사용되는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "스터디 세부 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "멤버 인증 실패"),
+            @ApiResponse(responseCode = "404", description = "해당하는 스터디가 없음"),
+            @ApiResponse(responseCode = "403", description = "스터디 구성원이 아님"),
+            @ApiResponse(responseCode = "400", description = "리더는 방을 나갈 수 없음")
+    })
+    @DeleteMapping("/{studyId}/participants")
+    public ResponseEntity<ApiResult<String>> goOutStudy(@PathVariable Long studyId,
+                                                        @LoginMember Member member) {
+        studyCommandService.goOutStudy(member, studyId);
+        return ResponseEntity.ok(ApiUtils.success());
     }
 }

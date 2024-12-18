@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStream;
@@ -28,8 +27,10 @@ public class RandomStudyApplicationItemWriter implements ItemWriter<RandomStudyA
     private LocalTime currentAttendanceTime = null;
     private List<Member> currentGroup = new ArrayList<>();
 
-    public RandomStudyApplicationItemWriter(RandomStudyRepository randomStudyRepository,
-                                            RandomStudyMemberRepository randomStudyMemberRepository) {
+    public RandomStudyApplicationItemWriter(
+            RandomStudyRepository randomStudyRepository,
+            RandomStudyMemberRepository randomStudyMemberRepository
+    ) {
         this.randomStudyRepository = randomStudyRepository;
         this.randomStudyMemberRepository = randomStudyMemberRepository;
     }
@@ -61,7 +62,7 @@ public class RandomStudyApplicationItemWriter implements ItemWriter<RandomStudyA
         for (RandomStudyApplication application : chunk.getItems()) {
             LocalTime attendanceTime = application.getAttendanceTime();
 
-            if (currentAttendanceTime == null || !attendanceTime.equals(currentAttendanceTime)) {
+            if (!attendanceTime.equals(currentAttendanceTime)) {
                 createRandomStudy();
                 currentAttendanceTime = attendanceTime;
             }
@@ -105,7 +106,7 @@ public class RandomStudyApplicationItemWriter implements ItemWriter<RandomStudyA
                         .member(member)
                         .randomStudy(randomStudy)
                         .build())
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
         randomStudyMemberRepository.saveAll(studyMembers);
     }
 }
