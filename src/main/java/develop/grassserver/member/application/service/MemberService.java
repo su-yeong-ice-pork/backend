@@ -16,7 +16,9 @@ import develop.grassserver.profile.domain.entity.Profile;
 import develop.grassserver.profile.infrastructure.repository.ProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -118,5 +120,14 @@ public class MemberService {
 
     public List<Member> findAllMembersByIds(List<Long> ids) {
         return memberRepository.findAllByIdsWithProfile(ids);
+    }
+
+    public Map<String, List<Member>> getMembersGroupByMajor() {
+        return memberRepository.findAll().stream()
+                .collect(
+                        Collectors.groupingBy(
+                                member -> member.getMajor().getDepartment()
+                        )
+                );
     }
 }
