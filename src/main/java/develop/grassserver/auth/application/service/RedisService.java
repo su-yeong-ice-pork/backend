@@ -3,8 +3,10 @@ package develop.grassserver.auth.application.service;
 import develop.grassserver.auth.application.exception.ExpirationAuthCodeException;
 import develop.grassserver.auth.application.exception.IncorrectAuthCodeException;
 import develop.grassserver.auth.application.valid.AuthValidator;
+import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
+import develop.grassserver.study.domain.entity.Study;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +28,7 @@ public class RedisService {
     private static final long AUTH_CODE_EXPIRATION_TIME = 60 * 5L;
     private static final String STUDY_STATUS_KEY_PREFIX = "studying-";
     private static final String INDIVIDUAL_GRASS_SCORE_RANKING_KEY = "grass_score_ranking";
+    private static final String STUDY_RANKING_KEY = "study_ranking";
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -109,5 +112,18 @@ public class RedisService {
                 .mapToLong(ranking -> Long.parseLong((String) ranking))
                 .boxed()
                 .toList();
+    }
+
+    public void saveStudyRanking(List<Study> studies) {
+        for (int i = 1; i <= studies.size(); i++) {
+            String key = STUDY_RANKING_KEY + i;
+            redisTemplate.delete(key);
+
+            ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+            listOperations.rightPush(key, studies.get(i - 1).getName());
+            listOperations.rightPush(key, String.valueOf(studies.get(i - 1).getMembers().size()));
+            listOperations.rightPush(key,
+                    String.valueOf(DurationUtils.formatHourDuration(studies.get(i - 1).getTotalStudyTime())));
+        }
     }
 }
