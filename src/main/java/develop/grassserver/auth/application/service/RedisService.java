@@ -5,12 +5,17 @@ import develop.grassserver.auth.application.exception.IncorrectAuthCodeException
 import develop.grassserver.auth.application.valid.AuthValidator;
 import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
+import develop.grassserver.study.application.dto.StudyRankingDTO;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -23,6 +28,8 @@ public class RedisService {
     private static final String REFRESH_TOKEN_PREFIX = "refresh-token";
     private static final long AUTH_CODE_EXPIRATION_TIME = 60 * 5L;
     private static final String STUDY_STATUS_KEY_PREFIX = "studying-";
+    private static final String INDIVIDUAL_GRASS_SCORE_RANKING_KEY = "grass_score_ranking";
+    private static final String STUDY_RANKING_KEY = "study_ranking";
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -73,7 +80,7 @@ public class RedisService {
         valueOperations.set(STUDY_STATUS_KEY_PREFIX + memberId, LocalDateTime.now().toString());
     }
 
-    public Map<Long, Boolean> getFriendStudyStatus(List<Long> friendIds) {
+    public Map<Long, Boolean> getOthersStudyStatus(List<Long> friendIds) {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         return friendIds.stream()
                 .collect(
@@ -86,5 +93,59 @@ public class RedisService {
 
     public void deleteMemberStudyStatus(Long memberId) {
         redisTemplate.delete(STUDY_STATUS_KEY_PREFIX + memberId);
+    }
+
+    public void saveIndividualGrassScoreRanking(List<Long> grassScoreAggregateIds) {
+        redisTemplate.delete(INDIVIDUAL_GRASS_SCORE_RANKING_KEY);
+        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+        for (Long id : grassScoreAggregateIds) {
+            listOperations.rightPush(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, String.valueOf(id));
+        }
+    }
+
+    public List<Long> getIndividualGrassScoreRanking() {
+        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+        List<Object> readRankingList = listOperations.range(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, 0, -1);
+        if (Objects.isNull(readRankingList) || readRankingList.isEmpty()) {
+            return List.of();
+        }
+        return readRankingList.stream()
+                .mapToLong(ranking -> Long.parseLong((String) ranking))
+                .boxed()
+                .toList();
+    }
+
+    public void saveStudyRanking(List<StudyRankingDTO> studyRankings) {
+        for (int i = 1; i <= studyRankings.size(); i++) {
+            String key = STUDY_RANKING_KEY + i;
+            redisTemplate.delete(key);
+
+            ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+            StudyRankingDTO dto = studyRankings.get(i - 1);
+            listOperations.rightPush(key, dto.studyName());
+            listOperations.rightPush(key, String.valueOf(dto.memberCount()));
+            listOperations.rightPush(key, String.valueOf(dto.totalStudyTime()));
+        }
+    }
+
+    public List<StudyRankingDTO> getStudyRanking() {
+        Set<String> keys = redisTemplate.keys(STUDY_RANKING_KEY + "*");
+
+        if (keys == null || keys.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return keys.stream()
+                .sorted()
+                .map(key -> {
+                    List<Object> values = redisTemplate.opsForList().range(key, 0, -1);
+
+                    String studyName = (String) values.get(0);
+                    int memberCount = Integer.parseInt(values.get(1).toString());
+                    Long totalStudyTime = Long.parseLong(values.get(2).toString());
+
+                    return new StudyRankingDTO(studyName, memberCount, totalStudyTime);
+                })
+                .collect(Collectors.toList());
     }
 }
