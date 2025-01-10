@@ -26,14 +26,13 @@ public class GrassScoreAggregateQueryRepository {
     private final EntityManager entityManager;
 
     @Transactional
-    public void update(LocalDate date){
+    public void update(LocalDate date) {
         entityManager.createNativeQuery(MEMBER_TOTAL_GRASS_SCORE_UPDATE_QUERY)
                 .setParameter("yesterday", date)
                 .executeUpdate();
     }
 
-    @Transactional
-    public List<GrassScoreAggregate> getTopMembers(){
+    public List<GrassScoreAggregate> getTopMembers() {
         return entityManager.createQuery(MEMBER_TOTAL_GRASS_SCORE_SELECT_QUERY, GrassScoreAggregate.class)
                 .setMaxResults(50)
                 .getResultList();
