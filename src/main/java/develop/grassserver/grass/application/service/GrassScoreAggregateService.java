@@ -24,6 +24,7 @@ public class GrassScoreAggregateService {
 
         try {
             grassScoreRankingUpdateService.updateGrassAggregateScore();
+            log.info("출석 점수 UPDATE 성공");
         } catch (Exception exception) {
             log.error("출석 점수 UPDATE 실패 = {}", exception.getMessage());
         }
