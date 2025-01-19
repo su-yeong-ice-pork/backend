@@ -21,7 +21,11 @@ public class GrassScoreAggregateQueryRepository {
             "  AND g.status = true";
 
     private static final String MEMBER_TOTAL_GRASS_SCORE_SELECT_QUERY =
-            "SELECT gsa FROM GrassScoreAggregate gsa WHERE gsa.member.status = TRUE ORDER BY gsa.grassScore DESC";
+            "SELECT gsa FROM GrassScoreAggregate gsa " +
+                    "JOIN FETCH gsa.member m " +
+                    "JOIN FETCH m.profile " +
+                    "WHERE m.status = TRUE " +
+                    "ORDER BY gsa.grassScore DESC";
 
     private final EntityManager entityManager;
 
