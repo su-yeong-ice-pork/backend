@@ -1,9 +1,9 @@
 package develop.grassserver.rank.application.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import develop.grassserver.auth.application.service.RedisService;
-import develop.grassserver.common.BaseEntity;
-import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
+import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
 import io.lettuce.core.RedisCommandTimeoutException;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.RedisException;
@@ -14,7 +14,6 @@ import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.JDBCConnectionException;
@@ -63,14 +62,12 @@ public class GrassScoreRankingUpdateService {
             maxAttempts = 5,
             backoff = @Backoff(delay = 5000)
     )
-    public void saveIndividualGrassScoreRanking(List<GrassScoreAggregate> grassScoreAggregates) {
-        redisService.saveIndividualGrassScoreRanking(getTopGrassScoreAggregates(grassScoreAggregates));
-    }
-
-    private List<Long> getTopGrassScoreAggregates(List<GrassScoreAggregate> grassScoreAggregates) {
-        return grassScoreAggregates.stream()
-                .mapToLong(BaseEntity::getId)
-                .boxed()
-                .toList();
+    public void saveIndividualGrassScoreRanking(IndividualRankingResponse response) {
+        try {
+            redisService.saveIndividualGrassScoreRanking(response);
+        } catch (JsonProcessingException e) {
+            log.error("랭킹 JSON 저장 중 오류");
+            throw new RedisException("랭킹 JSON 저장 중 오류");
+        }
     }
 }
