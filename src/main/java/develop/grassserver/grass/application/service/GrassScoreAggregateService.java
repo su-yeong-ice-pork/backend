@@ -2,7 +2,6 @@ package develop.grassserver.grass.application.service;
 
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
-import develop.grassserver.member.application.service.MemberService;
 import develop.grassserver.rank.application.service.GrassScoreRankingUpdateService;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class GrassScoreAggregateService {
 
-    private final MemberService memberService;
     private final GrassScoreRankingUpdateService grassScoreRankingUpdateService;
 
     private final GrassScoreAggregateQueryRepository aggregateQueryRepository;
@@ -33,19 +31,11 @@ public class GrassScoreAggregateService {
         }
 
         try {
-            List<Long> memberIds = getTopMemberIds(grassScoreAggregates);
-            memberService.findAllMembersByIds(memberIds); // 수정 필요
             grassScoreRankingUpdateService
                     .saveIndividualGrassScoreRanking(IndividualRankingResponse.from(grassScoreAggregates));
             log.info("랭킹 저장 성공");
         } catch (Exception exception) {
             log.error("랭킹 저장 실패 = {}", exception.getMessage());
         }
-    }
-
-    private List<Long> getTopMemberIds(List<GrassScoreAggregate> grassScoreAggregates) {
-        return grassScoreAggregates.stream()
-                .map(aggregate -> aggregate.getMember().getId())
-                .toList();
     }
 }
