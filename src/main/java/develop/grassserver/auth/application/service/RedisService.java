@@ -103,8 +103,7 @@ public class RedisService {
 
     public IndividualRankingResponse getIndividualGrassScoreRanking() throws JsonProcessingException {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        String rankingJSON = (String) valueOperations.get(INDIVIDUAL_GRASS_SCORE_RANKING_KEY);
-        rankingJSON = Objects.requireNonNull(rankingJSON)
+        String rankingJSON = ((String) Objects.requireNonNull(valueOperations.get(INDIVIDUAL_GRASS_SCORE_RANKING_KEY)))
                 .replaceAll("\\p{Cntrl}", "");
         return objectMapper.readValue(rankingJSON, IndividualRankingResponse.class);
     }
