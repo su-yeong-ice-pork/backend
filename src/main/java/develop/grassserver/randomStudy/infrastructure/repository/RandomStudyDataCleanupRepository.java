@@ -1,15 +1,15 @@
-package develop.grassserver.randomStudy.application.service;
+package develop.grassserver.randomStudy.infrastructure.repository;
 
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Repository
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class RandomStudyDataCleanupService {
+public class RandomStudyDataCleanupRepository {
 
     private final EntityManager entityManager;
 
