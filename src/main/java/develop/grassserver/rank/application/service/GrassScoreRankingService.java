@@ -33,8 +33,7 @@ public class GrassScoreRankingService {
 
     private List<Long> getMemberIds(List<GrassScoreAggregate> grassScoreAggregates) {
         return grassScoreAggregates.stream()
-                .mapToLong(grassScoreAggregate -> grassScoreAggregate.getMember().getId())
-                .boxed()
+                .map(grassScoreAggregate -> grassScoreAggregate.getMember().getId())
                 .toList();
     }
 }
