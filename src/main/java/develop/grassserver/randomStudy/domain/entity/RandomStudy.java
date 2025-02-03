@@ -36,7 +36,7 @@ public class RandomStudy extends BaseEntity {
     @Builder.Default
     @Column(nullable = false)
     private Duration totalStudyTime = Duration.ZERO;
-    
+
     @OneToMany(mappedBy = "randomStudy", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<RandomStudyMember> members = new ArrayList<>();
 }
