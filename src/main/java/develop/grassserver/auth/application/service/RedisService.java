@@ -94,9 +94,9 @@ public class RedisService {
     public void saveIndividualGrassScoreRanking(List<Long> grassScoreAggregateIds) {
         redisTemplate.delete(INDIVIDUAL_GRASS_SCORE_RANKING_KEY);
         ListOperations<String, Object> listOperations = redisTemplate.opsForList();
-        for (Long id : grassScoreAggregateIds) {
-            listOperations.rightPush(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, String.valueOf(id));
-        }
+        grassScoreAggregateIds.stream()
+                .map(String::valueOf)
+                .forEach(id -> listOperations.rightPush(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, id));
     }
 
     public List<Long> getIndividualGrassScoreRanking() {
