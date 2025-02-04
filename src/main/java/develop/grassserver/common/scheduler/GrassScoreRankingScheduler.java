@@ -4,10 +4,8 @@ import develop.grassserver.common.annotation.Scheduler;
 import develop.grassserver.common.annotation.SchedulerName;
 import develop.grassserver.grass.application.service.GrassScoreAggregateService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 
-@Slf4j
 @Scheduler
 @RequiredArgsConstructor
 public class GrassScoreRankingScheduler {
