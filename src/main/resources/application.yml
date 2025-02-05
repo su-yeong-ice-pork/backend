@@ -73,3 +73,6 @@ cloud:
 
 jwt:
   secret-key: ${JWT_SECRET}
+
+slack:
+  webhookUrl: $(SLACK_WEBHOOK_URL}
