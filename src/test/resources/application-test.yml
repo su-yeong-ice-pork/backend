@@ -1,0 +1,78 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jackson:
+    time-zone: Asia/Seoul
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${REDIS_URL}
+      password: ${REDIS_ACCESS_KEY}
+      port: ${REDIS_SERVER_PORT}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: TRUE
+
+  logging:
+    level:
+      org:
+        springframework:
+          jdbc: DEBUG
+        hibernate:
+          SQL: DEBUG
+          type:
+            descriptor:
+              sql: TRACE
+          orm:
+            jdbc:
+              bind: TRACE
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+    defaultModelsExpandDepth: 2
+    defaultModelExpandDepth: 2
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: true
+  paths-to-match:
+    - /api/v1/**
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    region:
+      static: us-east-2
+      auto: false
+    stack:
+      auto: false
+
+jwt:
+  secret-key: ${JWT_SECRET}
+
+slack:
+  webhookUrl: $(SLACK_WEBHOOK_URL}
