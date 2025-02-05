@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class GrassScoreAggregateQueryRepository {
+
     private final EntityManager entityManager;
 
     @Transactional
@@ -22,7 +23,6 @@ public class GrassScoreAggregateQueryRepository {
                 .executeUpdate();
     }
 
-    @Transactional
     public List<GrassScoreAggregate> getTopMembers() {
         return entityManager.createQuery(GrassScoreQuery.MEMBER_TOTAL_GRASS_SCORE_SELECT_QUERY,
                         GrassScoreAggregate.class)

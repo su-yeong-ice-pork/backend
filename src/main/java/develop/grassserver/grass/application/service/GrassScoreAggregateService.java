@@ -1,37 +1,41 @@
 package develop.grassserver.grass.application.service;
 
-import develop.grassserver.auth.application.service.RedisService;
-import develop.grassserver.common.BaseEntity;
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
-import java.time.LocalDate;
+import develop.grassserver.rank.application.service.GrassScoreRankingUpdateService;
+import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class GrassScoreAggregateService {
 
-    private final RedisService redisService;
+    private final GrassScoreRankingUpdateService grassScoreRankingUpdateService;
+
     private final GrassScoreAggregateQueryRepository aggregateQueryRepository;
 
-    @Transactional
     public void calculateGrassScoreRanking() {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        aggregateQueryRepository.update(yesterday);
-
         List<GrassScoreAggregate> grassScoreAggregates = aggregateQueryRepository.getTopMembers();
 
-        redisService.saveIndividualGrassScoreRanking(getTopGrassScoreAggregates(grassScoreAggregates));
-    }
+        try {
+            grassScoreRankingUpdateService.updateGrassAggregateScore();
+            log.info("출석 점수 UPDATE 성공");
+        } catch (Exception exception) {
+            log.error("출석 점수 UPDATE 실패 = {}", exception.getMessage());
+        }
 
-    private List<Long> getTopGrassScoreAggregates(List<GrassScoreAggregate> grassScoreAggregates) {
-        return grassScoreAggregates.stream()
-                .mapToLong(BaseEntity::getId)
-                .boxed()
-                .toList();
+        try {
+            grassScoreRankingUpdateService
+                    .saveIndividualGrassScoreRanking(IndividualRankingResponse.from(grassScoreAggregates));
+            log.info("랭킹 저장 성공");
+        } catch (Exception exception) {
+            log.error("랭킹 저장 실패 = {}", exception.getMessage());
+        }
     }
 }

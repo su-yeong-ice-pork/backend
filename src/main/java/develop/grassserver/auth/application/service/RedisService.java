@@ -1,10 +1,13 @@
 package develop.grassserver.auth.application.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import develop.grassserver.auth.application.exception.ExpirationAuthCodeException;
 import develop.grassserver.auth.application.exception.IncorrectAuthCodeException;
 import develop.grassserver.auth.application.valid.AuthValidator;
 import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
+import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +15,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,9 @@ public class RedisService {
     private static final long AUTH_CODE_EXPIRATION_TIME = 60 * 5L;
     private static final String STUDY_STATUS_KEY_PREFIX = "studying-";
     private static final String INDIVIDUAL_GRASS_SCORE_RANKING_KEY = "grass_score_ranking";
+    private static final long INDIVIDUAL_RANKING_EXPIRATION_TIME = 24 * 60 * 60L;
 
+    private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> redisTemplate;
 
     public void saveAuthCode(String email, String code) {
@@ -91,23 +95,16 @@ public class RedisService {
         redisTemplate.delete(STUDY_STATUS_KEY_PREFIX + memberId);
     }
 
-    public void saveIndividualGrassScoreRanking(List<Long> grassScoreAggregateIds) {
-        redisTemplate.delete(INDIVIDUAL_GRASS_SCORE_RANKING_KEY);
-        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
-        grassScoreAggregateIds.stream()
-                .map(String::valueOf)
-                .forEach(id -> listOperations.rightPush(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, id));
+    public void saveIndividualGrassScoreRanking(IndividualRankingResponse response) throws JsonProcessingException {
+        String rankingJSON = objectMapper.writeValueAsString(response);
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, rankingJSON, INDIVIDUAL_RANKING_EXPIRATION_TIME);
     }
 
-    public List<Long> getIndividualGrassScoreRanking() {
-        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
-        List<Object> readRankingList = listOperations.range(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, 0, -1);
-        if (Objects.isNull(readRankingList) || readRankingList.isEmpty()) {
-            return List.of();
-        }
-        return readRankingList.stream()
-                .mapToLong(ranking -> Long.parseLong((String) ranking))
-                .boxed()
-                .toList();
+    public IndividualRankingResponse getIndividualGrassScoreRanking() throws JsonProcessingException {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        String rankingJSON = ((String) Objects.requireNonNull(valueOperations.get(INDIVIDUAL_GRASS_SCORE_RANKING_KEY)))
+                .replaceAll("\\p{Cntrl}", "");
+        return objectMapper.readValue(rankingJSON, IndividualRankingResponse.class);
     }
 }
