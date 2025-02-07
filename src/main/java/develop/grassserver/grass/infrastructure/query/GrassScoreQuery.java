@@ -16,8 +16,12 @@ public final class GrassScoreQuery {
                     "ORDER BY gsa.grassScore DESC";
 
     public static final String STUDIES_BY_STUDY_TIME_SELECT_QUERY =
-            "SELECT s FROM Study s " +
-                    "WHERE s.status = TRUE " +
+            "SELECT new StudyRankingData(" +
+                    "s.id, s.name, s.totalStudyTime, COUNT(sm) ) " +
+                    "FROM Study s " +
+                    "LEFT JOIN s.members sm WITH sm.status = true " +
+                    "WHERE s.status = true " +
+                    "GROUP BY s.id, s.name, s.totalStudyTime " +
                     "ORDER BY s.totalStudyTime DESC";
 
     private GrassScoreQuery() {
