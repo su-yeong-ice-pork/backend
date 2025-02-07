@@ -125,5 +125,4 @@ public class RedisService {
                 .replaceAll("\\p{Cntrl}", "");
         return objectMapper.readValue(rankingJSON, responseType);
     }
-
 }
