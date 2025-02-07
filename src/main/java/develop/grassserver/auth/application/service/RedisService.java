@@ -121,4 +121,8 @@ public class RedisService {
     public void saveStudyRanking(StudyRankingResponse response) throws JsonProcessingException {
         saveAsJson(response, STUDY_RANKING_KEY);
     }
+
+    public StudyRankingResponse getStudyRanking() throws JsonProcessingException {
+        return getAsObject(STUDY_RANKING_KEY, StudyRankingResponse.class);
+    }
 }
