@@ -101,14 +101,22 @@ public class RedisService {
         saveAsJson(response, INDIVIDUAL_GRASS_SCORE_RANKING_KEY);
     }
 
+    public IndividualRankingResponse getIndividualGrassScoreRanking() throws JsonProcessingException {
+        return getAsObject(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, IndividualRankingResponse.class);
+    }
+
+    public void saveStudyRanking(StudyRankingResponse response) throws JsonProcessingException {
+        saveAsJson(response, STUDY_RANKING_KEY);
+    }
+
     private void saveAsJson(Object object, String key) throws JsonProcessingException {
         String rankingJSON = objectMapper.writeValueAsString(object);
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, rankingJSON, INDIVIDUAL_RANKING_EXPIRATION_TIME);
     }
 
-    public IndividualRankingResponse getIndividualGrassScoreRanking() throws JsonProcessingException {
-        return getAsObject(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, IndividualRankingResponse.class);
+    public StudyRankingResponse getStudyRanking() throws JsonProcessingException {
+        return getAsObject(STUDY_RANKING_KEY, StudyRankingResponse.class);
     }
 
     private <T> T getAsObject(String key, Class<T> responseType) throws JsonProcessingException {
@@ -118,11 +126,4 @@ public class RedisService {
         return objectMapper.readValue(rankingJSON, responseType);
     }
 
-    public void saveStudyRanking(StudyRankingResponse response) throws JsonProcessingException {
-        saveAsJson(response, STUDY_RANKING_KEY);
-    }
-
-    public StudyRankingResponse getStudyRanking() throws JsonProcessingException {
-        return getAsObject(STUDY_RANKING_KEY, StudyRankingResponse.class);
-    }
 }
