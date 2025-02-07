@@ -16,7 +16,7 @@ public record StudyRankingResponse(List<StudyRank> ranking) {
                         dataList.get(i).memberCount().intValue(),
                         DurationUtils.formatHourDuration(dataList.get(i).totalStudyTime())
                 ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
 
         return new StudyRankingResponse(ranks);
     }

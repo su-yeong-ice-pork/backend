@@ -18,7 +18,7 @@ public record IndividualRankingResponse(String date, List<IndividualRank> rankin
                     Member member = aggregate.getMember();
                     return getIndividualRank(i + 1, member, aggregate); // 순위는 1부터 시작하므로 i+1
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
 
         String date = DateTimeUtils.formatNotificationDate(LocalDateTime.now().minusDays(1));
         return new IndividualRankingResponse(date, individualRanks);
