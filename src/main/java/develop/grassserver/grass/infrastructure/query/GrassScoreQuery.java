@@ -15,7 +15,11 @@ public final class GrassScoreQuery {
                     "WHERE gsa.member.status = TRUE " +
                     "ORDER BY gsa.grassScore DESC";
 
+    public static final String STUDIES_BY_STUDY_TIME_SELECT_QUERY =
+            "SELECT s FROM Study s " +
+                    "WHERE s.status = TRUE " +
+                    "ORDER BY s.totalStudyTime DESC";
+
     private GrassScoreQuery() {
     }
 }
-
