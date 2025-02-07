@@ -16,6 +16,7 @@ public class GrassScoreRankingScheduler {
     @SchedulerName("랭킹 계산 스케줄러")
     public void calculateRanking() {
         grassScoreAggregateService.calculateGrassScoreRanking();
+        grassScoreAggregateService.calculateStudyRanking();
         throw new RuntimeException("테스트 오류");
     }
 }
