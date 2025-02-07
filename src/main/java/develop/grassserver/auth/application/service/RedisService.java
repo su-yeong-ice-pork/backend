@@ -30,7 +30,7 @@ public class RedisService {
     private static final String STUDY_STATUS_KEY_PREFIX = "studying-";
     private static final String INDIVIDUAL_GRASS_SCORE_RANKING_KEY = "grass_score_ranking";
     private static final String STUDY_RANKING_KEY = "study_ranking";
-    private static final long INDIVIDUAL_RANKING_EXPIRATION_TIME = 24 * 60 * 60L;
+    private static final long RANKING_EXPIRATION_TIME = 24 * 60 * 60L;
 
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -112,7 +112,7 @@ public class RedisService {
     private void saveAsJson(Object object, String key) throws JsonProcessingException {
         String rankingJSON = objectMapper.writeValueAsString(object);
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(key, rankingJSON, INDIVIDUAL_RANKING_EXPIRATION_TIME);
+        valueOperations.set(key, rankingJSON, RANKING_EXPIRATION_TIME);
     }
 
     public StudyRankingResponse getStudyRanking() throws JsonProcessingException {
