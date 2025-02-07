@@ -96,9 +96,13 @@ public class RedisService {
     }
 
     public void saveIndividualGrassScoreRanking(IndividualRankingResponse response) throws JsonProcessingException {
-        String rankingJSON = objectMapper.writeValueAsString(response);
+        saveAsJson(response, INDIVIDUAL_GRASS_SCORE_RANKING_KEY);
+    }
+
+    private void saveAsJson(Object object, String key) throws JsonProcessingException {
+        String rankingJSON = objectMapper.writeValueAsString(object);
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, rankingJSON, INDIVIDUAL_RANKING_EXPIRATION_TIME);
+        valueOperations.set(key, rankingJSON, INDIVIDUAL_RANKING_EXPIRATION_TIME);
     }
 
     public IndividualRankingResponse getIndividualGrassScoreRanking() throws JsonProcessingException {
