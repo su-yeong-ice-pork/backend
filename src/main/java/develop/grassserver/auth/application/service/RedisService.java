@@ -8,6 +8,7 @@ import develop.grassserver.auth.application.valid.AuthValidator;
 import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
+import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ public class RedisService {
     private static final long AUTH_CODE_EXPIRATION_TIME = 60 * 5L;
     private static final String STUDY_STATUS_KEY_PREFIX = "studying-";
     private static final String INDIVIDUAL_GRASS_SCORE_RANKING_KEY = "grass_score_ranking";
+    private static final String STUDY_RANKING_KEY = "study_ranking";
     private static final long INDIVIDUAL_RANKING_EXPIRATION_TIME = 24 * 60 * 60L;
 
     private final ObjectMapper objectMapper;
@@ -114,5 +116,9 @@ public class RedisService {
         String rankingJSON = ((String) Objects.requireNonNull(valueOperations.get(key)))
                 .replaceAll("\\p{Cntrl}", "");
         return objectMapper.readValue(rankingJSON, responseType);
+    }
+
+    public void saveStudyRanking(StudyRankingResponse response) throws JsonProcessingException {
+        saveAsJson(response, STUDY_RANKING_KEY);
     }
 }
