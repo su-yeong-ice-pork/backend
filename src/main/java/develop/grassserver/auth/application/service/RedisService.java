@@ -106,9 +106,13 @@ public class RedisService {
     }
 
     public IndividualRankingResponse getIndividualGrassScoreRanking() throws JsonProcessingException {
+        return getAsObject(INDIVIDUAL_GRASS_SCORE_RANKING_KEY, IndividualRankingResponse.class);
+    }
+
+    private <T> T getAsObject(String key, Class<T> responseType) throws JsonProcessingException {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        String rankingJSON = ((String) Objects.requireNonNull(valueOperations.get(INDIVIDUAL_GRASS_SCORE_RANKING_KEY)))
+        String rankingJSON = ((String) Objects.requireNonNull(valueOperations.get(key)))
                 .replaceAll("\\p{Cntrl}", "");
-        return objectMapper.readValue(rankingJSON, IndividualRankingResponse.class);
+        return objectMapper.readValue(rankingJSON, responseType);
     }
 }
