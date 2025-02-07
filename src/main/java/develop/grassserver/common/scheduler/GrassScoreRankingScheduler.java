@@ -17,6 +17,5 @@ public class GrassScoreRankingScheduler {
     public void calculateRanking() {
         grassScoreAggregateService.calculateGrassScoreRanking();
         grassScoreAggregateService.calculateStudyRanking();
-        throw new RuntimeException("테스트 오류");
     }
 }
