@@ -2,6 +2,7 @@ package develop.grassserver.grass.infrastructure.repositiory;
 
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.query.GrassScoreQuery;
+import develop.grassserver.study.domain.entity.Study;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +27,12 @@ public class GrassScoreAggregateQueryRepository {
     public List<GrassScoreAggregate> getTopMembers() {
         return entityManager.createQuery(GrassScoreQuery.MEMBER_TOTAL_GRASS_SCORE_SELECT_QUERY,
                         GrassScoreAggregate.class)
+                .setMaxResults(50)
+                .getResultList();
+    }
+
+    public List<Study> getTopStudies() {
+        return entityManager.createQuery(GrassScoreQuery.STUDIES_BY_STUDY_TIME_SELECT_QUERY, Study.class)
                 .setMaxResults(50)
                 .getResultList();
     }
