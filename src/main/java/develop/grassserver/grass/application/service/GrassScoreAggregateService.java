@@ -2,10 +2,10 @@ package develop.grassserver.grass.application.service;
 
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
+import develop.grassserver.rank.application.dto.StudyRankingData;
 import develop.grassserver.rank.application.service.GrassScoreRankingUpdateService;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
 import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
-import develop.grassserver.study.domain.entity.Study;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class GrassScoreAggregateService {
     }
 
     public void calculateStudyRanking() {
-        List<Study> studies = aggregateQueryRepository.getTopStudies();
+        List<StudyRankingData> studies = aggregateQueryRepository.getTopStudies();
 
         try {
             grassScoreRankingUpdateService.saveStudyRanking(StudyRankingResponse.from(studies));
