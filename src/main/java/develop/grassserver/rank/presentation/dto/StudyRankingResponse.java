@@ -15,7 +15,7 @@ public record StudyRankingResponse(String date, List<StudyRank> ranking) {
                         i + 1,
                         dataList.get(i).studyName(),
                         dataList.get(i).memberCount().intValue(),
-                        DurationUtils.formatHourDuration(dataList.get(i).totalStudyTime())
+                        DurationUtils.formatHourAndMinute(dataList.get(i).totalStudyTime())
                 ))
                 .toList();
 
@@ -27,7 +27,7 @@ public record StudyRankingResponse(String date, List<StudyRank> ranking) {
             int rank,
             String studyName,
             int memberCount,
-            Long totalStudyTime
+            String totalStudyTime
     ) {
     }
 }
