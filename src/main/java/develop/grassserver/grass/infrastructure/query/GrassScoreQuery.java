@@ -26,14 +26,14 @@ public final class GrassScoreQuery {
 
     public static final String MAJOR_RANKING_DATA_SELECT_QUERY =
             "SELECT new MajorRankingData(" +
-                    "m.major.college, " +
+                    "m.major.department, " +
                     "COUNT(m), " +
                     "COALESCE(SUM(m.studyRecord.totalStudyTime), 0), " +
                     "SUM(gsa.grassScore)" +
                     ") " +
                     "FROM Member m " +
                     "JOIN GrassScoreAggregate gsa ON gsa.member = m " +
-                    "GROUP BY m.major.college " +
+                    "GROUP BY m.major.department " +
                     "ORDER BY SUM(gsa.grassScore) DESC";
 
     private GrassScoreQuery() {
