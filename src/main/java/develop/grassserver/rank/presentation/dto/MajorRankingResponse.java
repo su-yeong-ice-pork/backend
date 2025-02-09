@@ -28,7 +28,7 @@ public record MajorRankingResponse(
                 i + 1,
                 data.majorName(),
                 data.memberCount(),
-                DurationUtils.formatHourAndMinute(data.majorTotalStudyTime()),
+                DurationUtils.formatHourAndMinuteByLongTypeTime(data.majorTotalStudyTime()),
                 data.majorGrassScore()
         );
     }
@@ -36,9 +36,9 @@ public record MajorRankingResponse(
     public record MajorRank(
             int rank,
             String majorName,
-            int memberCount,
+            long memberCount,
             String majorTotalStudyTime,
-            int majorGrassScore
+            long majorGrassScore
     ) {
     }
 }
