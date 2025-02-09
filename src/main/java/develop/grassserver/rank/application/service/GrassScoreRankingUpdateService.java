@@ -1,6 +1,5 @@
 package develop.grassserver.rank.application.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import develop.grassserver.auth.application.service.RedisService;
 import develop.grassserver.common.annotation.RDBRetryable;
 import develop.grassserver.common.annotation.RedisRetryable;
@@ -14,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.function.ThrowingConsumer;
 
 @Slf4j
 @Service
@@ -33,21 +33,32 @@ public class GrassScoreRankingUpdateService {
 
     @RedisRetryable
     public void saveIndividualGrassScoreRanking(IndividualRankingResponse response) {
-        try {
-            redisService.saveIndividualGrassScoreRanking(response);
-        } catch (JsonProcessingException e) {
-            log.error("랭킹 JSON 저장 중 오류");
-            throw new RedisException("랭킹 JSON 저장 중 오류");
-        }
+        saveRanking(
+                response,
+                redisService::saveIndividualGrassScoreRanking,
+                "랭킹 JSON 저장 중 오류"
+        );
     }
 
     @RedisRetryable
     public void saveStudyRanking(StudyRankingResponse response) {
+        saveRanking(
+                response,
+                redisService::saveStudyRanking,
+                "스터디 랭킹 JSON 저장 중 오류"
+        );
+    }
+
+    private <T> void saveRanking(
+            T response,
+            ThrowingConsumer<T> saveFunction,
+            String errorMessage
+    ) {
         try {
-            redisService.saveStudyRanking(response);
-        } catch (JsonProcessingException e) {
-            log.error("스터디 랭킹 JSON 저장 중 오류");
-            throw new RedisException("스터디 랭킹 JSON 저장 중 오류");
+            saveFunction.accept(response);
+        } catch (Exception e) {
+            log.error(errorMessage, e);
+            throw new RedisException(errorMessage);
         }
     }
 }
