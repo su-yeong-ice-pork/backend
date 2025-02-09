@@ -49,4 +49,10 @@ public class DurationUtils {
         long minutes = (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
         return String.format("%02d시간 %02d분", hours, minutes);
     }
+
+    public static String formatHourAndMinuteByLongTypeTime(long totalSeconds) {
+        long hours = totalSeconds / SECONDS_IN_HOUR;
+        long minutes = (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
+        return String.format("%02d시간 %02d분", hours, minutes);
+    }
 }
