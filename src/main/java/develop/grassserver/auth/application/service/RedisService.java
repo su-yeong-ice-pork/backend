@@ -122,6 +122,10 @@ public class RedisService {
         saveAsJson(response, MAJOR_RANKING_KEY);
     }
 
+    public MajorRankingResponse getMajorRanking() throws JsonProcessingException {
+        return getAsObject(MAJOR_RANKING_KEY, MajorRankingResponse.class);
+    }
+
     private void saveAsJson(Object object, String key) throws JsonProcessingException {
         String rankingJSON = objectMapper.writeValueAsString(object);
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
