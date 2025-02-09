@@ -2,6 +2,7 @@ package develop.grassserver.rank.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import develop.grassserver.auth.application.service.RedisService;
+import develop.grassserver.common.annotation.RDBRetryable;
 import develop.grassserver.common.annotation.RedisRetryable;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
@@ -23,7 +24,7 @@ public class GrassScoreRankingUpdateService {
 
     private final GrassScoreAggregateQueryRepository grassScoreAggregateQueryRepository;
 
-    @RedisRetryable
+    @RDBRetryable
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateGrassAggregateScore() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
