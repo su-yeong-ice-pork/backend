@@ -25,10 +25,10 @@ public final class GrassScoreQuery {
                     "ORDER BY s.totalStudyTime DESC";
 
     public static final String MAJOR_RANKING_DATA_SELECT_QUERY =
-            "SELECT new develop.grassserver.rank.application.dto.MajorRankingData("
+            "SELECT new MajorRankingData("
                     + "m.major.college, "
                     + "COUNT(m), "
-                    + "SUM(m.studyRecord.totalStudyTime), "
+                    + "COALESCE(SUM(m.studyRecord.totalStudyTime), 0), "
                     + "SUM(gsa.grassScore)"
                     + ") "
                     + "FROM Member m "
