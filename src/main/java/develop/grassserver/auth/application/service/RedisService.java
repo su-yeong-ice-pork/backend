@@ -17,8 +17,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -34,8 +32,6 @@ public class RedisService {
     private static final String INDIVIDUAL_GRASS_SCORE_RANKING_KEY = "grass_score_ranking";
     private static final String STUDY_RANKING_KEY = "study_ranking";
     private static final String MAJOR_RANKING_KEY = "major_ranking";
-    private static final long RANKING_EXPIRATION_TIME = 24 * 60 * 60L;
-    private static final Logger log = LoggerFactory.getLogger(RedisService.class);
 
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> redisTemplate;
