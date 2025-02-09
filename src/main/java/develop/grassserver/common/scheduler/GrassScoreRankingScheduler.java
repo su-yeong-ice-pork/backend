@@ -17,5 +17,6 @@ public class GrassScoreRankingScheduler {
     public void calculateRanking() {
         grassScoreAggregateService.calculateGrassScoreRanking();
         grassScoreAggregateService.calculateStudyRanking();
+        grassScoreAggregateService.calculateMajorRanking();
     }
 }
