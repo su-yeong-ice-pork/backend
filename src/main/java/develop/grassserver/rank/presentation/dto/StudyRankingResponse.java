@@ -3,7 +3,6 @@ package develop.grassserver.rank.presentation.dto;
 import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.rank.application.dto.StudyRankingData;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public record StudyRankingResponse(List<StudyRank> ranking) {
@@ -16,7 +15,7 @@ public record StudyRankingResponse(List<StudyRank> ranking) {
                         dataList.get(i).memberCount().intValue(),
                         DurationUtils.formatHourDuration(dataList.get(i).totalStudyTime())
                 ))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
 
         return new StudyRankingResponse(ranks);
     }

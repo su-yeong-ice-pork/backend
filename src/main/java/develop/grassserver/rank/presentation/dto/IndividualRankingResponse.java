@@ -6,7 +6,6 @@ import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.member.domain.entity.Member;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public record IndividualRankingResponse(String date, List<IndividualRank> ranking) {
@@ -18,7 +17,7 @@ public record IndividualRankingResponse(String date, List<IndividualRank> rankin
                     Member member = aggregate.getMember();
                     return getIndividualRank(i + 1, member, aggregate); // 순위는 1부터 시작하므로 i+1
                 })
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
 
         String date = DateTimeUtils.formatNotificationDate(LocalDateTime.now().minusDays(1));
         return new IndividualRankingResponse(date, individualRanks);
