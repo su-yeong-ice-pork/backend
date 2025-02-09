@@ -26,10 +26,15 @@ public final class GrassScoreQuery {
 
     public static final String MAJOR_RANKING_DATA_SELECT_QUERY =
             "SELECT new develop.grassserver.rank.application.dto.MajorRankingData("
-                    + "m.major.college, COUNT(m), SUM(m.studyRecord.totalStudyTime), SUM(gs.grassScore)"
+                    + "m.major.college, "
+                    + "COUNT(m), "
+                    + "SUM(m.studyRecord.totalStudyTime), "
+                    + "SUM(gsa.grassScore)"
+                    + ") "
                     + "FROM Member m "
-                    + "JOIN GrassScoreAggregate gs ON gs.member = m "
-                    + "GROUP BY m.major.college";
+                    + "JOIN GrassScoreAggregate gsa ON gsa.member = m "
+                    + "GROUP BY m.major.college "
+                    + "ORDER BY SUM(gsa.grassScore) DESC";
 
     private GrassScoreQuery() {
     }
