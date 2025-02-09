@@ -15,7 +15,7 @@ public record IndividualRankingResponse(String date, List<IndividualRank> rankin
                 .mapToObj(i -> {
                     GrassScoreAggregate aggregate = aggregates.get(i);
                     Member member = aggregate.getMember();
-                    return getIndividualRank(i + 1, member, aggregate); // 순위는 1부터 시작하므로 i+1
+                    return getIndividualRank(i + 1, member, aggregate);
                 })
                 .toList();
 
