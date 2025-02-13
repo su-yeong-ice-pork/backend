@@ -1,28 +1,20 @@
 package develop.grassserver.rank.application.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import develop.grassserver.auth.application.service.RedisService;
+import develop.grassserver.common.annotation.RDBRetryable;
+import develop.grassserver.common.annotation.RedisRetryable;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
-import io.lettuce.core.RedisCommandTimeoutException;
-import io.lettuce.core.RedisConnectionException;
+import develop.grassserver.rank.presentation.dto.MajorRankingResponse;
+import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
 import io.lettuce.core.RedisException;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.QueryTimeoutException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.JDBCConnectionException;
-import org.springframework.data.redis.RedisConnectionFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.function.ThrowingConsumer;
 
 @Slf4j
 @Service
@@ -33,41 +25,50 @@ public class GrassScoreRankingUpdateService {
 
     private final GrassScoreAggregateQueryRepository grassScoreAggregateQueryRepository;
 
-    @Retryable(
-            retryFor = {
-                    PersistenceException.class,
-                    SQLException.class,
-                    SQLTimeoutException.class,
-                    QueryTimeoutException.class,
-                    JDBCConnectionException.class
-            },
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 5000)
-    )
+    @RDBRetryable
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateGrassAggregateScore() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         grassScoreAggregateQueryRepository.update(yesterday);
     }
 
-    @Retryable(
-            retryFor = {
-                    RedisConnectionFailureException.class,
-                    RedisConnectionException.class,
-                    RedisCommandTimeoutException.class,
-                    RedisException.class,
-                    SocketTimeoutException.class,
-                    ConnectException.class
-            },
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 5000)
-    )
+    @RedisRetryable
     public void saveIndividualGrassScoreRanking(IndividualRankingResponse response) {
+        saveRanking(
+                response,
+                redisService::saveIndividualGrassScoreRanking,
+                "랭킹 JSON 저장 중 오류"
+        );
+    }
+
+    @RedisRetryable
+    public void saveStudyRanking(StudyRankingResponse response) {
+        saveRanking(
+                response,
+                redisService::saveStudyRanking,
+                "스터디 랭킹 JSON 저장 중 오류"
+        );
+    }
+
+    @RedisRetryable
+    public void saveMajorRanking(MajorRankingResponse response) {
+        saveRanking(
+                response,
+                redisService::saveMajorRanking,
+                "학과 랭킹 JSON 저장 중 오류"
+        );
+    }
+
+    private <T> void saveRanking(
+            T response,
+            ThrowingConsumer<T> saveFunction,
+            String errorMessage
+    ) {
         try {
-            redisService.saveIndividualGrassScoreRanking(response);
-        } catch (JsonProcessingException e) {
-            log.error("랭킹 JSON 저장 중 오류");
-            throw new RedisException("랭킹 JSON 저장 중 오류");
+            saveFunction.accept(response);
+        } catch (Exception e) {
+            log.error(errorMessage, e);
+            throw new RedisException(errorMessage);
         }
     }
 }

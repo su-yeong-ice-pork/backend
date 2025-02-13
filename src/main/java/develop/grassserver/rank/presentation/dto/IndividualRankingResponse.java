@@ -5,18 +5,20 @@ import develop.grassserver.common.utils.duration.DurationUtils;
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.member.domain.entity.Member;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public record IndividualRankingResponse(String date, List<IndividualRank> ranking) {
 
     public static IndividualRankingResponse from(List<GrassScoreAggregate> aggregates) {
-        List<IndividualRank> individualRanks = new ArrayList<>();
-        for (int i = 1; i <= aggregates.size(); i++) {
-            GrassScoreAggregate aggregate = aggregates.get(i - 1);
-            Member member = aggregate.getMember();
-            individualRanks.add(getIndividualRank(i, member, aggregate));
-        }
+        List<IndividualRank> individualRanks = IntStream.range(0, aggregates.size())
+                .mapToObj(i -> {
+                    GrassScoreAggregate aggregate = aggregates.get(i);
+                    Member member = aggregate.getMember();
+                    return getIndividualRank(i + 1, member, aggregate);
+                })
+                .toList();
+
         String date = DateTimeUtils.formatNotificationDate(LocalDateTime.now().minusDays(1));
         return new IndividualRankingResponse(date, individualRanks);
     }

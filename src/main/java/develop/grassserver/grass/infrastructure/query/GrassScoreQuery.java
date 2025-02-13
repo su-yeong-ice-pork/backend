@@ -15,7 +15,27 @@ public final class GrassScoreQuery {
                     "WHERE gsa.member.status = TRUE " +
                     "ORDER BY gsa.grassScore DESC";
 
+    public static final String STUDIES_BY_STUDY_TIME_SELECT_QUERY =
+            "SELECT new StudyRankingData(" +
+                    "s.id, s.name, s.totalStudyTime, COUNT(sm) ) " +
+                    "FROM Study s " +
+                    "LEFT JOIN s.members sm WITH sm.status = true " +
+                    "WHERE s.status = true " +
+                    "GROUP BY s.id, s.name, s.totalStudyTime " +
+                    "ORDER BY s.totalStudyTime DESC";
+
+    public static final String MAJOR_RANKING_DATA_SELECT_QUERY =
+            "SELECT new MajorRankingData(" +
+                    "m.major.department, " +
+                    "COUNT(m), " +
+                    "SUM(m.studyRecord.totalStudyTime), " +
+                    "COALESCE(SUM(gsa.grassScore), 0)" +
+                    ") " +
+                    "FROM Member m " +
+                    "LEFT JOIN GrassScoreAggregate gsa ON gsa.member = m " +
+                    "GROUP BY m.major.department " +
+                    "ORDER BY SUM(gsa.grassScore) DESC";
+
     private GrassScoreQuery() {
     }
 }
-

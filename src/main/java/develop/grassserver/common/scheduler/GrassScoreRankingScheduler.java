@@ -12,10 +12,11 @@ public class GrassScoreRankingScheduler {
 
     private final GrassScoreAggregateService grassScoreAggregateService;
 
-    @Scheduled(cron = "0 6 16 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     @SchedulerName("랭킹 계산 스케줄러")
     public void calculateRanking() {
-        //grassScoreAggregateService.calculateGrassScoreRanking();
-        throw new RuntimeException("테스트 오류");
+        grassScoreAggregateService.calculateGrassScoreRanking();
+        grassScoreAggregateService.calculateStudyRanking();
+        grassScoreAggregateService.calculateMajorRanking();
     }
 }
