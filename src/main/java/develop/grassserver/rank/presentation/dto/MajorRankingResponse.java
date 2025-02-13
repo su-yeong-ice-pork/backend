@@ -14,16 +14,16 @@ public record MajorRankingResponse(
 
     public static MajorRankingResponse from(List<MajorRankingData> dataList) {
         String date = DateTimeUtils.formatNotificationDate(LocalDateTime.now().minusDays(1));
-        return new MajorRankingResponse(date, getMajorRanks(dataList));
+        return new MajorRankingResponse(date, mapToMajorRanks(dataList));
     }
 
-    private static List<MajorRank> getMajorRanks(List<MajorRankingData> dataList) {
+    private static List<MajorRank> mapToMajorRanks(List<MajorRankingData> dataList) {
         return IntStream.range(0, dataList.size())
-                .mapToObj(i -> getMajorRank(i, dataList.get(i)))
+                .mapToObj(i -> toMajorRank(i, dataList.get(i)))
                 .toList();
     }
 
-    private static MajorRank getMajorRank(int i, MajorRankingData data) {
+    private static MajorRank toMajorRank(int i, MajorRankingData data) {
         return new MajorRank(
                 i + 1,
                 data.majorName(),
