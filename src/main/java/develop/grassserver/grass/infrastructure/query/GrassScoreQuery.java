@@ -35,6 +35,7 @@ public final class GrassScoreQuery {
                     ") " +
                     "FROM Member m " +
                     "LEFT JOIN GrassScoreAggregate gsa ON gsa.member = m " +
+                    "WHERE m.status = true " +
                     "GROUP BY m.major.department " +
                     "ORDER BY SUM(gsa.grassScore) DESC";
 
