@@ -21,8 +21,8 @@ public final class GrassScoreQuery {
             "SELECT new StudyRankingData(" +
                     "s.id, s.name, s.totalStudyTime, COUNT(sm) ) " +
                     "FROM Study s " +
-                    "LEFT JOIN s.members sm WITH sm.status = true " +
-                    "WHERE s.status = true " +
+                    "JOIN s.members sm " +
+                    "WHERE s.status = true AND sm.status = true " +
                     "GROUP BY s.id, s.name, s.totalStudyTime " +
                     "ORDER BY s.totalStudyTime DESC";
 
