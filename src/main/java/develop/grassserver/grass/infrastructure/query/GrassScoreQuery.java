@@ -28,11 +28,11 @@ public final class GrassScoreQuery {
             "SELECT new MajorRankingData(" +
                     "m.major.department, " +
                     "COUNT(m), " +
-                    "COALESCE(SUM(m.studyRecord.totalStudyTime), 0), " +
-                    "SUM(gsa.grassScore)" +
+                    "SUM(m.studyRecord.totalStudyTime), " +
+                    "COALESCE(SUM(gsa.grassScore), 0)" +
                     ") " +
                     "FROM Member m " +
-                    "JOIN GrassScoreAggregate gsa ON gsa.member = m " +
+                    "LEFT JOIN GrassScoreAggregate gsa ON gsa.member = m " +
                     "GROUP BY m.major.department " +
                     "ORDER BY SUM(gsa.grassScore) DESC";
 
