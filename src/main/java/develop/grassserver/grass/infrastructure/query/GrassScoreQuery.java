@@ -12,7 +12,9 @@ public final class GrassScoreQuery {
 
     public static final String MEMBER_TOTAL_GRASS_SCORE_SELECT_QUERY =
             "SELECT gsa FROM GrassScoreAggregate gsa " +
-                    "WHERE gsa.member.status = TRUE " +
+                    "JOIN FETCH gsa.member m " +
+                    "JOIN FETCH m.profile " +
+                    "WHERE m.status = TRUE " +
                     "ORDER BY gsa.grassScore DESC";
 
     public static final String STUDIES_BY_STUDY_TIME_SELECT_QUERY =
