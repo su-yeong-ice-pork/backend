@@ -8,6 +8,7 @@ import develop.grassserver.auth.application.valid.AuthValidator;
 import develop.grassserver.common.utils.jwt.JwtUtil;
 import develop.grassserver.member.presentation.dto.CheckAuthCodeRequest;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
+import develop.grassserver.rank.presentation.dto.MajorRankingResponse;
 import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class RedisService {
     private static final String STUDY_STATUS_KEY_PREFIX = "studying-";
     private static final String INDIVIDUAL_GRASS_SCORE_RANKING_KEY = "grass_score_ranking";
     private static final String STUDY_RANKING_KEY = "study_ranking";
-    private static final long RANKING_EXPIRATION_TIME = 24 * 60 * 60L;
+    private static final String MAJOR_RANKING_KEY = "major_ranking";
 
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -109,14 +110,22 @@ public class RedisService {
         saveAsJson(response, STUDY_RANKING_KEY);
     }
 
+    public StudyRankingResponse getStudyRanking() throws JsonProcessingException {
+        return getAsObject(STUDY_RANKING_KEY, StudyRankingResponse.class);
+    }
+
+    public void saveMajorRanking(MajorRankingResponse response) throws JsonProcessingException {
+        saveAsJson(response, MAJOR_RANKING_KEY);
+    }
+
+    public MajorRankingResponse getMajorRanking() throws JsonProcessingException {
+        return getAsObject(MAJOR_RANKING_KEY, MajorRankingResponse.class);
+    }
+
     private void saveAsJson(Object object, String key) throws JsonProcessingException {
         String rankingJSON = objectMapper.writeValueAsString(object);
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(key, rankingJSON, RANKING_EXPIRATION_TIME);
-    }
-
-    public StudyRankingResponse getStudyRanking() throws JsonProcessingException {
-        return getAsObject(STUDY_RANKING_KEY, StudyRankingResponse.class);
+        valueOperations.set(key, rankingJSON);
     }
 
     private <T> T getAsObject(String key, Class<T> responseType) throws JsonProcessingException {

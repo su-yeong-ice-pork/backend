@@ -1,9 +1,11 @@
 package develop.grassserver.rank.application.service;
 
 import develop.grassserver.auth.application.service.RedisService;
+import develop.grassserver.common.annotation.RDBRetryable;
 import develop.grassserver.common.annotation.RedisRetryable;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
+import develop.grassserver.rank.presentation.dto.MajorRankingResponse;
 import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
 import io.lettuce.core.RedisException;
 import java.time.LocalDate;
@@ -23,7 +25,7 @@ public class GrassScoreRankingUpdateService {
 
     private final GrassScoreAggregateQueryRepository grassScoreAggregateQueryRepository;
 
-    @RedisRetryable
+    @RDBRetryable
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateGrassAggregateScore() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
@@ -45,6 +47,15 @@ public class GrassScoreRankingUpdateService {
                 response,
                 redisService::saveStudyRanking,
                 "스터디 랭킹 JSON 저장 중 오류"
+        );
+    }
+
+    @RedisRetryable
+    public void saveMajorRanking(MajorRankingResponse response) {
+        saveRanking(
+                response,
+                redisService::saveMajorRanking,
+                "학과 랭킹 JSON 저장 중 오류"
         );
     }
 

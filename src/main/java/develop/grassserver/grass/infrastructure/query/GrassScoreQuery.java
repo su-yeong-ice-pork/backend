@@ -24,6 +24,18 @@ public final class GrassScoreQuery {
                     "GROUP BY s.id, s.name, s.totalStudyTime " +
                     "ORDER BY s.totalStudyTime DESC";
 
+    public static final String MAJOR_RANKING_DATA_SELECT_QUERY =
+            "SELECT new MajorRankingData(" +
+                    "m.major.department, " +
+                    "COUNT(m), " +
+                    "SUM(m.studyRecord.totalStudyTime), " +
+                    "COALESCE(SUM(gsa.grassScore), 0)" +
+                    ") " +
+                    "FROM Member m " +
+                    "LEFT JOIN GrassScoreAggregate gsa ON gsa.member = m " +
+                    "GROUP BY m.major.department " +
+                    "ORDER BY SUM(gsa.grassScore) DESC";
+
     private GrassScoreQuery() {
     }
 }

@@ -15,6 +15,7 @@ import org.hibernate.annotations.ColumnDefault;
 @AllArgsConstructor
 @Builder
 public class StudyRecord {
+
     @Column(name = "total_study_time_seconds", nullable = false)
     @ColumnDefault("0")
     @Builder.Default

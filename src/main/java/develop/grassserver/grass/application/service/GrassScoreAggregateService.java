@@ -2,9 +2,11 @@ package develop.grassserver.grass.application.service;
 
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
+import develop.grassserver.rank.application.dto.MajorRankingData;
 import develop.grassserver.rank.application.dto.StudyRankingData;
 import develop.grassserver.rank.application.service.GrassScoreRankingUpdateService;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
+import develop.grassserver.rank.presentation.dto.MajorRankingResponse;
 import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +51,17 @@ public class GrassScoreAggregateService {
             log.info("스터디 랭킹 저장 성공");
         } catch (Exception exception) {
             log.error("스터디 랭킹 저장 실패 = {}", exception.getMessage());
+        }
+    }
+
+    public void calculateMajorRanking() {
+        List<MajorRankingData> majors = aggregateQueryRepository.getTopMajors();
+
+        try {
+            grassScoreRankingUpdateService.saveMajorRanking(MajorRankingResponse.from(majors));
+            log.info("학과 랭킹 저장 성공");
+        } catch (Exception exception) {
+            log.error("학과 랭킹 저장 실패 = {}", exception.getMessage());
         }
     }
 }
