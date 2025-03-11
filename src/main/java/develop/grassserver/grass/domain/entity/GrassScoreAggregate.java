@@ -28,7 +28,7 @@ public class GrassScoreAggregate extends BaseEntity {
     @Builder.Default
     private int grassScore = 0;
 
-    public void updateAggregateScore(int yesterdayScore) {
-        grassScore += yesterdayScore;
+    public void subtractScore(int score) {
+        grassScore -= score;
     }
 }
