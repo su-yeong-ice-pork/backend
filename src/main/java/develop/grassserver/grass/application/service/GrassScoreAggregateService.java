@@ -4,13 +4,13 @@ import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateQueryRepository;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateRepository;
 import develop.grassserver.member.domain.entity.Member;
-import develop.grassserver.grass.presentation.exception.NotEnoughGrassScoreException;
 import develop.grassserver.rank.application.dto.MajorRankingData;
 import develop.grassserver.rank.application.dto.StudyRankingData;
 import develop.grassserver.rank.application.service.GrassScoreRankingUpdateService;
 import develop.grassserver.rank.presentation.dto.IndividualRankingResponse;
 import develop.grassserver.rank.presentation.dto.MajorRankingResponse;
 import develop.grassserver.rank.presentation.dto.StudyRankingResponse;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,9 +70,8 @@ public class GrassScoreAggregateService {
     }
 
     public void subtractGrassScore(int score, Member member) {
-        long updateRows = grassScoreAggregateRepository.subtractScore(score, member);
-        if (updateRows == 0) {
-            throw new NotEnoughGrassScoreException();
-        }
+        GrassScoreAggregate grassScoreAggregate = grassScoreAggregateRepository.findByMember(member)
+                .orElseThrow(EntityNotFoundException::new);
+        grassScoreAggregate.subtractScore(score);
     }
 }
