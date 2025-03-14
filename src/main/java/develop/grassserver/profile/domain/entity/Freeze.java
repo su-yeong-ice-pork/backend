@@ -15,9 +15,9 @@ public class Freeze {
     }
 
     public void decrease() {
-        if (this.freezeCount > 0) {
-            this.freezeCount--;
+        if (this.freezeCount <= 0) {
+            throw new NotEnoughFreezeCountException();
         }
-        throw new NotEnoughFreezeCountException();
+        this.freezeCount--;
     }
 }
