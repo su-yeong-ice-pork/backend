@@ -10,7 +10,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -38,13 +37,10 @@ public class FreezeService {
                 .getFreezeCount();
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     public void exchangeFreeze(Member member, FreezeExchangeQuantityRequest request) {
-        updateGrassScoreAndFreezeCount(member, request.quantity());
-    }
-
-    private void updateGrassScoreAndFreezeCount(Member findMember, int quantity) {
-        grassScoreAggregateService.subtractGrassScore(FREEZE_PRICE * quantity, findMember);
-        profileRepository.updateFreezeCount(findMember.getId(), quantity);
+        int exchangeQuantity = request.quantity();
+        grassScoreAggregateService.subtractGrassScore(FREEZE_PRICE * exchangeQuantity, member);
+        profileRepository.updateFreezeCount(member.getId(), exchangeQuantity);
     }
 }
