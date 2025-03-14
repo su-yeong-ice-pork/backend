@@ -1,4 +1,4 @@
-package develop.grassserver.profile.application.exception;
+package develop.grassserver.grass.presentation.exception;
 
 import develop.grassserver.common.utils.ApiUtils;
 import org.springframework.http.HttpStatus;
