@@ -9,6 +9,7 @@ import develop.grassserver.profile.presentation.dto.FreezeCountResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +31,13 @@ public class FreezeController {
     @PostMapping
     public ResponseEntity<ApiResult<String>> exchangeFreeze(@LoginMember Member member) {
         freezeService.exchangeFreeze(member);
+        return ResponseEntity.ok()
+                .body(ApiUtils.success());
+    }
+
+    @PatchMapping
+    public ResponseEntity<ApiResult<String>> useFreeze(@LoginMember Member member) {
+        freezeService.useFreeze(member);
         return ResponseEntity.ok()
                 .body(ApiUtils.success());
     }
