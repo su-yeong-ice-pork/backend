@@ -1,6 +1,8 @@
 package develop.grassserver.profile.infrastructure.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import develop.grassserver.member.domain.entity.QMember;
 import develop.grassserver.profile.domain.entity.QProfile;
@@ -20,16 +22,25 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     }
 
     @Override
-    public long updateFreezeCount(Long memberId) {
+    public long updateFreezeCount(Long memberId, int quantity) {
         return jpaQueryFactory
                 .update(profile)
-                .set(profile.freeze.freezeCount, profile.freeze.freezeCount.add(1))
-                .where(profile.id.eq(
-                                JPAExpressions.select(member.profile.id)
-                                        .from(member)
-                                        .where(member.id.eq(memberId))
-                        )
-                )
+                .set(profile.freeze.freezeCount, profile.freeze.freezeCount.add(quantity))
+                .where(isEqualProfile(memberId))
                 .execute();
+    }
+
+    private BooleanExpression isEqualProfile(Long memberId) {
+        return profile.id.eq(selectEqualMemberId(memberId));
+    }
+
+    private JPQLQuery<Long> selectEqualMemberId(Long memberId) {
+        return JPAExpressions.select(member.profile.id)
+                .from(member)
+                .where(isEqualMemberId(memberId));
+    }
+
+    private BooleanExpression isEqualMemberId(Long memberId) {
+        return member.id.eq(memberId);
     }
 }
