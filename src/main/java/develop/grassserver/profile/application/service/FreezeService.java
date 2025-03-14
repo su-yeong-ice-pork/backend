@@ -59,4 +59,12 @@ public class FreezeService {
             throw new NotEnoughGrassScoreException();
         }
     }
+
+    @Transactional
+    public void useFreeze(Member member) {
+        Member findMember = memberRepository.findByIdWithProfile(member.getId())
+                .orElseThrow(EntityNotFoundException::new);
+
+        findMember.getProfile().getFreeze().decrease();
+    }
 }
