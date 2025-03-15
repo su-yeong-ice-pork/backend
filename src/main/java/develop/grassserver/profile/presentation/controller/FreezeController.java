@@ -33,7 +33,7 @@ public class FreezeController {
     @PostMapping
     public ResponseEntity<ApiResult<String>> exchangeFreeze(
             @LoginMember Member member,
-            @Valid@RequestBody FreezeExchangeQuantityRequest request
+            @Valid @RequestBody FreezeExchangeQuantityRequest request
     ) {
         freezeService.exchangeFreeze(member, request);
         return ResponseEntity.ok()
