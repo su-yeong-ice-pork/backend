@@ -75,5 +75,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'grass-server'
-          slot-name: 'Production'
+          slot-name: 'production'
           package: ${{ env.JAR_PATH }}
