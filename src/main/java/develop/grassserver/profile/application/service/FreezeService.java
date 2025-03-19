@@ -1,5 +1,6 @@
 package develop.grassserver.profile.application.service;
 
+import develop.grassserver.grass.application.service.MemberGrassService;
 import develop.grassserver.grass.domain.entity.GrassScoreAggregate;
 import develop.grassserver.grass.infrastructure.repositiory.GrassScoreAggregateRepository;
 import develop.grassserver.member.domain.entity.Member;
@@ -25,6 +26,7 @@ public class FreezeService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final GrassScoreAggregateRepository grassScoreAggregateRepository;
+    private final MemberGrassService memberGrassService;
 
     public FreezeCountResponse getFreezeCount(Member member) {
         Member findMember = memberRepository.findByIdWithProfile(member.getId())
@@ -58,5 +60,14 @@ public class FreezeService {
         if (grassScoreAggregate.getGrassScore() <= FREEZE_PRICE) {
             throw new NotEnoughGrassScoreException();
         }
+    }
+
+    @Transactional
+    public void useFreeze(Member member) {
+        Member findMember = memberRepository.findByIdWithProfile(member.getId())
+                .orElseThrow(EntityNotFoundException::new);
+
+        findMember.getProfile().getFreeze().decrease();
+        memberGrassService.createAttendance(member);
     }
 }
