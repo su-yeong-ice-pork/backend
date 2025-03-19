@@ -1,11 +1,13 @@
 package develop.grassserver.grass.domain.entity;
 
 import develop.grassserver.common.BaseEntity;
+import develop.grassserver.grass.presentation.exception.NotEnoughGrassScoreException;
 import develop.grassserver.member.domain.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +30,13 @@ public class GrassScoreAggregate extends BaseEntity {
     @Builder.Default
     private int grassScore = 0;
 
-    public void subtractScore(int score) {
-        grassScore -= score;
+    @Version
+    private int version;
+
+    public void subtractScore(int subtractScore) {
+        if (grassScore < subtractScore) {
+            throw new NotEnoughGrassScoreException();
+        }
+        grassScore -= subtractScore;
     }
 }

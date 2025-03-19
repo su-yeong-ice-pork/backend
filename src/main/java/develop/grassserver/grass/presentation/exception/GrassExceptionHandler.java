@@ -30,4 +30,9 @@ public class GrassExceptionHandler {
                 HttpStatus.BAD_REQUEST
         );
     }
+
+    @ExceptionHandler(NotEnoughGrassScoreException.class)
+    public ResponseEntity<ApiUtils.ApiResult<?>> notEnoughGrassScoreException(NotEnoughGrassScoreException exception) {
+        return new ResponseEntity<>(exception.body(), exception.status());
+    }
 }
